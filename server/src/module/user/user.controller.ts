@@ -1,4 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
+import { LoginDto } from './dto/login-user.dto';
 import { SignUpDto } from './dto/singup-user.dto';
 import { UserService } from './user.service';
 
@@ -10,12 +11,17 @@ export class UserController {
 
     //중복검사(nickcheck)
 
-    // 회원가입
+    // 일반 회원가입
     @Post('/signup')
     signup(@Body() signUpDto: SignUpDto): Promise<{ message: string, statusCode: number }> {
-        return this.userService.signUp(signUpDto)
+        return this.userService.signUp(signUpDto);
     }
 
+    // 일반 로그인
+    @Post('/login')
+    login(@Body() loginDto: LoginDto): Promise<{ message: string, data: string, statusCode: number }> {
+        return this.userService.login(loginDto);
+    }
 
 
 }
