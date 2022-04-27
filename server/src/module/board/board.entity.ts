@@ -39,11 +39,11 @@ export class Board extends BaseEntity {
   @Column()
   date: string;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.boards)
   user: User;
