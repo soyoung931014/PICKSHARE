@@ -19,7 +19,7 @@ export class UserController {
 
     // 일반 로그인
     @Post('/login')
-    login(@Body() loginDto: LoginDto): Promise<{ message: string, data: Object, statusCode: number }> {
+    login(@Body() loginDto: LoginDto): Promise<{ message: string, data: object, statusCode: number }> {
         return this.userService.login(loginDto);
     }
 
