@@ -5,9 +5,10 @@ import { BoardModule } from './module/board/board.module';
 import { AppController } from './app.controller';
 import { UserModule } from './module/user/user.module';
 import { TokenModule } from './module/token/token.module';
+import { LikeModule } from './module/like/like.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeORMConfig), BoardModule, UserModule, TokenModule],
+  imports: [TypeOrmModule.forRoot(typeORMConfig), BoardModule, UserModule, TokenModule, LikeModule],
   controllers: [AppController],
   providers: [],
 })

@@ -12,7 +12,7 @@ export class TokenService extends PassportStrategy(Strategy) {
         private userRepository: UserRepository
     ) {
         super({
-            secretOrKey: 'Secret1234',
+            secretOrKey: '1234',
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
         })
     }

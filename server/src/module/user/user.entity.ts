@@ -42,13 +42,13 @@ export class User extends BaseEntity {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToMany(() => Board, (board) => board.user)
+  @OneToMany(() => Board, (board) => board.user, { eager: true })
   boards: Board[];
 
   @OneToMany(() => Follow, (follow) => follow.user)
   follows: Follow[];
 
-  @OneToMany(() => Like, (like) => like.user)
+  @OneToMany(() => Like, (like) => like.user, { eager: true })
   likes: Like[];
 
   @OneToMany(() => Comment, (comment) => comment.user)
