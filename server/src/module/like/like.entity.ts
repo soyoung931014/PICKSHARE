@@ -7,9 +7,9 @@ export class Like extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.likes)
+  @ManyToOne(() => User, (user) => user.likes, { eager: false })
   user: User;
 
-  @ManyToOne(() => Board, (board) => board.likes)
+  @ManyToOne(() => Board, (board) => board.likes, { eager: false })
   board: Board;
 }
