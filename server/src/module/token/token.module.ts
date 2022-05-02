@@ -9,7 +9,7 @@ import { TokenController } from './token.controller';
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: 'Secret1234',
+      secret: process.env.SECRET,
       signOptions: {
         expiresIn: 60 * 60
       }
