@@ -19,7 +19,7 @@ export class UserService {
         return this.userRepository.createUser(signUpDto)
     }
 
-    async login(loginDto: LoginDto): Promise<{ message: string, data: Object, statusCode: number }> {
+    async login(loginDto: LoginDto): Promise<{ message: string, data: object, statusCode: number }> {
         console.log(loginDto, 'loginDto')
         const { email, password } = loginDto;
 
