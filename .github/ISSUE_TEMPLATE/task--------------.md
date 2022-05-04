@@ -9,7 +9,7 @@ assignees: ''
 
 ## ISSUE
 - Group: `client`, `server`, `sr`
-- Type: `bug`, `feature`, `delete`
+- Type: `bug`, `feature`, `delete` ,`css` 등등 
 - Detail: fix actions from client redux
 
 ## TODO
@@ -28,5 +28,3 @@ assignees: ''
 ## Labels
 Estimated time: E: `1h`
 Group : `client`, `server`,`SR`
-Sprint: `Sprint__NUMBER__`
-Urgency: `bare`,`advanced`,`nightmare`
