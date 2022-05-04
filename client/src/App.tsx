@@ -1,14 +1,11 @@
-import React from 'react';
+import Signup from './component/User/Signup/Signup';
 import './App.css';
 
 function App() {
-  const a: String = 'asd'
-
-
-
   return (
     <div className="App">
       hello world
+      <Signup />
     </div>
   );
 }
