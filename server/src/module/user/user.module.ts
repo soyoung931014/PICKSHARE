@@ -6,6 +6,7 @@ import { UserRepository } from './user.repository';
 import { TokenService } from '../token/token.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { TokenModule } from '../token/token.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { PassportModule } from '@nestjs/passport';
       signOptions: {
         expiresIn: 60 * 60
       }
-    })
+    }),
+    TokenModule
   ],
   providers: [UserService, TokenService, PassportModule],
   controllers: [UserController],

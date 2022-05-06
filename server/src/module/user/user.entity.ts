@@ -10,8 +10,8 @@ import {
 import { LoginMethod } from './user-state.union';
 import { Board } from '../board/board.entity';
 import { Follow } from '../follow/follow.entity';
-import { Like } from '../like/like.entity';
 import { Comment } from '../comment/comment.entity';
+import { Heart } from '../heart/heart.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -48,8 +48,8 @@ export class User extends BaseEntity {
   @OneToMany(() => Follow, (follow) => follow.user)
   follows: Follow[];
 
-  @OneToMany(() => Like, (like) => like.user)
-  likes: Like[];
+  @OneToMany(() => Heart, (heart) => heart.user)
+  hearts: Heart[];
 
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
