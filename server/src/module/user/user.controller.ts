@@ -9,12 +9,12 @@ export class UserController {
 
   //중복검사(emailcheck)
   @Get('emailcheck/:id')
-  emailCheck(@Param('id') id: string): Promise<object> {
+  emailCheck(@Param('id') id: string): Promise<boolean> {
     return this.userService.getEmailCheck(id);
   }
   //중복검사(nicknamecheck)
   @Get('/nicknamecheck/:id')
-  nicknameCheck(@Param('id') id: string): Promise<object> {
+  nicknameCheck(@Param('id') id: string): Promise<boolean> {
     return this.userService.getNicknameCheck(id);
   }
 

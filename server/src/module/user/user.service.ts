@@ -15,21 +15,21 @@ export class UserService {
     private token: JwtService,
   ) {}
 
-  async getEmailCheck(id: string): Promise<object> {
+  async getEmailCheck(id: string): Promise<boolean> {
     const emailcheck = await this.userRepository.findOne({ email: id });
     if (emailcheck) {
-      return { message: '이미 사용중인 이메일입니다.' };
+      return true;
     } else {
-      return { message: '사용할 수 있는 이메일입니다.' };
+      return false;
     }
   }
 
-  async getNicknameCheck(id: string): Promise<object> {
+  async getNicknameCheck(id: string): Promise<boolean> {
     const nicknamecheck = await this.userRepository.findOne({ nickname: id });
     if (nicknamecheck) {
-      return { message: '이미 사용중인 닉네임입니다.' };
+      return true;
     } else {
-      return { message: '사용할 수 있는 닉네임입니다.' };
+      return false;
     }
   }
   async signUp(
