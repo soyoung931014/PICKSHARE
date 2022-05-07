@@ -21,25 +21,31 @@ const SignupBox = styled.form`
 function Signup() {
   const inputEmail: any = useRef();
   const inputNickname: any = useRef();
-
+  const inputPassword: any = useRef();
+  const inputPasswordCheck: any = useRef();
   //가입할 회원정보
   const [signupInfo, setSignupInfo] = useState({
     email: '',
     nickname: '',
     password: '',
+    passwordcheck: '',
   });
 
   //이메일,닉네임 중복검사(signupInfo.email과 정보 맞는지 확인하기위해)
   const [emailcheck, setEmailCheck] = useState('');
   const [nicknamecheck, setNicknameCheck] = useState('');
-  //이메일, 닉네임 유효성 확인 메세지
+  //이메일, 닉네임, 비밀번호 유효성 확인 메세지
   const [emailcheckMessage, setEmailCheckMessage] = useState('');
   const [nicknamecheckMessage, setNicknameCheckMessage] = useState('');
+  const [passwordMessage, setPasswordMessage] = useState('');
   // 닉네임 중복검사 실행가능 여부
   const [nicknamevalidation, setNicknameValidation] = useState(false);
+
   //이메일 중복검사 필터
   const emailRegExp =
     /^[A-Za-z0-9_]+[A-Za-z0-9]*[@]{1}[A-Za-z0-9]+[A-Za-z0-9]*[.]{1}[A-Za-z]{1,3}$/;
+  //비밀번호 중복검사 필터
+  const passwordRegExp = /^[a-zA-z0-9]{4,12}$/;
 
   useEffect(() => {}, [emailcheck]);
   /* useEffect(() => {}, [nicknamecheck]); */
@@ -50,7 +56,7 @@ function Signup() {
 
   const handleEmailValidation = (e: any) => {
     handleChangeState(e);
-    console.log(signupInfo);
+    // console.log(signupInfo);
     if (emailRegExp.test(e.target.value) === false) {
       setEmailCheckMessage('알맞은 형식의 이메일을 입력해주세요.');
     } else {
@@ -64,7 +70,7 @@ function Signup() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     e.preventDefault();
     const { email } = signupInfo;
-    console.log(email);
+    // console.log(email);
     if (email === '') {
       setEmailCheckMessage('이메일을 적어주세요');
       inputEmail.current.focus();
@@ -141,10 +147,41 @@ function Signup() {
       }
     }
   };
+  // 비밀번호 유효성 검사
+  const passwordValidation = (e: any) => {
+    handleChangeState(e);
+    const { passwordcheck } = signupInfo;
+
+    if (passwordRegExp.test(e.target.value) === false) {
+      setPasswordMessage(
+        '비밀번호는 영문 대소문자와 숫자 4-12자리로 입력해야합니다.'
+      );
+    } else if (passwordcheck !== '' && passwordcheck !== e.target.value) {
+      setPasswordMessage('비밀번호가 일치하지 않습니다.');
+    } else if (passwordcheck === e.target.value) {
+      setPasswordMessage('비밀번호가 일치합니다.');
+    } else if (passwordRegExp.test(e.target.value) === true) {
+      setPasswordMessage('사용할 수 있는 비밀번호입니다.');
+    }
+  };
+  const passwordCheck = (e: any) => {
+    handleChangeState(e);
+    const { password } = signupInfo;
+    if (password === '' && e.target.value === '') {
+      setPasswordMessage('');
+    } else if (e.target.value === '') {
+      setPasswordMessage('비밀번호 확인을 입력해주세요');
+    } else if (password !== e.target.value) {
+      setPasswordMessage('비밀번호가 일치하지 않습니다.');
+    } else {
+      setPasswordMessage('비밀번호가 일치합니다.');
+    }
+  };
+
   // 회원가입완료
   const signupcheck = (e: any) => {
     e.preventDefault();
-    console.log(nicknamecheck);
+    console.log(signupInfo);
   };
 
   return (
@@ -159,25 +196,41 @@ function Signup() {
             onChange={handleEmailValidation}
           />
           <button onClick={emailCheck}>중복검사</button>
-          {emailcheckMessage}
+          <div>{emailcheckMessage}</div>
         </div>
         <div>
           <input
             placeholder="닉네임"
             ref={inputNickname}
             name="nickname"
-            value={signupInfo.nickname}
+            /* value={signupInfo.nickname} */
             onChange={handleNicknameValidation}
           />
           <button onClick={nicknameCheck}>중복검사</button>
-          {nicknamecheckMessage}
+          <div>{nicknamecheckMessage}</div>
         </div>
         <div>
-          <input placeholder="비밀번호" />
+          <input
+            placeholder="비밀번호"
+            ref={inputPassword}
+            name="password"
+            type="new-password"
+            /* value={signupInfo.password} */
+            onChange={passwordValidation}
+          />
         </div>
+
         <div>
-          <input placeholder="비밀번호확인" />
+          <input
+            placeholder="비밀번호확인"
+            ref={inputPasswordCheck}
+            name="passwordcheck"
+            type="new-password"
+            value={signupInfo.passwordcheck}
+            onChange={passwordCheck}
+          />
         </div>
+        <div>{passwordMessage}</div>
         <div>
           <button onClick={signupcheck}>회원가입</button>
         </div>
