@@ -173,15 +173,53 @@ function Signup() {
       setPasswordMessage('비밀번호 확인을 입력해주세요');
     } else if (password !== e.target.value) {
       setPasswordMessage('비밀번호가 일치하지 않습니다.');
+    } else if (passwordRegExp.test(e.target.value) === false) {
+      setPasswordMessage(
+        '비밀번호는 영문 대소문자와 숫자 4-12자리로 입력해야합니다.'
+      );
     } else {
       setPasswordMessage('비밀번호가 일치합니다.');
     }
   };
 
   // 회원가입완료
-  const signupcheck = (e: any) => {
+  const signupcheck = async (e: any) => {
     e.preventDefault();
     console.log(signupInfo);
+    const { email, nickname, password, passwordcheck } = signupInfo;
+    if (
+      email === '' ||
+      nickname === '' ||
+      password === '' ||
+      passwordcheck === ''
+    ) {
+      alert('회원정보를 모두 입력해주세요');
+      return;
+    }
+    if (email !== emailcheck) {
+      alert('이메일 중복검사를 다시 확인해주세요');
+      inputEmail.current.focus();
+      return;
+    }
+    if (nickname !== nicknamecheck) {
+      alert('닉네임 중복검사를 다시 확인해주세요');
+      inputNickname.current.focus();
+      return;
+    }
+    if (!passwordRegExp.test(password) || password !== passwordcheck) {
+      alert('비밀번호를 다시확인해주세요');
+      return;
+    }
+    const userInfo = { email, nickname, password };
+    if (userInfo) {
+      try {
+        await axios
+          .post(`http://localhost:5000/user/signup`, userInfo)
+          .then((res) => console.log(res));
+      } catch (error) {
+        console.log('error');
+      }
+    }
   };
 
   return (
