@@ -7,6 +7,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
+//import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Container = styled.div``;
@@ -19,6 +20,9 @@ const SignupBox = styled.form`
 `;
 
 function Signup() {
+  axios.defaults.withCredentials = true;
+  //const navigate = useNavigate();
+
   const inputEmail: any = useRef();
   const inputNickname: any = useRef();
   const inputPassword: any = useRef();
@@ -216,6 +220,9 @@ function Signup() {
         await axios
           .post(`http://localhost:5000/user/signup`, userInfo)
           .then((res) => console.log(res));
+        alert('회원가입이 완료되었습니다. 로그인을 시도해주세요');
+        //🙋‍♀️ 로그인 화면으로 넘어가기
+        //navigate('/login');
       } catch (error) {
         console.log('error');
       }

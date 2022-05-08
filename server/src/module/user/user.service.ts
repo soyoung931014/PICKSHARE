@@ -35,7 +35,14 @@ export class UserService {
   async signUp(
     signUpDto: SignUpDto,
   ): Promise<{ message: string; statusCode: number }> {
-    return this.userRepository.createUser(signUpDto);
+    const findUser = await this.userRepository.findOne({
+      email: signUpDto.email,
+    });
+    if (findUser) {
+      return { message: '이미 가입된 이메일입니다.', statusCode: 200 };
+    } else {
+      return this.userRepository.createUser(signUpDto);
+    }
   }
 
   async login(
