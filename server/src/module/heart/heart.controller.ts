@@ -12,11 +12,13 @@ export class HeartController {
 
 	@Post()
 	postHeart(@GetUser() user: User, @Body('board_id', HeartStatusPipe) board_id: number): Promise<void>{
-		console.log(user,'user-HeartController');
-		console.log(board_id, 'board-HeartController');
-		return this.heartService.postHeart(user, board_id)
+		// console.log(user,'user-HeartController');
+		// console.log(board_id, 'board-HeartController');
+		return this.heartService.postHeart(user, board_id);
 	}
 
-	// @Delete()
-	// cancelHeart(@Body())
+	@Delete()
+	cancelHeart(@GetUser() user: User, @Body('board_id', HeartStatusPipe) board_id: number): Promise<void>{
+		return this.heartService.cancelHeart(user, board_id);
+	}
 }

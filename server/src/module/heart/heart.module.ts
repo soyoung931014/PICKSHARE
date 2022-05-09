@@ -8,7 +8,12 @@ import { HeartRepository } from './heart.repository';
 import { HeartService } from './heart.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([HeartRepository]), UserModule, BoardModule,     PassportModule.register({ defaultStrategy: 'jwt' }),],
+  imports: [
+    TypeOrmModule.forFeature([HeartRepository]), 
+    UserModule,
+    BoardModule, 
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+  ],
   controllers: [HeartController],
   providers: [HeartService]
 })
