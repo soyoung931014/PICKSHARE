@@ -2,11 +2,16 @@ import { Module } from '@nestjs/common';
 import { FeedService } from './feed.service';
 import { FeedController } from './feed.controller';
 import { UserModule } from '../user/user.module';
-import { BoardModule } from '../board/board.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { BoardRepository } from '../board/board.repository';
 
 @Module({
-  imports: [UserModule, BoardModule],
+  imports: [
+    TypeOrmModule.forFeature([BoardRepository]),
+    UserModule,
+  ],
   providers: [FeedService],
-  controllers: [FeedController]
+  controllers: [FeedController],
+  exports: [FeedService]
 })
 export class FeedModule {}
