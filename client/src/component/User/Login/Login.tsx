@@ -6,8 +6,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRef } from 'react';
+import { connect } from 'react-redux';
+import { addUserInfo } from '../../../redux/actions/index';
 
-function Login() {
+function Login(props: any) {
+  //console.log(props, 'props');
+  const { userInfoToStore } = props;
   //axios.defaults.withCredentials = true;
 
   const inputEmail: any = useRef();
@@ -16,6 +20,9 @@ function Login() {
   const [userInfo, setUserInfo] = useState({ email: '', password: '' });
   const [emailcheckMessage, setEmailCheckMessage] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
+
+  //토큰저장
+  const [token, setToken] = useState('');
 
   const handleUserInfo = (e: any) => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
@@ -64,7 +71,14 @@ function Login() {
         await axios
           .post(`http://localhost:5000/user/login`, userInfo)
           .then((res) => {
-            console.log(res.data.data.accessToken, res.data.data.loginMethod);
+            const { accessToken, loginMethod } = res.data.data;
+            //console.log(accessToken, loginMethod);
+            if (accessToken) {
+              setToken(accessToken);
+              void tokenVerification();
+            } else {
+              console.log('토큰이 없습니다.');
+            }
           });
       } catch (error) {
         console.log('로그인 실패');
@@ -75,6 +89,30 @@ function Login() {
     }
   };
 
+  // 토큰 검증 후 유저 정보 불러오는 함수
+  const tokenVerification = async () => {
+    try {
+      await axios
+        .get(`http://localhost:5000/token`, {
+          headers: { authorization: `Bearer ${token}` },
+        })
+        .then((res) => {
+          const { userInfo } = res.data.data;
+          // console.log(userInfo);
+          if (userInfo) {
+            void goToStore(userInfo);
+          } else {
+            console.log('로그인 실패');
+          }
+        });
+    } catch (error) {
+      console.log('error');
+    }
+  };
+  // 유저정보 store에 담기
+  const goToStore = async (userInfo: any) => {
+    await userInfoToStore(userInfo);
+  };
   return (
     <div>
       <div>
@@ -112,4 +150,18 @@ function Login() {
   );
 }
 
-export default Login;
+//redux로 상태관리
+const mapStateToProps = (state: object) => {
+  //console.log(state);
+  return {
+    user: state,
+  };
+};
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    userInfoToStore: (userInfo: object) => {
+      dispatch(addUserInfo(userInfo));
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
