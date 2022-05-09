@@ -27,7 +27,7 @@ export class BoardService {
   }
 
   // CREATE
-  async createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
+  async createBoard(user, createBoardDto: CreateBoardDto): Promise<Board> {
     const { title, picture, pictureMethod, mood, lock, content, date } =
       createBoardDto;
 
@@ -39,6 +39,7 @@ export class BoardService {
       lock,
       content,
       date,
+      'user_id': user.id
     });
     await this.boardRepository.save(board);
     return board;

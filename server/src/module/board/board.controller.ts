@@ -7,7 +7,11 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from '../token/get-user.decorator';
+import { User } from '../user/user.entity';
 import { Lock } from './board-state.union';
 import { Board } from './board.entity';
 import { BoardService } from './board.service';
@@ -31,12 +35,14 @@ export class BoardController {
 
   // 게시물 생성
   @Post()
-  createBoard(@Body() createBoardDto: CreateBoardDto): Promise<Board> {
-    return this.boardService.createBoard(createBoardDto);
+  @UseGuards(AuthGuard())
+  createBoard(@GetUser() user: User, @Body() createBoardDto: CreateBoardDto): Promise<Board> {
+    return this.boardService.createBoard(user, createBoardDto);
   }
 
   // 게시물 삭제
   @Delete('/:id')
+  @UseGuards(AuthGuard())
   // ParseIntPipe: 숫자 형태로 입력이 되지 않을시 Err를 출력하는 내장 함수
   deleteBoard(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.boardService.deleteBoard(id);
@@ -44,6 +50,7 @@ export class BoardController {
 
   // 게시물 공개 OR 비공개
   @Patch('/:id/lock')
+  @UseGuards(AuthGuard())
   lockBoard(
     @Param('id', ParseIntPipe) id: number,
     @Body('lock') lock: Lock,
