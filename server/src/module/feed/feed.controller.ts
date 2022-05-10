@@ -1,6 +1,8 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Board } from '../board/board.entity';
-// import { GetBoard } from '../board/get-board.decorator';
+import { GetUser } from '../token/get-user.decorator';
+import { User } from '../user/user.entity';
 import { FeedService } from './feed.service';
 
 @Controller('feed')
@@ -11,7 +13,7 @@ export class FeedController {
     
     //전체 피드 긁어오기(UNLOCK만 가져와야함)
     //페이지네이션(limit=6)
-    @Get('mainfeed')
+    @Get('/mainfeed')
     getAllFeed(
         // @Query('pageStart') pageStart: number,
         //@Query('pageSize') pageSize: number
@@ -28,4 +30,11 @@ export class FeedController {
     }
 
     //깃북 /feed?post_id=${post_id} 부분은 보드 부분에 있어서 생략(깃북 수정필요)
+    //본인 아이디 검색시 클라이언트에서 본인 아이디인경우
+    //getMyFeed()로 넘김
+    @Get('/myfeed')
+    @UseGuards(AuthGuard())
+    getMyFeed(@GetUser() user: User): Promise<Board[]>{
+        return this.feedService.getMyFeed(user)
+    }
 }

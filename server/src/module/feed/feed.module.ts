@@ -4,11 +4,13 @@ import { FeedController } from './feed.controller';
 import { UserModule } from '../user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BoardRepository } from '../board/board.repository';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([BoardRepository]),
     UserModule,
+    PassportModule.register({defaultStrategy: 'jwt'})
   ],
   providers: [FeedService],
   controllers: [FeedController],

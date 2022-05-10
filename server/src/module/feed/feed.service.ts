@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Board } from '../board/board.entity';
 import { BoardRepository } from '../board/board.repository';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class FeedService {
@@ -52,6 +53,14 @@ export class FeedService {
 			where: {
 				"lock": "UNLOCK",
 				"user_id": user_id
+			}
+		})
+	}
+
+	async getMyFeed(user: User): Promise<Board[]>{
+		return this.boardRepository.find({
+			where: {
+				"user_id": user.id
 			}
 		})
 	}
