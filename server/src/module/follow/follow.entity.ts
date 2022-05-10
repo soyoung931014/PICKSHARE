@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -16,5 +17,6 @@ export class Follow extends BaseEntity {
   followingNickname: string;
 
   @ManyToOne(() => User, (user) => user.follows)
-  user: User;
+  @JoinColumn({name: 'user_id'})
+  user!: User;
 }

@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -25,8 +26,10 @@ export class Comment extends BaseEntity {
   updated_at: Date;
 
   @ManyToOne(() => Board, (board) => board.comments)
+  @JoinColumn({name: 'board_id' })
   board: Board;
 
   @ManyToOne(() => User, (user) => user.comments)
+  @JoinColumn({name: 'user_id' })
   user: User;
 }

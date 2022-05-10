@@ -1,7 +1,7 @@
-import Diary from '../component/Diary/Diary';
+//import Diary from '../component/Diary/Diary';
 
 const DiaryPage = () => {
-  return <Diary />;
+  return;
 };
 
 export default DiaryPage;

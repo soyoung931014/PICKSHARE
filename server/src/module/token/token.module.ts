@@ -9,19 +9,18 @@ import { TokenController } from './token.controller';
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: 'Secret1234',
+      secret: process.env.SECRET,
       signOptions: {
-        expiresIn: 60 * 60
-      }
+        expiresIn: 60 * 60,
+      },
     }),
-    TypeOrmModule.forFeature([UserRepository])
+    TypeOrmModule.forFeature([UserRepository]),
   ],
   controllers: [TokenController],
   providers: [TokenService],
-  exports: [TokenService, PassportModule]
+  exports: [TokenService, PassportModule],
 })
-export class TokenModule { }
-
+export class TokenModule {}
 
 // @Module({
 //   imports: [
