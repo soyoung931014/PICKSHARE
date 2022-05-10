@@ -1,12 +1,16 @@
+import { Provider } from 'react-redux';
+import store from './redux/store/store';
 import Signup from './component/User/Signup/Signup';
+import Login from './component/User/Login/Login';
 import './App.css';
-
 function App() {
   return (
-    <div className="App">
-      hello world
-      <Signup />
-    </div>
+    <Provider store={store}>
+      <div className="App">
+        <Login />
+        {/* <Signup /> */}
+      </div>
+    </Provider>
   );
 }
 
