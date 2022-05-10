@@ -17,7 +17,7 @@ export class HeartController {
 	}
 
 	@Delete()
-	cancelHeart(@GetUser() user: User, @Body('board_id', HeartStatusPipe) board_id: number): Promise<Heart[]>{
+	cancelHeart(@GetUser() user: User, @Body('board_id', HeartStatusPipe) board_id: number): Promise<number>{
 		return this.heartService.cancelHeart(user, board_id);
 	}
 }
