@@ -7,9 +7,8 @@ function App() {
   return (
     <Provider store={store}>
       <div className="App">
-        hello world
         <Login />
-        <Signup />
+        {/* <Signup /> */}
       </div>
     </Provider>
   );
