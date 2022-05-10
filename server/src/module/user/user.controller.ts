@@ -1,5 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Post} from '@nestjs/common';
 import { LoginDto } from './dto/login-user.dto';
 import { SignUpDto } from './dto/singup-user.dto';
 import { UserService } from './user.service';
@@ -23,13 +22,4 @@ export class UserController {
     login(@Body() loginDto: LoginDto): Promise<{ message: string, data: Object, statusCode: number }> {
         return this.userService.login(loginDto);
     }
-
-    // @Post('/test')
-    // @UseGuards(AuthGuard())
-    // //이 부분이 있어야 req안에 user객체가 존재할 수 있음.
-    // test1(@Req() req) {
-    //     console.log('test2', req);
-    // }
-
-
 }
