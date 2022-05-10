@@ -11,7 +11,7 @@ export class HeartService {
 		private heartRepository: HeartRepository,
 	) {}
 
-	postHeart(user: User, board_id: number): Promise<Heart[]>{
+	postHeart(user: User, board_id: number): Promise<number>{
 		return this.heartRepository.postHeart(user, board_id)
 	}
 

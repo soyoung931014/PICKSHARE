@@ -12,7 +12,7 @@ export class HeartController {
 	constructor( private heartService: HeartService ) {}
 
 	@Post()
-	postHeart(@GetUser() user: User, @Body('board_id', HeartStatusPipe) board_id: number): Promise<Heart[]>{
+	postHeart(@GetUser() user: User, @Body('board_id', HeartStatusPipe) board_id: number): Promise<number>{
 		return this.heartService.postHeart(user, board_id);
 	}
 
