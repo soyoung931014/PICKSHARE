@@ -45,6 +45,7 @@ const Left = styled.div`
   box-shadow: 10px 10px 30px #3c4a5645;
   border-right: #b1b0b0 solid 2px;
 `;
+
 const Right = styled.div`
   width: 32vw;
   height: 85vh;
@@ -102,48 +103,54 @@ const Img = styled.img`
   bottom: 10px;
 `;
 const LoginBox = styled.div`
+  //border: solid 2px red;
   height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  //border: solid 2px red;
   box-sizing: border-box;
 `;
-const Title = styled.h1`
+const Title = styled.div`
   //border: solid 2px teal;
-  //background: linear-gradient(#e66465, #9198e5);
-  //background: linear-gradient(45deg, #fe6b8b 30%, #ff8e53 90%);
+  font-size: 2rem;
+  font-weight: 900;
+  margin-top: 2.5rem;
+  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 const Form = styled.form`
   //border: dotted 2px red;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: 30vw;
   height: 50vh;
   box-sizing: border-box;
-  position: relative;
-  top: 30px;
 `;
 const InputBox = styled.div<{ button?: any }>`
-  // border: solid 2px aqua;
+  //border: solid 2px aqua;
+  //width: 10rem;
   height: 3.3rem;
-  margin-top: ${(props) => (props.button ? '2.5rem' : '0')};
+  margin-top: ${(props) => (props.button ? '2rem' : '0')};
   box-sizing: border-box;
 `;
 const Message = styled.div`
   //border: solid 2px green;
   height: 1.7rem;
+  padding-top: 3px;
   box-sizing: border-box;
   font-size: 15px;
   text-align: left;
-  padding-left: 6em;
-  color: #ff0000bd;
+  color: #ff8686;
 `;
 const Input = styled.input`
-  width: 18rem;
   height: 3rem;
+  width: 18rem;
   border-radius: 30px;
   box-sizing: border-box;
-  box-shadow: 0 4px 10px #3c4a5645;
+  box-shadow: 0 3px 5px #3c4a5645;
   text-decoration: none;
   font-size: large;
   outline: none;
@@ -151,60 +158,60 @@ const Input = styled.input`
   border: 0;
 `;
 const Button = styled.button`
-  border: solid 2px green;
+  //border: solid 2px green;
   width: 18rem;
   height: 3rem;
   border-radius: 30px;
   box-sizing: border-box;
   border: 0;
-  box-shadow: 0 10px 25px #3c4a5645;
+  box-shadow: 0 5px 14px #3c4a5645;
   text-decoration: none;
   font-size: large;
-  background: linear-gradient(45deg, #fd40c8 10%, #a396f8 60%);
+  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
   cursor: pointer;
   font-size: large;
   font-weight: bold;
-  color: #4e4d4d;
-  //transition: all 0.5s ease-in-out;
-  &:hover {
-    transform: scale(1.1);
-    cursor: pointer;
-  }
+  color: white;
 `;
 const ButtonKakao = styled.button`
-  border: solid 2px green;
+  //border: solid 2px green;
   width: 18rem;
   height: 3rem;
   border-radius: 30px;
   box-sizing: border-box;
   border: 0;
-  box-shadow: 0 10px 25px #3c4a5645;
+  box-shadow: 0 5px 14px #3c4a5645;
   text-decoration: none;
   font-size: large;
   font-weight: bold;
   color: #4e4d4d;
   background-color: #fdf772;
   cursor: pointer;
-  //transition: all 0.5s ease-in-out;
-  &:hover {
-    transform: scale(1.1);
-    cursor: pointer;
-  }
+  margin-top: 0.7rem;
 `;
 const Div = styled.div`
-  height: 1.8rem;
+  height: 2rem;
   width: 20rem;
   border-top: solid purple 1px;
   opacity: 0.3;
   font-size: 0.9rem;
-  margin-top: 10px;
-  padding-top: 2px;
+  margin-top: 0.7rem;
+  padding: 0.7rem 0rem;
+  //border: solid 2px green;
 `;
 
 const Box = styled.div`
   display: flex;
   justify-content: center;
   text-align: center;
+`;
+const BoxMessage = styled.div<{ Password?: any }>`
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  padding-right: 7rem;
+  position: relative;
+  left: ${(props) => (props.Password ? '6px' : '0')};
 `;
 
 function Login(props: any) {
@@ -322,33 +329,45 @@ function Login(props: any) {
             <Title>Log in to your account</Title>
             <Form>
               <InputBox>
-                <Input
-                  type="text"
-                  ref={inputEmail}
-                  name="email"
-                  placeholder="이메일"
-                  onChange={emailValidation}
-                />
+                <Box>
+                  <Input
+                    type="text"
+                    ref={inputEmail}
+                    name="email"
+                    placeholder="이메일"
+                    onChange={emailValidation}
+                  />
+                </Box>
               </InputBox>
-              <Message>{emailcheckMessage}</Message>
+              <BoxMessage>
+                <Message>{emailcheckMessage}</Message>
+              </BoxMessage>
               <InputBox>
-                <Input
-                  type="current-password"
-                  ref={inputpassword}
-                  name="password"
-                  placeholder="비밀번호"
-                  onChange={passwordValidation}
-                />
+                <Box>
+                  <Input
+                    type="current-password"
+                    ref={inputpassword}
+                    name="password"
+                    placeholder="비밀번호"
+                    onChange={passwordValidation}
+                  />
+                </Box>
               </InputBox>
-              <Message>{passwordMessage}</Message>
+              <BoxMessage Password>
+                <Message>{passwordMessage}</Message>
+              </BoxMessage>
               <InputBox button>
-                <Button onClick={Login}>SignIn</Button>
+                <Box>
+                  <Button onClick={Login}>SignIn</Button>
+                </Box>
                 <Box>
                   <Div>SNS 계정으로 편하게 시작하기</Div>
                 </Box>
               </InputBox>
               <InputBox button>
-                <ButtonKakao>kakao</ButtonKakao>
+                <Box>
+                  <ButtonKakao>kakao</ButtonKakao>
+                </Box>
               </InputBox>
             </Form>
           </LoginBox>
