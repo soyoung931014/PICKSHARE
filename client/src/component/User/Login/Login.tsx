@@ -156,6 +156,7 @@ const Input = styled.input`
   outline: none;
   padding: 0 1em;
   border: 0;
+  opacity: 0.6;
 `;
 const Button = styled.button`
   //border: solid 2px green;
@@ -205,13 +206,11 @@ const Box = styled.div`
   justify-content: center;
   text-align: center;
 `;
-const BoxMessage = styled.div<{ Password?: any }>`
+const BoxMessage = styled.div`
   display: flex;
-  justify-content: center;
+  margin-left: 5.3rem;
   text-align: center;
   padding-right: 7rem;
-  position: relative;
-  left: ${(props) => (props.Password ? '6px' : '0')};
 `;
 
 function Login(props: any) {
@@ -353,7 +352,7 @@ function Login(props: any) {
                   />
                 </Box>
               </InputBox>
-              <BoxMessage Password>
+              <BoxMessage>
                 <Message>{passwordMessage}</Message>
               </BoxMessage>
               <InputBox button>
