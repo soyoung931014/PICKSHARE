@@ -275,11 +275,12 @@ function Login(props: any) {
         await axios
           .post(`http://localhost:5000/user/login`, userInfo)
           .then((res) => {
-            const { accessToken, loginMethod } = res.data.data;
+            const { accessToken, loginMethod } = res.data.data; //refreshToken
             console.log(accessToken, loginMethod);
             if (accessToken) {
-              setToken(accessToken);
-              void tokenVerification();
+              setToken(accessToken); // token state에 보관
+              void tokenVerification(accessToken);
+              //void tokenVerification();
             } else {
               console.log('토큰이 없습니다.');
             }
@@ -294,7 +295,7 @@ function Login(props: any) {
   };
 
   // 토큰 검증 후 유저 정보 불러오는 함수
-  const tokenVerification = async () => {
+  const tokenVerification = async (token: string) => {
     try {
       await axios
         .get(`http://localhost:5000/token`, {
@@ -302,9 +303,9 @@ function Login(props: any) {
         })
         .then((res) => {
           const { userInfo } = res.data.data;
-          // console.log(userInfo);
+          console.log(userInfo);
           if (userInfo) {
-            void goToStore(userInfo);
+            userInfoToStore(userInfo);
           } else {
             console.log('로그인 실패');
           }
@@ -313,10 +314,7 @@ function Login(props: any) {
       console.log('error');
     }
   };
-  // 유저정보 store에 담기
-  const goToStore = async (userInfo: any) => {
-    await userInfoToStore(userInfo);
-  };
+
   return (
     <Wrapper>
       <Book>
