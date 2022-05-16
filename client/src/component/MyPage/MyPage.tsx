@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -15,7 +16,7 @@ import homeIndex from '../../img/homeIndex.png';
 import signupIndex from '../../img/signupIndex.png';
 import signinIndex from '../../img/signinIndex.png';
 import edit from '../../img/edit.jpg';
-import profileImg from '../../img/profileImg.png';
+import nothing from '../../img/profileImg.png';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -153,9 +154,10 @@ const Message = styled.div<{ UpdateProfile?: any }>`
   position: relative;
   right: 15px;
 `;
-const Input = styled.input`
+const Input = styled.input<{ Check?: any }>`
   height: 3rem;
-  width: 20rem;
+  width: ${(props) => (props.Check ? '65%' : '77%')};
+  //width: 20rem;
   border-radius: 30px;
   box-sizing: border-box;
   box-shadow: 0 3px 5px #3c4a5645;
@@ -165,6 +167,7 @@ const Input = styled.input`
   padding: 0 1em;
   border: 0;
   opacity: 0.6;
+  font-weight: bolder;
 `;
 const Button = styled.button<{ MyPageButton?: any }>`
   border: solid 2px green;
@@ -182,6 +185,13 @@ const Button = styled.button<{ MyPageButton?: any }>`
   font-weight: bold;
   color: white;
   margin-top: ${(props) => (props.MyPageButton ? '1rem' : '0')};
+`;
+
+const CheckButton = styled.button`
+  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
+  //width: 4rem;
+  box-shadow: 0 5px 14px #3c4a5645;
+  box-sizing: border-box;
 `;
 
 const Div = styled.div`
@@ -239,155 +249,292 @@ const Edit = styled.img`
   }
 `;
 
-function MyPage(props: any) {
+function MyPage(props: any | boolean) {
+  const inputNickname: any = useRef();
   const statusmessage: any = useRef();
+
+  const { userInfoToStore } = props;
+  //console.log(userInfoToStore);
+  const { isLogin, accessToken } = props.user;
+  const { email, loginMethod, nickname, statusMessage, userImage } =
+    props.user.userInfo;
+
   const [updateProfile, setUpdateProfile] = useState(false);
   const [withdraw, setWithdraw] = useState(false);
+  const [nicknamecheckMessage, setNicknameCheckMessage] = useState('');
+  const [nicknameState, setNicknameState] = useState(false);
 
   // 수정된 유저정보
-  const [updateUserInfo, setUpdateUserInfo] = useState('');
+  const [updateUserInfo, setUpdateUserInfo] = useState({
+    email,
+    nickname,
+    statusMessage,
+    userImage,
+  });
+
+  const updateInfo = (e: any) => {
+    setUpdateUserInfo({ ...updateUserInfo, [e.target.name]: e.target.value });
+  };
+  console.log(updateUserInfo);
+
+  /*  isLogin이 false일 경우… alert(로그인을 해주십시오), 로그인 화면으로 넘김
+IsLogin이 true일 경우…
+만약 사진이 nothing일 경우 profile이미지를 넣는다.
+만약 사진이 nothing이 아닐경우 userImage를 넣는다. */
+  //닉네임 유효성검사
+  const hadleNicknameValidation = (e: any) => {
+    updateInfo(e);
+
+    if (e.target.value.length < 2 || e.target.value.length > 20) {
+      setNicknameCheckMessage('닉네임은 2~20자 이내입니다.');
+      setNicknameState(false);
+    } else {
+      setNicknameCheckMessage('');
+      setNicknameState(true);
+    }
+  };
+  console.log(nicknameState);
+  const [nicknamecheck, setNicknameCheck] = useState('');
+  //닉네임 중복검사
+  const nicknameCheck = async (e: any) => {
+    e.preventDefault();
+    const { nickname } = updateUserInfo;
+    console.log(nickname);
+    if (nicknameState === true) {
+      try {
+        await axios
+          .get(`http://localhost:5000/user/nicknamecheck/${nickname}`)
+          .then((res) => {
+            console.log('res');
+            //닉네임을 userInfo value값에 넣어놓기
+            if (res.data === false) {
+              console.log(res.data);
+              setNicknameCheckMessage('사용할 수 있는 닉네임입니다.');
+              setNicknameCheck(nickname); // 나중에 회원가입 버튼을 누를 시  signupInfo.nickname과 nicknamecheck의 정보가 일치하는지를 확인
+            } else {
+              setNicknameCheckMessage('이미 사용중인 닉네임입니다');
+            }
+          });
+      } catch (error) {
+        console.log('error');
+      }
+    } else {
+      alert('닉네임 조건을 충족시켜주세요');
+    }
+  };
+
+  const updateFinish = async (e: any) => {
+    e.preventDefault();
+    const { email, nickname, statusMessage, userImage } = updateUserInfo;
+    console.log(email, nickname, statusMessage, nicknamecheck);
+    if (nickname !== nicknamecheck) {
+      alert('중복검사를 시행해주세요');
+      return;
+    } else {
+      try {
+        await axios
+          .patch('http://localhost:5000/mypage/update', updateUserInfo, {
+            headers: { authorization: `Bearer ${accessToken}` },
+          })
+          .then((res) => {
+            console.log(res);
+            //  const { nickname, loginMethod, nickname, statusMessage, userImage } = res.data.updateUserInfo
+          });
+      } catch (error) {
+        console.log('error');
+      }
+    }
+  };
 
   return (
-    <Wrapper>
-      <Book>
-        <Left>
-          {updateProfile === true && withdraw === false ? (
-            <>
-              <Form Left>
-                <Div>
-                  <Profile>
-                    <Img src={profileImg} />
-                  </Profile>
-                  <Edit src={edit} />
-                </Div>
-                <Input
-                  type="text"
-                  ref={statusmessage}
-                  name="statusMessage"
-                  placeholder="상태메세지"
-                />
-              </Form>
-            </>
-          ) : (
-            <>
-              <Form Left>
-                <Div>
-                  <Profile>
-                    <Img src={profileImg} />
-                  </Profile>
-                </Div>
-                <Input
-                  type="text"
-                  ref={statusmessage}
-                  name="statusMessage"
-                  placeholder="상태메세지"
-                />
-              </Form>
-            </>
-          )}
-        </Left>
-        <Right>
-          <UpdateProfileBox>
-            {updateProfile === true && withdraw === false ? (
-              <>
-                <Title>프로필 수정</Title>
-                <Form>
-                  <BoxMessage>
-                    <Message UpdateProfile>이메일</Message>
-                  </BoxMessage>
-                  <InputBox>
-                    <Box>
-                      <Input />
-                    </Box>
-                  </InputBox>
-                  <BoxMessage>
-                    <Message UpdateProfile>닉네임</Message>
-                  </BoxMessage>
-                  <InputBox>
-                    <Box>
-                      <Input />
-                    </Box>
-                  </InputBox>
-                  <InputBox button>
-                    <Box>
-                      <Button>취소</Button>
-                      <Button>수정완료</Button>
-                    </Box>
-                  </InputBox>
-                </Form>
-              </>
-            ) : updateProfile === false && withdraw === true ? (
-              <>
-                <Title>회원탈퇴 </Title>
-                <Form>
-                  <BoxMessage>
-                    <Message UpdateProfile>비밀번호</Message>
-                  </BoxMessage>
-                  <InputBox>
-                    <Box>
-                      <Input />
-                    </Box>
-                  </InputBox>
-                  <BoxMessage>
-                    <Message UpdateProfile>비밀번호 확인</Message>
-                  </BoxMessage>
-                  <InputBox>
-                    <Box>
-                      <Input />
-                    </Box>
-                  </InputBox>
-                  <InputBox button>
-                    <Box>
-                      <Button>탈퇴하기</Button>
-                    </Box>
-                  </InputBox>
-                </Form>
-              </>
-            ) : (
-              <>
-                <Title>마이페이지</Title>
-                <Form>
-                  <Box>
-                    <Button
-                      MyPageButton
-                      onClick={() => {
-                        setUpdateProfile(!updateProfile);
-                        console.log(updateProfile);
-                      }}
-                    >
-                      프로필수정
-                    </Button>
-                  </Box>
-                  <Box>
-                    <Button
-                      MyPageButton
-                      onClick={() => {
-                        setWithdraw(!withdraw);
-                      }}
-                    >
-                      탈퇴하기
-                    </Button>
-                  </Box>
-                </Form>
-              </>
-            )}
-          </UpdateProfileBox>
-        </Right>
-        <Index>
-          <TagHome src={homeIndex}></TagHome>
-          <TagSignin src={signinIndex}></TagSignin>
-          <TagSignup src={signupIndex}></TagSignup>
-        </Index>
-      </Book>
-    </Wrapper>
+    <>
+      {!isLogin ? (
+        <> alert('로그인을 해주세요')</>
+      ) : (
+        <Wrapper>
+          <Book>
+            <Left>
+              {updateProfile === true && withdraw === false ? (
+                <>
+                  <Form Left>
+                    <Div>
+                      <Profile>
+                        {userImage === 'nothing' ? (
+                          <>
+                            <Img src={nothing} />
+                          </>
+                        ) : (
+                          <>
+                            <Img src={userImage} />
+                          </>
+                        )}
+                      </Profile>
+                      <Edit src={edit} />
+                    </Div>
+                    <Input
+                      type="text"
+                      ref={statusmessage}
+                      name="statusMessage"
+                      placeholder={statusMessage}
+                      onChange={updateInfo}
+                    />
+                  </Form>
+                </>
+              ) : (
+                <>
+                  <Form Left>
+                    <Div>
+                      <Profile>
+                        {userImage === 'nothing' ? (
+                          <>
+                            <Img src={nothing} />
+                          </>
+                        ) : (
+                          <>
+                            <Img src={userImage} />
+                          </>
+                        )}
+                      </Profile>
+                    </Div>
+                    {statusMessage}
+                  </Form>
+                </>
+              )}
+            </Left>
+            <Right>
+              <UpdateProfileBox>
+                {updateProfile === true && withdraw === false ? (
+                  <>
+                    <Title>프로필 수정</Title>
+                    <Form>
+                      <BoxMessage>
+                        <Message UpdateProfile>이메일</Message>
+                      </BoxMessage>
+                      <InputBox>
+                        <Box>
+                          <Input
+                            value={email}
+                            disabled
+                            style={{ color: '#04A1A1', fontWeight: 'bolder' }}
+                          />
+                        </Box>
+                      </InputBox>
+                      <BoxMessage>
+                        <Message UpdateProfile>닉네임</Message>
+                      </BoxMessage>
+                      <InputBox>
+                        <Box>
+                          <Input
+                            Check
+                            type="text"
+                            ref={inputNickname}
+                            name="nickname"
+                            placeholder={nickname}
+                            onChange={hadleNicknameValidation}
+                          />
+                          <CheckButton onClick={nicknameCheck}>
+                            중복검사
+                          </CheckButton>
+                        </Box>
+                        <div>{nicknamecheckMessage}</div>
+                      </InputBox>
+                      <InputBox button>
+                        <Box>
+                          <Button
+                            onClick={() => {
+                              setUpdateProfile(!updateProfile);
+                              setNicknameCheckMessage('');
+                            }}
+                          >
+                            취소
+                          </Button>
+                          <Button onClick={updateFinish}>수정완료</Button>
+                        </Box>
+                      </InputBox>
+                    </Form>
+                  </>
+                ) : updateProfile === false && withdraw === true ? (
+                  <>
+                    <Title>회원탈퇴 </Title>
+                    <Form>
+                      <BoxMessage>
+                        <Message UpdateProfile>비밀번호</Message>
+                      </BoxMessage>
+                      <InputBox>
+                        <Box>
+                          <Input />
+                        </Box>
+                      </InputBox>
+                      <BoxMessage>
+                        <Message UpdateProfile>비밀번호 확인</Message>
+                      </BoxMessage>
+                      <InputBox>
+                        <Box>
+                          <Input />
+                        </Box>
+                      </InputBox>
+                      <InputBox button>
+                        <Box>
+                          <Button>탈퇴하기</Button>
+                          <Button
+                            MyPageButton
+                            onClick={() => {
+                              setWithdraw(!withdraw);
+                              console.log(updateProfile);
+                            }}
+                          >
+                            되돌아가기
+                          </Button>
+                        </Box>
+                      </InputBox>
+                    </Form>
+                  </>
+                ) : (
+                  <>
+                    <Title>마이페이지</Title>
+                    <Form>
+                      <Box>
+                        <Button
+                          MyPageButton
+                          onClick={() => {
+                            setUpdateProfile(!updateProfile);
+                            console.log(updateProfile);
+                          }}
+                        >
+                          프로필수정
+                        </Button>
+                      </Box>
+                      <Box>
+                        <Button
+                          MyPageButton
+                          onClick={() => {
+                            setWithdraw(!withdraw);
+                          }}
+                        >
+                          탈퇴하기
+                        </Button>
+                      </Box>
+                    </Form>
+                  </>
+                )}
+              </UpdateProfileBox>
+            </Right>
+            <Index>
+              <TagHome src={homeIndex}></TagHome>
+              <TagSignin src={signinIndex}></TagSignin>
+              <TagSignup src={signupIndex}></TagSignup>
+            </Index>
+          </Book>
+        </Wrapper>
+      )}
+    </>
   );
 }
 
 //redux로 상태관리
-const mapStateToProps = (state: object) => {
-  //console.log(state);
+const mapStateToProps = (state: any) => {
   return {
-    user: state,
+    user: state.userInfo,
   };
 };
 const mapDispatchToProps = (dispatch: any) => {
@@ -397,4 +544,5 @@ const mapDispatchToProps = (dispatch: any) => {
     },
   };
 };
+
 export default connect(mapStateToProps, mapDispatchToProps)(MyPage);
