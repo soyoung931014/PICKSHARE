@@ -4,7 +4,6 @@ import { LoginDto } from './dto/login-user.dto';
 import { SignUpDto } from './dto/singup-user.dto';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcryptjs';
-import { TokenService } from '../token/token.service';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -48,12 +47,11 @@ export class UserService {
   async login(
     loginDto: LoginDto,
   ): Promise<{ message: string; data: object; statusCode: number }> {
-    console.log(loginDto, 'loginDto');
+    //console.log(loginDto, 'loginDto');
     const { email, password } = loginDto;
 
     const user = await this.userRepository.findOne({ email });
-    // console.log('user', user)
-
+    //console.log(user, '찾은 유저입니다.');
     if (user && (await bcrypt.compare(password, user.password))) {
       const {
         id,
@@ -65,7 +63,8 @@ export class UserService {
         created_at,
         updated_at,
       } = user;
-      const accessToken = await this.token.sign({
+
+      const accessToken = this.token.sign({
         id,
         email,
         nickname,
@@ -78,7 +77,10 @@ export class UserService {
 
       return {
         message: 'login success',
-        data: { accessToken, loginMethod },
+        data: {
+          accessToken: accessToken,
+          loginMethod: loginMethod,
+        },
         statusCode: 200,
       };
     } else {

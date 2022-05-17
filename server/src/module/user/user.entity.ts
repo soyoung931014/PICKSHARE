@@ -12,6 +12,7 @@ import { Board } from '../board/board.entity';
 import { Follow } from '../follow/follow.entity';
 import { Comment } from '../comment/comment.entity';
 import { Heart } from '../heart/heart.entity';
+import { Exclude } from 'class-transformer'; // refreshToken때문(민감한 정보 제외해주기위해)
 
 @Entity()
 export class User extends BaseEntity {
@@ -41,6 +42,10 @@ export class User extends BaseEntity {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Column({ nullable: true })
+  @Exclude()
+  currentHashedRefreshToken?: string;
 
   @OneToMany(() => Board, (board) => board.user)
   boards: Board[];

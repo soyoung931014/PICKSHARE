@@ -25,6 +25,7 @@ export class UserRepository extends Repository<User> {
       userImage: 'nothing',
       statusMessage: 'nothing',
       loginMethod: 1,
+      currentHashedRefreshToken: null,
     });
 
     try {

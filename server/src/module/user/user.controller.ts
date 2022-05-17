@@ -1,4 +1,13 @@
-import { Body, Controller, Param, Post, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Post,
+  Get,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { LoginDto } from './dto/login-user.dto';
 import { SignUpDto } from './dto/singup-user.dto';
 import { UserService } from './user.service';
@@ -12,6 +21,7 @@ export class UserController {
   emailCheck(@Param('id') id: string): Promise<boolean> {
     return this.userService.getEmailCheck(id);
   }
+
   //중복검사(nicknamecheck)
   @Get('/nicknamecheck/:id')
   nicknameCheck(@Param('id') id: string): Promise<boolean> {
@@ -32,5 +42,12 @@ export class UserController {
     @Body() loginDto: LoginDto,
   ): Promise<{ message: string; data: object; statusCode: number }> {
     return this.userService.login(loginDto);
+  }
+
+  // 로그아웃
+  @Get('/logout')
+  @UseGuards(AuthGuard())
+  logout(@Req() req: any) {
+    console.log('req', req);
   }
 }
