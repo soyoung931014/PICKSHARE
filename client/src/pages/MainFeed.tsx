@@ -1,10 +1,11 @@
 /*eslint-disable*/
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import mainfeedApi from '../api/feed';
+import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import feedBG from '../img/feedBG.jpg'
+import { auth } from '../redux/reducers/userReducer/userReducer';
 
 const Wrapper = styled.div`
 	border: red 1px;
@@ -24,38 +25,42 @@ const Button = styled.button`
 const Feed = styled.div``
 
 export default function MainFeed() {
+  const { isLogin, accessToken, userInfo } = useSelector(( state: auth ) => state)
   const [feedlist, setFeedlist]: any[] = useState({ 
     id: '',
     contentImg: '',
+    date: '',
     nickname: '',
-    date: ''
+    userImage: '',
+    heartNum: ''
   });
-  const [feedheart, setFeedHeart] = useState('');
+
   const [heart, setHeart] = useState(0);
 
+  
   useEffect(() => {
+
     const getMainFeedCon = async () => {
-      const resFeedCon =  await mainfeedApi.getMainFeed()
+      return await feedApi.getMainFeed()
         .then(result => {
-          console.log('리졸트.데이터',result.data)
+
           setFeedlist(result.data)
-     
-          // for(let i=0; i< feedlist.length; i++){
-          //   feedlist[i].heartNum = getMainFeedHeart(feedlist[i].id)
-          // }
-          // console.log('피드리스트 ',feedlist)
         })
       
     }
-
-    // const getMainFeedHeart = async (id: number) => {
-    //   return await mainfeedApi.getHeart(id)
-    // }
     getMainFeedCon();
-    //getMainFeedHeart();
+
   }, []);
 
-  console.log(feedlist,'피드리스트')
+  // const postHeart = async (e:any) => {
+  //   return await feedApi.postHeart(e.board_id)
+  //     .then(()=>{
+  //       setHeart(1)
+  //     }
+  //   )
+  // }
+
+  console.log(feedlist,'피드리스트 ')
   return (
       <Wrapper>
           <div>MainFeed</div>
@@ -64,9 +69,9 @@ export default function MainFeed() {
               <Button>인기순</Button>
           </ButtonDiv>
           <Feed>
-            {feedlist === [] 
+            {feedlist.id === ''
             ? '피드가 없습니다'
-            : feedlist.map((el: any) => (<MainFeedList {...el} key={el.id} />))
+            : feedlist.map((el: any) => (<MainFeedList {...el} key={el.id} heart={heart} setHeart={setHeart}/>))
             }
           </Feed>
       </Wrapper>

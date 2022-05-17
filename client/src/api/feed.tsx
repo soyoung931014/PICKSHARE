@@ -1,7 +1,7 @@
 /*eslint-disable*/
 import api from './index';
 
-const mainfeedApi = {
+const feedApi = {
     getMainFeed: () => {
         return api.get('/feed/mainfeed');
     },
@@ -12,7 +12,23 @@ const mainfeedApi = {
 
     getComment: () => {
         return api.get('/comment')
+    },
+
+    postHeart: (info: any, board_id: number) => {
+        return api.post(
+            '/heart', 
+            {
+                info,
+                'board_id': board_id 
+            },
+            // {
+            //     headers: {
+            //         'AuthorizationToken': accessToken
+            //     }
+            // }
+        )
     }
+    
 };
 
-export default mainfeedApi;
+export default feedApi;

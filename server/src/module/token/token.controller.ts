@@ -11,7 +11,7 @@ export class TokenController {
     @Get()
     @UseGuards(AuthGuard())
     validate(@Req() req): any {
-        console.log(req, 'req')
+        //console.log(req, 'req')
         return this.token.userInfo(req)
     }
 

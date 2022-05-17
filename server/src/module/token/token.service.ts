@@ -33,7 +33,7 @@ export class TokenService extends PassportStrategy(Strategy) {
 
     // 토큰안에 들어있는 유저 정보
     async userInfo(req): Promise<{ message: string, data: object, statusCode: number }> {
-        console.log(req.user)
+        // console.log('토큰 서비스 안 유저인포',req.user)
         const { id, email, nickname, userImage, statusMessage, loginMethod, created_at, updated_at } = await req.user
         return {
             message: 'login success', data: {

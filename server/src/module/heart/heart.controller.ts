@@ -11,13 +11,13 @@ export class HeartController {
 	constructor( private heartService: HeartService ) {}
 	
 	@Post()
-	@UseGuards(AuthGuard())
+	// @UseGuards(AuthGuard())
 	postHeart(@GetUser() user: User, @Body('board_id', HeartStatusPipe) board_id: number): Promise<number>{
 		return this.heartService.postHeart(user, board_id);
 	}
 
 	@Delete()
-	@UseGuards(AuthGuard())
+	//@UseGuards(AuthGuard())
 	cancelHeart(@GetUser() user: User, @Body('board_id', HeartStatusPipe) board_id: number): Promise<number>{
 		return this.heartService.cancelHeart(user, board_id);
 	}

@@ -370,14 +370,11 @@ const mapStateToProps = (state: object) => {
     user: state,
   };
 };
-// const mapDispatchToProps = (dispatch: any) => {
-//   return {
-//     userInfoToStore: (userInfo: object) => {
-//       dispatch(addUserInfo(userInfo));
-//     },
-//   };
-// };
-export default connect(
-  mapStateToProps
-  //mapDispatchToProps
-)(Login);
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    userInfoToStore: (userInfo: object, token: string) => {
+      dispatch(addUserInfo(userInfo, token));
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
