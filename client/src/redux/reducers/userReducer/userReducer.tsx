@@ -2,18 +2,38 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { ADD_USER_INFO } from '../../actions/actionTypes';
 
-const initialState = {
-  email: '',
+export interface auth {
+  isLogin: boolean;
+  accessToken?: string;
+  refreshToken?: string;
+  userInfo: {
+    id?: number;
+    email?: string;
+    nickname?: string;
+    userImage?: string;
+    loginMethod?: number;
+    statusMessage?: string;
+    created_at?: string;
+    updated_at?: string;
+  };
+}
+
+const initialState: auth = {
+  isLogin: false,
+  accessToken: '',
+  userInfo: {},
 };
 const userReducer = (
   state = initialState,
-  action: { type: string; payload: object }
+  action: { type: string; payload: object; accessToken: string }
 ) => {
   switch (action.type) {
     case ADD_USER_INFO:
       return {
         ...state,
-        ...action.payload,
+        isLogin: true,
+        accessToken: action.accessToken,
+        userInfo: { ...action.payload },
       };
     default:
       return state;
