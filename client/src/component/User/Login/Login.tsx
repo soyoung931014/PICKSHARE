@@ -15,6 +15,7 @@ import pickshareLogo from '../../../img/pickshare.png';
 import homeIndex from '../../../img/homeIndex.png';
 import signupIndex from '../../../img/signupIndex.png';
 import signinIndex from '../../../img/signinIndex.png';
+import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -214,6 +215,7 @@ const BoxMessage = styled.div`
 `;
 
 function Login(props: any) {
+  const navigate = useNavigate();
   //console.log(props, 'props');
   const { userInfoToStore } = props;
   //axios.defaults.withCredentials = true;
@@ -305,7 +307,8 @@ function Login(props: any) {
           const { userInfo } = res.data.data;
           console.log(userInfo);
           if (userInfo) {
-            userInfoToStore(userInfo);
+            userInfoToStore(userInfo, token);
+            navigate('/mypage', { replace: true });
           } else {
             console.log('로그인 실패');
           }
@@ -313,6 +316,9 @@ function Login(props: any) {
     } catch (error) {
       console.log('error');
     }
+  };
+  const taghome = () => {
+    console.log('hihi');
   };
 
   return (
@@ -370,9 +376,24 @@ function Login(props: any) {
           </LoginBox>
         </Right>
         <Index>
-          <TagHome src={homeIndex}></TagHome>
-          <TagSignin src={signinIndex}></TagSignin>
-          <TagSignup src={signupIndex}></TagSignup>
+          <TagHome
+            src={homeIndex}
+            onClick={() => {
+              navigate('/', { replace: true });
+            }}
+          ></TagHome>
+          <TagSignin
+            src={signinIndex}
+            onClick={() => {
+              navigate('/login', { replace: true });
+            }}
+          ></TagSignin>
+          <TagSignup
+            src={signupIndex}
+            onClick={() => {
+              navigate('/signup', { replace: true });
+            }}
+          ></TagSignup>
         </Index>
       </Book>
     </Wrapper>
@@ -388,8 +409,8 @@ const mapStateToProps = (state: object) => {
 };
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    userInfoToStore: (userInfo: object) => {
-      dispatch(addUserInfo(userInfo));
+    userInfoToStore: (userInfo: object, token: string) => {
+      dispatch(addUserInfo(userInfo, token));
     },
   };
 };
