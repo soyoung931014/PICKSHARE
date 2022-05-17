@@ -15,28 +15,6 @@ export class FeedService {
   ) {}
 
   async getAllFeed(): Promise<Board[]> {
-    // return this.boardRepository.find({
-    //   where: {
-    //     lock: 'UNLOCK',
-    //   },
-    // });
-
-    /* mysql> 
-    select board.id, 
-      board.picture as contentImg, 
-      board.nickname, 
-      board.date, 
-      user.userImage as userImage, 
-      count(heart.user_id) as heartNum
-    -> from board
-    -> inner join user
-    -> on board.user_id = user.id
-    -> left join heart
-    -> on board.id = heart.board_id
-    -> where board.lock = 'UNLOCK'
-    -> group by board.id;
-    */
-
     const query = await this.boardRepository.createQueryBuilder('board')
       .select([
         'board.id',
@@ -46,14 +24,13 @@ export class FeedService {
         'user.userImage As userImage',
         'COUNT(heart.user_id) AS heartNum'
       ])
-      //.addSelect('COUNT(heart.user) AS heartNum')
       .innerJoin(
         'board.user', 'user'
         )
       .leftJoin(
         'board.hearts', 'heart'
       )
-      // .where('board.Lock = :lock', {lock: 'UNLOCK'})
+      .where('board.Lock = :lock', {lock: 'UNLOCK'})
       .groupBy('board.id')
       .orderBy('board.id')
       .getRawMany()
