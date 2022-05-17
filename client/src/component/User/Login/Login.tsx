@@ -16,6 +16,8 @@ import homeIndex from '../../../img/homeIndex.png';
 import signupIndex from '../../../img/signupIndex.png';
 import signinIndex from '../../../img/signinIndex.png';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { auth } from '../../../redux/reducers/userReducer/userReducer';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -217,6 +219,7 @@ const BoxMessage = styled.div`
 function Login(props: any) {
   const navigate = useNavigate();
   //console.log(props, 'props');
+
   const { userInfoToStore } = props;
   //axios.defaults.withCredentials = true;
 
@@ -263,7 +266,7 @@ function Login(props: any) {
   // 로그인
   const Login = async (e: any) => {
     e.preventDefault();
-    console.log(userInfo);
+    //console.log(userInfo);
     if (emailRegExp.test(userInfo.email) === false) {
       inputEmail.current.focus();
       return;
@@ -278,7 +281,7 @@ function Login(props: any) {
           .post(`http://localhost:5000/user/login`, userInfo)
           .then((res) => {
             const { accessToken, loginMethod } = res.data.data; //refreshToken
-            console.log(accessToken, loginMethod);
+            //console.log(accessToken, loginMethod);
             if (accessToken) {
               setToken(accessToken); // token state에 보관
               void tokenVerification(accessToken);
@@ -305,7 +308,7 @@ function Login(props: any) {
         })
         .then((res) => {
           const { userInfo } = res.data.data;
-          console.log(userInfo);
+          // console.log(userInfo);
           if (userInfo) {
             userInfoToStore(userInfo, token);
             navigate('/mypage', { replace: true });
