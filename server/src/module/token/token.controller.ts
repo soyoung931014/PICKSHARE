@@ -8,17 +8,17 @@ import { GetUser } from './get-user.decorator';
 export class TokenController {
     constructor(private token: TokenService) { }
 
-    // @Get()
-    // @UseGuards(AuthGuard())
-    // validate(@Req() req): any {
-    //     console.log(req, 'req')
-    //     return this.token.userInfo(req)
-    // }
-
-    @Post()
+    @Get()
     @UseGuards(AuthGuard())
-    validate(@GetUser() user: User): any {
-        console.log(user, 'user')
-        // return this.token.userInfo(req)
+    validate(@Req() req): any {
+        console.log(req, 'req')
+        return this.token.userInfo(req)
     }
+
+    // @Post()
+    // @UseGuards(AuthGuard())
+    // validate(@GetUser() user: User): any {
+    //     console.log(user, 'user')
+    //     // return this.token.userInfo(req)
+    // }
 }

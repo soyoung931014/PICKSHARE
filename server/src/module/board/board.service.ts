@@ -39,7 +39,8 @@ export class BoardService {
       lock,
       content,
       date,
-      'user_id': user.id
+      'user_id': user.id,
+      'nickname': user.nickname,
     });
     await this.boardRepository.save(board);
     return board;

@@ -22,12 +22,23 @@ export class HeartService {
 			throw new NotFoundException(`Can't find Board with board_id ${board_id}`)
 		}
 
-		const afterDeleteList = this.heartRepository.find({
+		const afterDeleteList = await this.heartRepository.find({
+			where: {
+				board_id,
+				'user_id': user.id
+			}
+		})
+
+		return afterDeleteList.length;
+	}
+
+	async getHeart(board_id: number): Promise<number>{
+		const heartlist = await this.heartRepository.find({
 			where: {
 				board_id
 			}
 		})
-
-		return (await afterDeleteList).length;
+		
+		return heartlist.length
 	}
 }

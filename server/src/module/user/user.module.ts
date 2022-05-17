@@ -19,7 +19,7 @@ import { TokenModule } from '../token/token.module';
     }),
     TokenModule
   ],
-  providers: [UserService, TokenService, PassportModule],
+  providers: [UserService, TokenService, PassportModule,],
   controllers: [UserController],
   //exports: [UserRepository]
 })

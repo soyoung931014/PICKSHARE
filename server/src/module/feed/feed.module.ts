@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
 import { FeedService } from './feed.service';
 import { FeedController } from './feed.controller';
-import { UserModule } from '../user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BoardRepository } from '../board/board.repository';
 import { PassportModule } from '@nestjs/passport';
+import { UserRepository } from '../user/user.repository';
+import { HeartRepository } from '../heart/heart.repository';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([BoardRepository]),
-    UserModule,
+    TypeOrmModule.forFeature([UserRepository]),
+    TypeOrmModule.forFeature([HeartRepository]),
     PassportModule.register({defaultStrategy: 'jwt'})
   ],
   providers: [FeedService],

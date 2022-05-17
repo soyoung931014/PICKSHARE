@@ -7,10 +7,15 @@ import { UserModule } from './module/user/user.module';
 import { TokenModule } from './module/token/token.module';
 import { HeartModule } from './module/heart/heart.module';
 
-
 @Module({
-  imports: [TypeOrmModule.forRoot(typeORMConfig), BoardModule, UserModule, TokenModule, HeartModule],
+  imports: [
+    TypeOrmModule.forRoot(typeORMConfig),
+    BoardModule,
+    UserModule,
+    TokenModule,
+    HeartModule,
+  ],
   controllers: [AppController],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

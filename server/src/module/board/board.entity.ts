@@ -43,6 +43,9 @@ export class Board extends BaseEntity {
   @Column()
   user_id: number;
 
+  @Column()
+  nickname: string;
+
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
