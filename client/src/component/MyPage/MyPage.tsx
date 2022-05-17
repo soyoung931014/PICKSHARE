@@ -283,35 +283,37 @@ function MyPage(props: any | boolean) {
   const hadleNicknameValidation = (e: any) => {
     updateInfo(e);
 
-    if (e.target.value.length < 2 || e.target.value.length > 20) {
+    if (e.target.value.length === 1 || e.target.value.length > 20) {
       setNicknameCheckMessage('닉네임은 2~20자 이내입니다.');
-      setNicknameValidate(false);
+      setNicknameValidate(false); // 닉네임유효성 결과 통과
+      /* console.log(nicknameValidate);
+      console.log(nicknameState); //중복 검사 여부 */
     } else {
       setNicknameCheckMessage('');
       setNicknameValidate(true);
-    }
-
-    if (e.target.value.length === 0) {
-      setNicknameState(!nicknameState);
-      console.log(nicknameState);
+      //setNicknameState(true);
+      /*  console.log(nicknameValidate);
+      console.log(nicknameState); */
     }
   };
-  const [nicknamecheck, setNicknameCheck] = useState(nickname || '');
+  const [nicknamecheck, setNicknameCheck] = useState(nickname);
   //닉네임 중복검사
   const nicknameCheck = async (e: any) => {
+    console.log(nicknameState); //중복 검사 여부
     e.preventDefault();
     const { nickname } = updateUserInfo;
     //  console.log(nickname);
-    if (nicknameValidate === true) {
+    if (nicknameValidate === true && inputNickname.current.value !== '') {
       try {
         await axios
           .get(`http://localhost:5000/user/nicknamecheck/${nickname}`)
           .then((res) => {
             if (res.data === false) {
-              console.log(res.data, '이면 닉네임 사용 가능');
+              console.log(res.data, '중복 검사 통과');
               //닉네임 사용여부를 boolean값으로 가져옴 false일경우 사용 가능 닉넴
               setNicknameCheckMessage('사용할 수 있는 닉네임입니다.');
               setNicknameCheck(nickname); // 나중에 수정완료 버튼을 누를 시  e.target.value과 nicknamecheck의 정보가 일치하는지를 확인
+              setNicknameState(true);
             } else {
               setNicknameCheckMessage('이미 사용중인 닉네임입니다');
             }
@@ -324,14 +326,17 @@ function MyPage(props: any | boolean) {
     }
   };
 
+  // 수정완료
   const updateFinish = async (e: any) => {
     e.preventDefault();
     const { email, nickname, statusMessage, userImage } = updateUserInfo;
     // console.log(email, nickname, statusMessage, nicknamecheck, '🙋‍♀️');
     if (inputNickname.current.value === '') {
       updateUserInfo.nickname = inputNickname.current.placeholder;
+      console.log(nickname, 'nickname');
     }
-    if (nicknameState === true && nickname !== nicknamecheck) {
+    if (nickname !== nicknamecheck && inputNickname.current.value !== '') {
+      console.log(nickname, nicknamecheck);
       alert('중복검사를 시행해주세요');
       return;
     } else {
@@ -464,6 +469,7 @@ function MyPage(props: any | boolean) {
                             onClick={() => {
                               setUpdateProfile(!updateProfile);
                               setNicknameCheckMessage('');
+                              setNicknameCheck('');
                             }}
                           >
                             취소
@@ -518,7 +524,6 @@ function MyPage(props: any | boolean) {
                           MyPageButton
                           onClick={() => {
                             setUpdateProfile(!updateProfile);
-                            console.log(updateProfile);
                           }}
                         >
                           프로필수정
