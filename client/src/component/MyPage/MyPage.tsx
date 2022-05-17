@@ -370,6 +370,55 @@ function MyPage(props: any | boolean) {
     }
   };
 
+  // 👉 탈퇴하기
+  const inputPassword: any = useRef();
+  const inputPasswordCheck: any = useRef();
+  const [passwordValue, setPasswordValue] = useState({
+    password: '',
+    passwordCheck: '',
+  });
+
+  const handlePassword = (e: any) => {
+    setPasswordValue({ ...passwordValue, [e.target.name]: e.target.value });
+    // console.log(passwordValue);
+  };
+
+  const withdrawl = async (e: any) => {
+    e.preventDefault();
+    const { password, passwordCheck } = passwordValue;
+    if (password !== passwordCheck || password === '') {
+      alert('비밀번호를 확인해주세요');
+      return;
+    } else {
+      try {
+        if (
+          !window.confirm(
+            '정말 탈퇴하시겠습니까? 탈퇴한 계정의 데이터는 복구가 불가합니다.'
+          )
+        ) {
+          return;
+        } else {
+          await axios
+            .delete('http://localhost:5000/mypage/withdrawl', {
+              data: { password: passwordCheck },
+              headers: { authorization: `Bearer ${accessToken}` },
+            })
+            .then((res) => {
+              if (res.data.statusCode === 200) {
+                console.log('탈퇴성공');
+                navigate('/login', { replace: true });
+              } else {
+                console.log('탈퇴실패');
+                alert('탈퇴에 실패했습니다. 비밀번호를 확인해주세요');
+              }
+            });
+        }
+      } catch (error) {
+        console.log('server error');
+      }
+    }
+  };
+
   return (
     <>
       {!isLogin ? (
@@ -488,7 +537,12 @@ function MyPage(props: any | boolean) {
                       </BoxMessage>
                       <InputBox>
                         <Box>
-                          <Input />
+                          <Input
+                            ref={inputPassword}
+                            name="password"
+                            type="text"
+                            onChange={handlePassword}
+                          />
                         </Box>
                       </InputBox>
                       <BoxMessage>
@@ -496,12 +550,17 @@ function MyPage(props: any | boolean) {
                       </BoxMessage>
                       <InputBox>
                         <Box>
-                          <Input />
+                          <Input
+                            ref={inputPasswordCheck}
+                            type="text"
+                            name="passwordCheck"
+                            onChange={handlePassword}
+                          />
                         </Box>
                       </InputBox>
                       <InputBox button>
                         <Box>
-                          <Button>탈퇴하기</Button>
+                          <Button onClick={withdrawl}>탈퇴하기</Button>
                           <Button
                             MyPageButton
                             onClick={() => {
