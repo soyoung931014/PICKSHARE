@@ -17,8 +17,15 @@ export class MypageService {
     const userInfo = await this.userRepository.findOne({ email: user.email });
     if (userInfo) {
       const updateUserInfo: object = { ...userInfo, ...updateUser };
+      console.log(updateUserInfo);
       await this.userRepository.save(updateUserInfo);
-      return { message: 'update success', statusCode: 200 };
+      console.log(updateUserInfo);
+
+      return {
+        message: 'update success',
+        statusCode: 200,
+        data: updateUserInfo,
+      };
     } else {
       return { message: 'update fail', statusCode: 400 };
     }
@@ -30,15 +37,13 @@ export class MypageService {
     passwordDto: PasswordCheckDto,
   ): Promise<object> {
     const userInfo = await this.userRepository.findOne({ email: user.email });
-    console.log(userInfo);
-    /* 만약 토큰 문제라면, userInfo가 없다면 useGuard에서 {
-    "statusCode": 401,
-    "message": "Unauthorized"
-    }에러 처리남 */
-    if (
-      userInfo &&
-      (await bcrypt.compare(passwordDto.password, userInfo.password))
-    ) {
+    // console.log(userInfo);
+    //console.log(passwordDto)
+    const passwordComparison = await bcrypt.compare(
+      passwordDto.password,
+      userInfo.password,
+    );
+    if (passwordComparison) {
       await this.userRepository.remove(userInfo);
       return { message: 'withdrawal success', statusCode: 200 };
     } else {

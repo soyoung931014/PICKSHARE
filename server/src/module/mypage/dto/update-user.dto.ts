@@ -1,8 +1,8 @@
 export class UpdateUserDto {
-  id: number;
+  id?: number;
   email: string;
-  nickname: string;
-  userImage: string;
-  statusMessage: string;
+  nickname?: string;
+  userImage?: string;
+  statusMessage?: string;
   loginMethod: string;
 }
