@@ -17,9 +17,9 @@ export class FeedService {
   async getAllFeed(): Promise<Board[]> {
     const query = await this.boardRepository.createQueryBuilder('board')
       .select([
-        'board.id',
+        'board.id AS id',
         'board.picture AS contentImg',
-        'board.date',
+        'board.date AS date',
         'user.nickname AS nickname',
         'user.userImage As userImage',
         'COUNT(heart.user_id) AS heartNum'
