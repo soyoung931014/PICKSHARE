@@ -17,6 +17,7 @@ import signupIndex from '../../img/signupIndex.png';
 import signinIndex from '../../img/signinIndex.png';
 import edit from '../../img/edit.jpg';
 import nothing from '../../img/profileImg.png';
+import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -250,6 +251,7 @@ const Edit = styled.img`
 `;
 
 function MyPage(props: any | boolean) {
+  const navigate = useNavigate();
   const inputNickname: any = useRef();
   const statusmessage: any = useRef();
 
@@ -258,13 +260,15 @@ function MyPage(props: any | boolean) {
   const { isLogin, accessToken } = props.user;
   const { email, loginMethod, nickname, statusMessage, userImage } =
     props.user.userInfo;
-
   const [updateProfile, setUpdateProfile] = useState(false);
   const [withdraw, setWithdraw] = useState(false);
+
+  // 👉 프로필 수정 파트
   const [nicknamecheckMessage, setNicknameCheckMessage] = useState('');
+  const [nicknameValidate, setNicknameValidate] = useState(false);
   const [nicknameState, setNicknameState] = useState(false);
 
-  // 수정된 유저정보
+  // 수정할 유저정보
   const [updateUserInfo, setUpdateUserInfo] = useState({
     email,
     nickname,
@@ -275,42 +279,39 @@ function MyPage(props: any | boolean) {
   const updateInfo = (e: any) => {
     setUpdateUserInfo({ ...updateUserInfo, [e.target.name]: e.target.value });
   };
-  console.log(updateUserInfo);
 
-  /*  isLogin이 false일 경우… alert(로그인을 해주십시오), 로그인 화면으로 넘김
-IsLogin이 true일 경우…
-만약 사진이 nothing일 경우 profile이미지를 넣는다.
-만약 사진이 nothing이 아닐경우 userImage를 넣는다. */
-  //닉네임 유효성검사
   const hadleNicknameValidation = (e: any) => {
     updateInfo(e);
 
     if (e.target.value.length < 2 || e.target.value.length > 20) {
       setNicknameCheckMessage('닉네임은 2~20자 이내입니다.');
-      setNicknameState(false);
+      setNicknameValidate(false);
     } else {
       setNicknameCheckMessage('');
-      setNicknameState(true);
+      setNicknameValidate(true);
+    }
+
+    if (e.target.value.length === 0) {
+      setNicknameState(!nicknameState);
+      console.log(nicknameState);
     }
   };
-  console.log(nicknameState);
-  const [nicknamecheck, setNicknameCheck] = useState('');
+  const [nicknamecheck, setNicknameCheck] = useState(nickname || '');
   //닉네임 중복검사
   const nicknameCheck = async (e: any) => {
     e.preventDefault();
     const { nickname } = updateUserInfo;
-    console.log(nickname);
-    if (nicknameState === true) {
+    //  console.log(nickname);
+    if (nicknameValidate === true) {
       try {
         await axios
           .get(`http://localhost:5000/user/nicknamecheck/${nickname}`)
           .then((res) => {
-            console.log('res');
-            //닉네임을 userInfo value값에 넣어놓기
             if (res.data === false) {
-              console.log(res.data);
+              console.log(res.data, '이면 닉네임 사용 가능');
+              //닉네임 사용여부를 boolean값으로 가져옴 false일경우 사용 가능 닉넴
               setNicknameCheckMessage('사용할 수 있는 닉네임입니다.');
-              setNicknameCheck(nickname); // 나중에 회원가입 버튼을 누를 시  signupInfo.nickname과 nicknamecheck의 정보가 일치하는지를 확인
+              setNicknameCheck(nickname); // 나중에 수정완료 버튼을 누를 시  e.target.value과 nicknamecheck의 정보가 일치하는지를 확인
             } else {
               setNicknameCheckMessage('이미 사용중인 닉네임입니다');
             }
@@ -326,8 +327,11 @@ IsLogin이 true일 경우…
   const updateFinish = async (e: any) => {
     e.preventDefault();
     const { email, nickname, statusMessage, userImage } = updateUserInfo;
-    console.log(email, nickname, statusMessage, nicknamecheck);
-    if (nickname !== nicknamecheck) {
+    // console.log(email, nickname, statusMessage, nicknamecheck, '🙋‍♀️');
+    if (inputNickname.current.value === '') {
+      updateUserInfo.nickname = inputNickname.current.placeholder;
+    }
+    if (nicknameState === true && nickname !== nicknamecheck) {
       alert('중복검사를 시행해주세요');
       return;
     } else {
@@ -337,8 +341,23 @@ IsLogin이 true일 경우…
             headers: { authorization: `Bearer ${accessToken}` },
           })
           .then((res) => {
-            console.log(res);
-            //  const { nickname, loginMethod, nickname, statusMessage, userImage } = res.data.updateUserInfo
+            const {
+              id,
+              email,
+              loginMethod,
+              nickname,
+              statusMessage,
+              userImage,
+            } = res.data.data;
+
+            void userInfoToStore(
+              { id, email, loginMethod, nickname, statusMessage, userImage },
+              accessToken
+            );
+            alert('수정이 완료되었습니다.');
+            setUpdateProfile(!updateProfile);
+            setUpdateProfile(true);
+            setNicknameCheckMessage('');
           });
       } catch (error) {
         console.log('error');
@@ -413,6 +432,7 @@ IsLogin이 true일 경우…
                       <InputBox>
                         <Box>
                           <Input
+                            ref={inputNickname}
                             value={email}
                             disabled
                             style={{ color: '#04A1A1', fontWeight: 'bolder' }}
@@ -520,9 +540,24 @@ IsLogin이 true일 경우…
               </UpdateProfileBox>
             </Right>
             <Index>
-              <TagHome src={homeIndex}></TagHome>
-              <TagSignin src={signinIndex}></TagSignin>
-              <TagSignup src={signupIndex}></TagSignup>
+              <TagHome
+                src={homeIndex}
+                onClick={() => {
+                  navigate('/', { replace: true });
+                }}
+              ></TagHome>
+              <TagSignin
+                src={signinIndex}
+                onClick={() => {
+                  navigate('/login', { replace: true });
+                }}
+              ></TagSignin>
+              <TagSignup
+                src={signupIndex}
+                onClick={() => {
+                  navigate('/signup', { replace: true });
+                }}
+              ></TagSignup>
             </Index>
           </Book>
         </Wrapper>
