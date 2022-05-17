@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
-import { addUserInfo } from '../../redux/actions/index';
+import { addUserInfo, deleteUserInfo } from '../../redux/actions/index';
 // import userApi from '../../../api/user';
 import styled from 'styled-components';
 import background from '../../img/diaryBackground.png';
@@ -250,12 +250,9 @@ const Edit = styled.img`
   }
 `;
 
-function MyPage(props: any | boolean) {
+function MyPage(props: any) {
   const navigate = useNavigate();
-  const inputNickname: any = useRef();
-  const statusmessage: any = useRef();
-
-  const { userInfoToStore } = props;
+  const { userInfoToStore, user, deleteUserInfo } = props;
   //console.log(userInfoToStore);
   const { isLogin, accessToken } = props.user;
   const { email, loginMethod, nickname, statusMessage, userImage } =
@@ -264,6 +261,9 @@ function MyPage(props: any | boolean) {
   const [withdraw, setWithdraw] = useState(false);
 
   // 👉 프로필 수정 파트
+  const inputNickname: any = useRef();
+  const statusmessage: any = useRef();
+
   const [nicknamecheckMessage, setNicknameCheckMessage] = useState('');
   const [nicknameValidate, setNicknameValidate] = useState(false);
   const [nicknameState, setNicknameState] = useState(false);
@@ -299,7 +299,7 @@ function MyPage(props: any | boolean) {
   const [nicknamecheck, setNicknameCheck] = useState(nickname);
   //닉네임 중복검사
   const nicknameCheck = async (e: any) => {
-    console.log(nicknameState); //중복 검사 여부
+    // console.log(nicknameState); //중복 검사 여부
     e.preventDefault();
     const { nickname } = updateUserInfo;
     //  console.log(nickname);
@@ -309,7 +309,7 @@ function MyPage(props: any | boolean) {
           .get(`http://localhost:5000/user/nicknamecheck/${nickname}`)
           .then((res) => {
             if (res.data === false) {
-              console.log(res.data, '중복 검사 통과');
+              //   console.log(res.data, '중복 검사 통과');
               //닉네임 사용여부를 boolean값으로 가져옴 false일경우 사용 가능 닉넴
               setNicknameCheckMessage('사용할 수 있는 닉네임입니다.');
               setNicknameCheck(nickname); // 나중에 수정완료 버튼을 누를 시  e.target.value과 nicknamecheck의 정보가 일치하는지를 확인
@@ -383,6 +383,7 @@ function MyPage(props: any | boolean) {
     // console.log(passwordValue);
   };
 
+  //탈퇴하기 버튼
   const withdrawl = async (e: any) => {
     e.preventDefault();
     const { password, passwordCheck } = passwordValue;
@@ -406,6 +407,7 @@ function MyPage(props: any | boolean) {
             .then((res) => {
               if (res.data.statusCode === 200) {
                 console.log('탈퇴성공');
+                void deleteUserInfo();
                 navigate('/login', { replace: true });
               } else {
                 console.log('탈퇴실패');
@@ -640,6 +642,9 @@ const mapDispatchToProps = (dispatch: any) => {
   return {
     userInfoToStore: (userInfo: object, token: string) => {
       dispatch(addUserInfo(userInfo, token));
+    },
+    deleteUserInfo: () => {
+      dispatch(deleteUserInfo());
     },
   };
 };

@@ -17,9 +17,9 @@ export class MypageService {
     const userInfo = await this.userRepository.findOne({ email: user.email });
     if (userInfo) {
       const updateUserInfo: object = { ...userInfo, ...updateUser };
-      console.log(updateUserInfo);
+      // console.log(updateUserInfo);
       await this.userRepository.save(updateUserInfo);
-      console.log(updateUserInfo);
+      // console.log(updateUserInfo);
 
       return {
         message: 'update success',
