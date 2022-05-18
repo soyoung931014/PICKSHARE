@@ -86,6 +86,7 @@ const TagSignin = styled.img`
   //border: solid 2px black;
 `;
 const TagSignup = styled.img`
+  //border: solid 2px black;
   width: 8rem;
   height: 5rem;
   cursor: pointer;
@@ -93,7 +94,8 @@ const TagSignup = styled.img`
     transform: scale(1.05);
     cursor: pointer;
   }
-  //border: solid 2px black;
+  position: relative;
+  top: -10px;
 `;
 
 /// 세부사항
@@ -134,7 +136,6 @@ const Form = styled.form`
 `;
 const InputBox = styled.div<{ button?: any }>`
   //border: solid 2px aqua;
-  //width: 10rem;
   height: 3.3rem;
   margin-top: ${(props) => (props.button ? '2rem' : '0')};
   box-sizing: border-box;
@@ -150,7 +151,7 @@ const Message = styled.div`
 `;
 const Input = styled.input`
   height: 3rem;
-  width: 18rem;
+  width: 68%;
   border-radius: 30px;
   box-sizing: border-box;
   box-shadow: 0 3px 5px #3c4a5645;
@@ -205,6 +206,7 @@ const Div = styled.div`
 `;
 
 const Box = styled.div`
+  // border: red solid 2px;
   display: flex;
   justify-content: center;
   text-align: center;
