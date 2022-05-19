@@ -1,3 +1,4 @@
+//eslint-disable
 // import { any } from 'sequelize/types/lib/operators';
 import { ADD_USER_INFO } from '../../actions/actionTypes';
 
@@ -22,20 +23,27 @@ const initialState: auth = {
   accessToken: '',
   userInfo: {},
 };
+
 const userReducer = (
   state = initialState,
-  action: { type: string; payload: object; accessToken: string }
+  action: {
+    type: string;
+    payload: object;
+    accessToken: string;
+    isLogin: boolean;
+  }
 ) => {
   switch (action.type) {
     case ADD_USER_INFO:
       return {
         ...state,
-        isLogin: true,
+        isLogin: action.isLogin,
         accessToken: action.accessToken,
         userInfo: { ...action.payload },
       };
-    default:
-      return state;
+
+  default:
+    return state;
   }
 };
 export default userReducer;

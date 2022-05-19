@@ -10,11 +10,10 @@ import { auth } from '../redux/reducers/userReducer/userReducer';
 const Wrapper = styled.div`
 	border: red 1px;
   width: 100vw;
-  height: 100vw;
   background-image: url(${feedBG});
-  background-repeat: no-repeat;
   background-size: cover;
-`
+  background-attachment: fixed;
+  `
 
 const ButtonDiv = styled.div`
 `
@@ -22,8 +21,13 @@ const ButtonDiv = styled.div`
 const Button = styled.button`
 `
 
-const Feed = styled.div``
-
+const Feed = styled.div`
+  margin: 150px;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
+`
+//https://studiomeal.com/archives/533
 export default function MainFeed() {
   const { isLogin, accessToken, userInfo } = useSelector(( state: auth ) => state)
   const [feedlist, setFeedlist]: any[] = useState({ 
@@ -35,11 +39,9 @@ export default function MainFeed() {
     heartNum: ''
   });
 
-  const [heart, setHeart] = useState(0);
-
+  const [heart, setHeart] = useState(false);
   
   useEffect(() => {
-
     const getMainFeedCon = async () => {
       return await feedApi.getMainFeed()
         .then(result => {
@@ -50,15 +52,7 @@ export default function MainFeed() {
     }
     getMainFeedCon();
 
-  }, []);
-
-  // const postHeart = async (e:any) => {
-  //   return await feedApi.postHeart(e.board_id)
-  //     .then(()=>{
-  //       setHeart(1)
-  //     }
-  //   )
-  // }
+  }, [heart]);
 
   console.log(feedlist,'피드리스트 ')
   return (

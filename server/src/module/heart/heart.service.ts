@@ -11,11 +11,11 @@ export class HeartService {
 		private heartRepository: HeartRepository,
 	) {}
 
-	postHeart(user: User, board_id: number): Promise<number>{
+	postHeart(user: User, board_id: number): Promise<Heart[]>{
 		return this.heartRepository.postHeart(user, board_id);
 	}
 
-	async cancelHeart(user: User, board_id: number): Promise<number>{
+	async cancelHeart(user: User, board_id: number): Promise<Heart[]>{
 		const result = await this.heartRepository.delete({user, board_id});
 
 		if(result.affected === 0) {
@@ -25,11 +25,10 @@ export class HeartService {
 		const afterDeleteList = await this.heartRepository.find({
 			where: {
 				board_id,
-				'user_id': user.id
 			}
 		})
 
-		return afterDeleteList.length;
+		return afterDeleteList;
 	}
 
 	async getHeart(board_id: number): Promise<number>{

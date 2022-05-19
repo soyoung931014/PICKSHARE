@@ -1,23 +1,31 @@
+import { NotFoundException } from "@nestjs/common";
 import { EntityRepository, Repository } from "typeorm";
 import { User } from "../user/user.entity";
 import { Heart } from "./heart.entity";
 
 @EntityRepository(Heart)
 export class HeartRepository extends Repository<Heart> {
-	async postHeart( user: User, board_id: number): Promise<number> {
-		
+	async postHeart( user: User, board_id: number): Promise<Heart[]> {
+		const findAlreadyExist = await this.find({
+			where: {
+				'user_id': user.id,
+				board_id
+			}
+		})
+		if(findAlreadyExist.length !== 0){
+			throw new NotFoundException(`Already hearted board ${board_id}`)
+		}
 		const hearts = {
 			'user_id': user.id, 
 			'board_id': board_id
 		};
 		await this.save(hearts);
-		const heartList = this.find({
+		const heartList = await this.find({
 			where: {
 				board_id,
-				'user_id': user.id
 			}
 		})
 
-		return (await heartList).length
+		return heartList
 	}
 }

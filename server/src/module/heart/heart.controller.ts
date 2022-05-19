@@ -11,14 +11,14 @@ export class HeartController {
 	constructor( private heartService: HeartService ) {}
 	
 	@Post()
-	// @UseGuards(AuthGuard())
-	postHeart(@GetUser() user: User, @Body('board_id', HeartStatusPipe) board_id: number): Promise<number>{
+	@UseGuards(AuthGuard())
+	postHeart(@GetUser() user: User, @Body('board_id', HeartStatusPipe) board_id: number): Promise<Heart[]>{
 		return this.heartService.postHeart(user, board_id);
 	}
 
 	@Delete()
-	//@UseGuards(AuthGuard())
-	cancelHeart(@GetUser() user: User, @Body('board_id', HeartStatusPipe) board_id: number): Promise<number>{
+	@UseGuards(AuthGuard())
+	cancelHeart(@GetUser() user: User, @Body('board_id', HeartStatusPipe) board_id: number): Promise<Heart[]>{
 		return this.heartService.cancelHeart(user, board_id);
 	}
 

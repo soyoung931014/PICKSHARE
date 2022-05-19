@@ -607,7 +607,7 @@ function MyPage(props: any | boolean) {
               <TagHome
                 src={homeIndex}
                 onClick={() => {
-                  navigate('/', { replace: true });
+                  navigate('/mainfeed', { replace: true });
                 }}
               ></TagHome>
               <TagSignin
@@ -645,3 +645,4 @@ const mapDispatchToProps = (dispatch: any) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyPage);
+//610 새로고침시 로그인이 풀리는 문제 때문에 랜딩페이지(/)를 메인피드(/mainfeed)로 바꿈

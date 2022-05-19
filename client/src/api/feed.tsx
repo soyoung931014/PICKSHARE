@@ -14,21 +14,31 @@ const feedApi = {
         return api.get('/comment')
     },
 
-    postHeart: (info: any, board_id: number) => {
+    postHeart: (info: any, board_id: number, accessToken: string) => {
         return api.post(
             '/heart', 
             {
                 info,
                 'board_id': board_id 
             },
-            // {
-            //     headers: {
-            //         'AuthorizationToken': accessToken
-            //     }
-            // }
+            {
+                headers: {
+                    authorization: `Bearer ${accessToken}`
+                }
+            }
+        )
+    },
+    deleteHeart: (info: any, board_id: number, accessToken: string) => {
+        return api.delete(
+            '/heart', 
+            {
+                data: {info, 'board_id': board_id },
+                headers: {
+                    authorization: `Bearer ${accessToken}`
+                }
+            }
         )
     }
-    
 };
 
 export default feedApi;
