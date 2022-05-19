@@ -31,13 +31,14 @@ export class HeartService {
 		return afterDeleteList;
 	}
 
-	async getHeart(board_id: number): Promise<number>{
+	async searchHeart(user: User, board_id: number): Promise<number>{
 		const heartlist = await this.heartRepository.find({
 			where: {
+				'user_id': user.id,
 				board_id
 			}
 		})
 		
-		return heartlist.length
+		return heartlist.length;
 	}
 }

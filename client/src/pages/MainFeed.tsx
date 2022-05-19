@@ -29,7 +29,7 @@ const Feed = styled.div`
 `
 //https://studiomeal.com/archives/533
 export default function MainFeed() {
-  const { isLogin, accessToken, userInfo } = useSelector(( state: auth ) => state)
+  const [render, setRender] = useState(false);
   const [feedlist, setFeedlist]: any[] = useState({ 
     id: '',
     contentImg: '',
@@ -39,7 +39,7 @@ export default function MainFeed() {
     heartNum: ''
   });
 
-  const [heart, setHeart] = useState(false);
+  console.log('셋랜더 타입',typeof(setRender))
   
   useEffect(() => {
     const getMainFeedCon = async () => {
@@ -52,7 +52,7 @@ export default function MainFeed() {
     }
     getMainFeedCon();
 
-  }, [heart]);
+  }, [render]);
 
   console.log(feedlist,'피드리스트 ')
   return (
@@ -65,7 +65,7 @@ export default function MainFeed() {
           <Feed>
             {feedlist.id === ''
             ? '피드가 없습니다'
-            : feedlist.map((el: any) => (<MainFeedList {...el} key={el.id} heart={heart} setHeart={setHeart}/>))
+            : feedlist.map((el: any) => (<MainFeedList {...el} key={el.id} render={render} setRender={setRender}/>))
             }
           </Feed>
       </Wrapper>

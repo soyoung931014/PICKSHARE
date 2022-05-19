@@ -23,7 +23,8 @@ export class HeartController {
 	}
 
 	@Get()
-	getHeart(@Query('board_id', HeartStatusPipe) board_id: number): Promise<number>{
-		return this.heartService.getHeart(board_id);
+	@UseGuards(AuthGuard())
+	searchHeart(@GetUser() user: User, @Query('board_id', HeartStatusPipe) board_id: number): Promise<number>{
+		return this.heartService.searchHeart(user, board_id);
 	}
 }

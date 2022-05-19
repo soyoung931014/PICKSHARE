@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 // export {};
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BsSuitHeart } from 'react-icons/bs';
 import { BsSuitHeartFill } from "react-icons/bs";
@@ -98,28 +98,41 @@ const Comment = styled.div`
 export default function MainFeedList(props: any) {
   const navigate = useNavigate();
   const {isLogin, accessToken, userInfo} = useSelector((userReducer: any) => userReducer.userInfo);
- 
+  const [heart, setHeart] = useState(false);
+
   const postHeart = async () => {
     console.log('엑세스토큰',accessToken)
     return await feedApi.postHeart(userInfo, props.id, accessToken)
     .then(()=>{
-      props.setHeart(true);
-      console.log(props.heart);
-    }
-    )
+      setHeart(true);
+      props.setRender(!props.render);
+    })
   }
 
   const deleteHeart = async () => {
     return await feedApi.deleteHeart(userInfo, props.id, accessToken)
     .then(() => {
-      props.setHeart(false);
-      console.log(props.heart);
+      setHeart(false);
+      props.setRender(!props.render);
+
     })
   }
+
   useEffect(()=>{
-
-
-  },[props.heart])
+    // const seartHeart = async () => {
+    //   let existOrNot: number = 0;
+    //   await feedApi.searchHeart(userInfo, props.id, accessToken)
+    //   .then((result) => {
+    //     // console.log('서치결과',result)
+    //     // console.log('서치결과의 타입',typeof(result))
+    //     console.log('서치결과.data',result.data)
+    //     console.log('서치결과.data 타입', typeof(result.data))
+  
+    //     existOrNot = result.data
+    //   })
+    // }
+    // isLogin === true? seartHeart(): null
+  },[heart])
 
   const clickWithOutLoggedin = () => {
     alert('로그인이 필요한 서비스 입니다');
@@ -148,10 +161,10 @@ export default function MainFeedList(props: any) {
                 <BsSuitHeart style={{strokeWidth: 1}} size='25'/>
               </HeartButton>
               <div>
-                {props.heartNum}
+                {props.heartNum} 
               </div>
             </HeartDiv>
-          ) : props.heart === false ?(
+          ) : heart === false ?(
             <HeartButton onClick={postHeart}>
               <BsSuitHeart style={{strokeWidth: 1}} size='25'/>
               {props.heartNum}
