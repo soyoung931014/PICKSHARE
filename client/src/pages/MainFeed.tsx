@@ -60,7 +60,6 @@ const SearchIcon = styled.button`
     cursor: pointer;
   }
 `
-
 const Feed = styled.div`
   display: grid;
   gap: 2rem;
@@ -84,20 +83,30 @@ export default function MainFeed() {
     setSearchInput(e.target.value)
   }, 300);
   
-  const getMainFeedCon = async () => {
-    return await feedApi.getMainFeed()
-    .then(result => {
-      
-      setFeedlist(result.data)
-    })      
-  }
+  
   useEffect(() => {
+
+    const getMainFeedCon = async () => {
+      return await feedApi.getMainFeed()
+      .then(result => {
+        
+        setFeedlist(result.data)
+      })
+    }
+  
+    const getUserFeed = async (searchInput: string) => {
+      return await feedApi.getUserFeed(searchInput)
+      .then(result => {
+        setFeedlist(result.data)
+      })
+    }
+
     console.log('유저검색인풋',searchInput)
     if(searchInput === ''){
       getMainFeedCon();
+    } else {
+      getUserFeed(searchInput);
     }
-
-
   }, [render, searchInput]);
 
   console.log(feedlist,'피드리스트 ')

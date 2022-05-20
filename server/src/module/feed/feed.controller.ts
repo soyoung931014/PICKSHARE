@@ -25,7 +25,7 @@ export class FeedController {
     //@Query(key?: string)	req.query / req.query[key]
     //깃북 localhost:5000/feed/userfeed?user_id=${user_id}로 변경필요
     @Get()
-    getUserFeed(@Query('nickname') nickname: Board): Promise<Board[]>{
+    getUserFeed(@Query('nickname') nickname: string): Promise<Board[]>{
         return this.feedService.getUserFeed(nickname)
     }
 

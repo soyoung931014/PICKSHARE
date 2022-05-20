@@ -38,7 +38,7 @@ export class FeedService {
     return query;
   }
 
-  async getUserFeed(nickname: Board): Promise<Board[]> {
+  async getUserFeed(nickname: string): Promise<Board[]> {
     const findNickfeed =  await this.boardRepository.find({
       where:{
         nickname,
