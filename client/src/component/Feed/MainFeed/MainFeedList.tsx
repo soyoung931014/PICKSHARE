@@ -119,19 +119,6 @@ export default function MainFeedList(props: any) {
   }
 
   useEffect(()=>{
-    // const seartHeart = async () => {
-    //   let existOrNot: number = 0;
-    //   await feedApi.searchHeart(userInfo, props.id, accessToken)
-    //   .then((result) => {
-    //     // console.log('서치결과',result)
-    //     // console.log('서치결과의 타입',typeof(result))
-    //     console.log('서치결과.data',result.data)
-    //     console.log('서치결과.data 타입', typeof(result.data))
-  
-    //     existOrNot = result.data
-    //   })
-    // }
-    // isLogin === true? seartHeart(): null
   },[heart])
 
   const clickWithOutLoggedin = () => {
@@ -142,13 +129,12 @@ export default function MainFeedList(props: any) {
   return (
     <Div>
       <ImgDiv>
-        {/* <Img src={props.contentImg} /> */}
-        <Img src={sampleImg2} />
+        <Img src={props.contentImg} />
+
       </ImgDiv>
       <ContentDiv>
         <ContentRightDiv>
-          {/* <UserImg src={props.userImage}/> */}
-          <UserImg src={sampleImg}/>
+          <UserImg src={props.userImage}/>
           <UserDiv>
             <UserNickname>{props.nickname}</UserNickname>
             <DateDiv>{props.date}</DateDiv>

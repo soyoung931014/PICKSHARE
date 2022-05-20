@@ -38,13 +38,15 @@ export class FeedService {
     return query;
   }
 
-  async getUserFeed(user_id: Board): Promise<Board[]> {
-    return this.boardRepository.find({
-      where: {
+  async getUserFeed(nickname: Board): Promise<Board[]> {
+    const findNickfeed =  await this.boardRepository.find({
+      where:{
+        nickname,
         lock: 'UNLOCK',
-        user_id,
-      },
-    });
+      }
+    })
+
+    return findNickfeed;
   }
 
   async getMyFeed(user: User): Promise<Board[]> {
