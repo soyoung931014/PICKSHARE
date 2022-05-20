@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -18,7 +19,9 @@ import signinIndex from '../../img/signinIndex.png';
 import edit from '../../img/edit.jpg';
 import nothing from '../../img/profileImg.png';
 import { useNavigate } from 'react-router-dom';
-
+import { ConnectContactLens } from 'aws-sdk';
+//import AWS from 'aws-sdk/dist/aws-sdk-react-native';
+const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
@@ -87,6 +90,7 @@ const TagSignin = styled.img`
   //border: solid 2px black;
 `;
 const TagSignup = styled.img`
+  //border: solid 2px black;
   width: 8rem;
   height: 5rem;
   cursor: pointer;
@@ -94,7 +98,8 @@ const TagSignup = styled.img`
     transform: scale(1.05);
     cursor: pointer;
   }
-  //border: solid 2px black;
+  position: relative;
+  top: -10px;
 `;
 
 /// 세부사항
@@ -250,6 +255,14 @@ const Edit = styled.img`
   }
 `;
 
+// input file(프로필 변경태그)
+const InputProfile = styled.input`
+  //border: solid 2px red;
+  visibility: hidden;
+  /*  width: 10rem;
+  height: 10rem; */
+`;
+
 function MyPage(props: any) {
   const navigate = useNavigate();
   const { userInfoToStore, user, deleteUserInfo } = props;
@@ -260,6 +273,10 @@ function MyPage(props: any) {
   const [updateProfile, setUpdateProfile] = useState(false);
   const [withdraw, setWithdraw] = useState(false);
 
+  /*  useEffect(() => {
+    console.log('hi');
+  }, [updateProfile]);
+ */
   // 👉 프로필 수정 파트
   const inputNickname: any = useRef();
   const statusmessage: any = useRef();
@@ -267,7 +284,6 @@ function MyPage(props: any) {
   const [nicknamecheckMessage, setNicknameCheckMessage] = useState('');
   const [nicknameValidate, setNicknameValidate] = useState(false);
   const [nicknameState, setNicknameState] = useState(false);
-
   // 수정할 유저정보
   const [updateUserInfo, setUpdateUserInfo] = useState({
     email,
@@ -297,6 +313,11 @@ function MyPage(props: any) {
     }
   };
   const [nicknamecheck, setNicknameCheck] = useState(nickname);
+
+  // 이미지 편집
+  const file: any = useRef();
+  /*  console.log(file.current.value); */
+
   //닉네임 중복검사
   const nicknameCheck = async (e: any) => {
     // console.log(nicknameState); //중복 검사 여부
@@ -333,7 +354,7 @@ function MyPage(props: any) {
     // console.log(email, nickname, statusMessage, nicknamecheck, '🙋‍♀️');
     if (inputNickname.current.value === '') {
       updateUserInfo.nickname = inputNickname.current.placeholder;
-      console.log(nickname, 'nickname');
+      //console.log(nickname, 'nickname');
     }
     if (nickname !== nicknamecheck && inputNickname.current.value !== '') {
       console.log(nickname, nicknamecheck);
@@ -342,9 +363,13 @@ function MyPage(props: any) {
     } else {
       try {
         await axios
-          .patch('http://localhost:5000/mypage/update', updateUserInfo, {
-            headers: { authorization: `Bearer ${accessToken}` },
-          })
+          .patch(
+            'http://localhost:5000/mypage/update',
+            { nickname, statusMessage, userImage },
+            {
+              headers: { authorization: `Bearer ${accessToken}` },
+            }
+          )
           .then((res) => {
             const {
               id,
@@ -354,7 +379,7 @@ function MyPage(props: any) {
               statusMessage,
               userImage,
             } = res.data.data;
-
+            console.log('hi');
             void userInfoToStore(
               { id, email, loginMethod, nickname, statusMessage, userImage },
               accessToken
@@ -421,6 +446,61 @@ function MyPage(props: any) {
     }
   };
 
+  //* aws-프로필 이미지 연결 *//
+  AWS.config.update({
+    region: 'us-east-1', // congito IdentityPoolId 리전을 문자열로 입력하기. 아래 확인 (Ex. "ap-northeast-2")
+    credentials: new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: 'us-east-1:156ae187-f9d1-49d9-86f7-ad7f49675cbd', // cognito 인증 풀에서 받아온 키를 문자열로 입력하기. (Ex. "ap-northeast-2...")
+    }),
+  });
+
+  /* console.log(img, 'img');
+  console.log(userImage);
+  console.log(updateUserInfo.userImage); */
+
+  const [img, setImg] = useState(userImage);
+  const firstImgHandle = async (e: any) => {
+    const imageFile = e.target.files[0]; // 업로드된 파일 객체
+    setImg(imageFile);
+    // console.log(img);
+    //  console.log(imageFile);
+
+    if (!imageFile) {
+      return setUpdateUserInfo({
+        ...updateUserInfo,
+        [e.target.name]: 'nothing',
+      });
+    }
+    setUpdateUserInfo({ ...updateUserInfo, [e.target.name]: imageFile });
+
+    const upload = new AWS.S3.ManagedUpload({
+      params: {
+        Bucket: 'profileimage-pickshare', // 업로드할 대상 버킷명 문자열로 작성.
+        Key: imageFile.name, //업로드할 파일명
+        Body: imageFile, // 업로드할 파일 객체
+      },
+    });
+
+    const promise = upload.promise();
+
+    await promise.then(
+      function (data: { Location: any }) {
+        setImg(data.Location);
+        setUpdateUserInfo({
+          ...updateUserInfo,
+          [e.target.name]: data.Location,
+        });
+      },
+      function (err: any) {
+        console.log(err, '사진등록 실패');
+      }
+    );
+  };
+
+  //console.log(userImage); // 디비에 저장된 정보
+  //임시 저장소 (디비에 저장된 정보와 비교해서 프로필 이미지 수정할때 보여줄것임)
+  const preUserImage: string = updateUserInfo.userImage;
+  //console.log(preUserImage);
   return (
     <>
       {!isLogin ? (
@@ -438,13 +518,17 @@ function MyPage(props: any) {
                           <>
                             <Img src={nothing} />
                           </>
+                        ) : userImage !== preUserImage ? (
+                          <Img src={preUserImage} />
                         ) : (
                           <>
                             <Img src={userImage} />
                           </>
                         )}
                       </Profile>
-                      <Edit src={edit} />
+                      <label htmlFor="imgUpload">
+                        <Edit src={edit} />
+                      </label>
                     </Div>
                     <Input
                       type="text"
@@ -453,6 +537,14 @@ function MyPage(props: any) {
                       placeholder={statusMessage}
                       onChange={updateInfo}
                     />
+                    <InputProfile
+                      type="file"
+                      id="imgUpload"
+                      ref={file}
+                      accept="image/*"
+                      onChange={firstImgHandle}
+                      name="userImage"
+                    ></InputProfile>
                   </Form>
                 </>
               ) : (
@@ -521,6 +613,10 @@ function MyPage(props: any) {
                               setUpdateProfile(!updateProfile);
                               setNicknameCheckMessage('');
                               setNicknameCheck('');
+                              setUpdateUserInfo({
+                                ...updateUserInfo,
+                                userImage: userImage,
+                              });
                             }}
                           >
                             취소
@@ -631,7 +727,6 @@ function MyPage(props: any) {
     </>
   );
 }
-
 //redux로 상태관리
 const mapStateToProps = (state: any) => {
   return {
