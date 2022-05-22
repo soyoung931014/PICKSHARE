@@ -157,8 +157,11 @@ const Input = styled.input<{ Password?: any }>`
   border: 0;
   opacity: 0.6;
 `;
+const InputP = styled.input`
+  visibility: hidden;
+`;
 const Button = styled.button`
-  //border: solid 2px green;
+  //border: solid 2px black;
   width: 72%;
   height: 3rem;
   border-radius: 30px;
@@ -172,6 +175,7 @@ const Button = styled.button`
   font-size: large;
   font-weight: bold;
   color: white;
+  margin-top: 0.8rem;
 `;
 
 const TwinCheckButton = styled.button`
@@ -509,7 +513,6 @@ function Signup() {
                 <Box>
                   <Button onClick={signupcheck}>회원가입</Button>
                 </Box>
-                <Box></Box>
               </InputBox>
               <InputBox button>
                 <Box>
