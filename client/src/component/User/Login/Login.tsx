@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -9,15 +10,14 @@ import { useRef } from 'react';
 import { connect } from 'react-redux';
 import { addUserInfo } from '../../../redux/actions/index';
 import userApi from '../../../api/user';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import background from '../../../img/diaryBackground.png';
 import pickshareLogo from '../../../img/pickshare.png';
 import homeIndex from '../../../img/homeIndex.png';
 import signupIndex from '../../../img/signupIndex.png';
 import signinIndex from '../../../img/signinIndex.png';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { auth } from '../../../redux/reducers/userReducer/userReducer';
+import { AnyAaaaRecord } from 'node:dns';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -220,6 +220,8 @@ const BoxMessage = styled.div`
 
 function Login(props: any) {
   const navigate = useNavigate();
+  // const kakao = (window as any).Kakao;
+  // 중복되는 초기화를 막기 위해 isInitialized()로 SDK 초기화 여부를 판단한다.
   //console.log(props, 'props');
 
   const { userInfoToStore } = props;

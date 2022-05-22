@@ -255,11 +255,11 @@ const Edit = styled.img`
   }
 `;
 
-// input file(프로필 변경태그)
+// input file(프로필 변경태그, 이 부분 숨김)
 const InputProfile = styled.input`
-  //border: solid 2px red;
   visibility: hidden;
-  /*  width: 10rem;
+  /*  border: solid 2px red;
+  width: 10rem;
   height: 10rem; */
 `;
 
@@ -273,10 +273,6 @@ function MyPage(props: any) {
   const [updateProfile, setUpdateProfile] = useState(false);
   const [withdraw, setWithdraw] = useState(false);
 
-  /*  useEffect(() => {
-    console.log('hi');
-  }, [updateProfile]);
- */
   // 👉 프로필 수정 파트
   const inputNickname: any = useRef();
   const statusmessage: any = useRef();
@@ -302,14 +298,9 @@ function MyPage(props: any) {
     if (e.target.value.length === 1 || e.target.value.length > 20) {
       setNicknameCheckMessage('닉네임은 2~20자 이내입니다.');
       setNicknameValidate(false); // 닉네임유효성 결과 통과
-      /* console.log(nicknameValidate);
-      console.log(nicknameState); //중복 검사 여부 */
     } else {
       setNicknameCheckMessage('');
       setNicknameValidate(true);
-      //setNicknameState(true);
-      /*  console.log(nicknameValidate);
-      console.log(nicknameState); */
     }
   };
   const [nicknamecheck, setNicknameCheck] = useState(nickname);
@@ -379,7 +370,7 @@ function MyPage(props: any) {
               statusMessage,
               userImage,
             } = res.data.data;
-            console.log('hi');
+            //console.log('hi');
             void userInfoToStore(
               { id, email, loginMethod, nickname, statusMessage, userImage },
               accessToken
@@ -454,16 +445,8 @@ function MyPage(props: any) {
     }),
   });
 
-  /* console.log(img, 'img');
-  console.log(userImage);
-  console.log(updateUserInfo.userImage); */
-
-  const [img, setImg] = useState(userImage);
   const firstImgHandle = async (e: any) => {
     const imageFile = e.target.files[0]; // 업로드된 파일 객체
-    setImg(imageFile);
-    // console.log(img);
-    //  console.log(imageFile);
 
     if (!imageFile) {
       return setUpdateUserInfo({
@@ -485,7 +468,6 @@ function MyPage(props: any) {
 
     await promise.then(
       function (data: { Location: any }) {
-        setImg(data.Location);
         setUpdateUserInfo({
           ...updateUserInfo,
           [e.target.name]: data.Location,
