@@ -3,18 +3,27 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Lock } from './board-state.union';
 import { Board } from './board.entity';
 import { BoardRepository } from './board.repository';
+import { UserRepository } from '../user/user.repository';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class BoardService {
   constructor(
     @InjectRepository(BoardRepository)
-    private boardRepository: BoardRepository, // private을 사용하지 않으면 다른 컴포넌트에서 해당 값을 수정할 수 있다.
+    private boardRepository: BoardRepository,
+    @InjectRepository(UserRepository)
+    private userRepository: UserRepository, // private을 사용하지 않으면 다른 컴포넌트에서 해당 값을 수정할 수 있다.
   ) {}
 
   // ALL READ
-  async getAllBoards(): Promise<Board[]> {
-    return this.boardRepository.find();
+  async getAllBoards(user: User): Promise<Board[]> {
+    const query = this.boardRepository.createQueryBuilder('board');
+    query.where('board.user = : user', { user: user.id });
+
+    const boards = await query.getMany();
+    // return this.boardRepository.find();
+    return boards;
   }
 
   // READ(/:id)
@@ -27,22 +36,8 @@ export class BoardService {
   }
 
   // CREATE
-  async createBoard(user, createBoardDto: CreateBoardDto): Promise<Board> {
-    const { title, picture, pictureMethod, mood, lock, content, date } =
-      createBoardDto;
-
-    const board = this.boardRepository.create({
-      title,
-      picture,
-      pictureMethod,
-      mood,
-      lock,
-      content,
-      date,
-      'user_id': user.id
-    });
-    await this.boardRepository.save(board);
-    return board;
+  createBoard(createBoardDto: CreateBoardDto, user: User): Promise<Board> {
+    return this.boardRepository.createBoard(createBoardDto, user);
   }
 
   // DELETE(/:id)

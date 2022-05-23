@@ -18,13 +18,14 @@ import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 
 @Controller('board')
+@UseGuards(AuthGuard()) // 컨트롤러 레벨에서 UseGaurd를 생성하면 모든 메소드에 적용된다.
 export class BoardController {
   constructor(private boardService: BoardService) {}
 
   // 모든 게시물 조회
   @Get()
-  getAllContents(): Promise<Board[]> {
-    return this.boardService.getAllBoards();
+  getAllBoards(@GetUser() user: User): Promise<Board[]> {
+    return this.boardService.getAllBoards(user);
   }
 
   // 특정 게시물 조회
@@ -35,14 +36,15 @@ export class BoardController {
 
   // 게시물 생성
   @Post()
-  @UseGuards(AuthGuard())
-  createBoard(@GetUser() user: User, @Body() createBoardDto: CreateBoardDto): Promise<Board> {
-    return this.boardService.createBoard(user, createBoardDto);
+  createBoard(
+    @Body() createBoardDto: CreateBoardDto,
+    @GetUser() user: User,
+  ): Promise<Board> {
+    return this.boardService.createBoard(createBoardDto, user);
   }
 
   // 게시물 삭제
   @Delete('/:id')
-  @UseGuards(AuthGuard())
   // ParseIntPipe: 숫자 형태로 입력이 되지 않을시 Err를 출력하는 내장 함수
   deleteBoard(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.boardService.deleteBoard(id);
@@ -50,7 +52,6 @@ export class BoardController {
 
   // 게시물 공개 OR 비공개
   @Patch('/:id/lock')
-  @UseGuards(AuthGuard())
   lockBoard(
     @Param('id', ParseIntPipe) id: number,
     @Body('lock') lock: Lock,
