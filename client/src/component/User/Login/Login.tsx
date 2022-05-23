@@ -17,7 +17,6 @@ import pickshareLogo from '../../../img/pickshare.png';
 import homeIndex from '../../../img/homeIndex.png';
 import signupIndex from '../../../img/signupIndex.png';
 import signinIndex from '../../../img/signinIndex.png';
-import { AnyAaaaRecord } from 'node:dns';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -220,9 +219,13 @@ const BoxMessage = styled.div`
 
 function Login(props: any) {
   const navigate = useNavigate();
-  // const kakao = (window as any).Kakao;
+
+  /*  const kakao = (window as any).Kakao;
+  console.log(kakao); */
   // 중복되는 초기화를 막기 위해 isInitialized()로 SDK 초기화 여부를 판단한다.
   //console.log(props, 'props');
+  const { Kakao } = window as any;
+  console.log(Kakao);
 
   const { userInfoToStore } = props;
   //axios.defaults.withCredentials = true;
@@ -328,6 +331,14 @@ function Login(props: any) {
     console.log('hihi');
   };
 
+  const [AuthCode, setAuthCode] = useState('');
+  const handleKakaoLogin = (e: any) => {
+    e.preventDefault();
+    console.log(Kakao);
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=be17a9e882217a14ba581b03ea87c38f&redirect_uri=http://localhost:3000/loading&response_type=code&state=kakao`;
+    //navigate(window.location.href);
+  };
+
   return (
     <Wrapper>
       <Book>
@@ -376,7 +387,7 @@ function Login(props: any) {
               </InputBox>
               <InputBox button>
                 <Box>
-                  <ButtonKakao>kakao</ButtonKakao>
+                  <ButtonKakao onClick={handleKakaoLogin}>kakao</ButtonKakao>
                 </Box>
               </InputBox>
             </Form>
