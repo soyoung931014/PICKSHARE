@@ -3,7 +3,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -40,17 +39,13 @@ export class Board extends BaseEntity {
   @Column()
   date: string;
 
-  @Column()
-  user_id: number;
-
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.boards)
-  @JoinColumn({name: 'user_id'})
+  @ManyToOne((type) => User, (user) => user.boards, { eager: false })
   user: User;
 
   @OneToMany(() => Heart, (heart) => heart.board)
