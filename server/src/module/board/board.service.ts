@@ -16,13 +16,11 @@ export class BoardService {
     private userRepository: UserRepository, // private을 사용하지 않으면 다른 컴포넌트에서 해당 값을 수정할 수 있다.
   ) {}
 
-  // ALL READ
+  // ALL READ (해당 유저의 게시물만 가져오기)
   async getAllBoards(user: User): Promise<Board[]> {
     const query = this.boardRepository.createQueryBuilder('board');
-    query.where('board.user = : user', { user: user.id });
-
+    query.where('board.userId = :userId', { userId: user.id });
     const boards = await query.getMany();
-    // return this.boardRepository.find();
     return boards;
   }
 
