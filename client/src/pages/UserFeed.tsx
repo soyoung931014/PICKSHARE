@@ -13,6 +13,7 @@ import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 
 const UserWapper = styled.div`
   width: 100vw;
+  height: 100% + 150px;
   background-image: url(${feedBG});
   background-size: cover;
   background-attachment: scroll;
