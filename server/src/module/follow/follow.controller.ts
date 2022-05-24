@@ -16,9 +16,8 @@ export class FollowController {
 	
 	@Post('following')
 	@UseGuards(AuthGuard())
-	postFollowing(@GetUser() user: User, @Body('followingNickname') followingNickname: string): any {
-		return console.log(followingNickname,"컨트롤러 닉네임")
-		// return this.followService.postFollowing(user, followingNickname);
+	postFollowing(@GetUser() user: User, @Body('followingNickname') followingNickname: string): Promise<Follow[]> {
+		return this.followService.postFollowing(user, followingNickname);
 	}
 
 	@Get('/following')

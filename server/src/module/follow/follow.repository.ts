@@ -15,8 +15,7 @@ export class FollowRepository extends Repository<Follow> {
         //nickname을 팔로우한 사람
         const nicknameFollowNum =  this.find({
             where: {
-                // 'followingNickname': nickname
-                "user_id": user.id
+                'followingNickname': nickname
             }
         })
 
