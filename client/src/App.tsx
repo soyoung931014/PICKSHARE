@@ -5,6 +5,7 @@ import Signup from './component/User/Signup/Signup';
 import GlobalStyles from './GlobalStyles';
 // import DiaryPage from './pages/DiaryPage';
 import LandingPage from './pages/LandingPage';
+import Loading from './pages/Loading';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/loading" element={<Loading />} />
       </Routes>
     </BrowserRouter>
   );

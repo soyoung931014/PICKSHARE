@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -225,10 +227,9 @@ function Login(props: any) {
   // 중복되는 초기화를 막기 위해 isInitialized()로 SDK 초기화 여부를 판단한다.
   //console.log(props, 'props');
   const { Kakao } = window as any;
-  console.log(Kakao);
+  //console.log(Kakao);
 
   const { userInfoToStore } = props;
-  //axios.defaults.withCredentials = true;
 
   const inputEmail: any = useRef();
   const inputpassword: any = useRef();
@@ -238,9 +239,6 @@ function Login(props: any) {
     useState('이메일을 입력해주세요');
   const [passwordMessage, setPasswordMessage] =
     useState('비밀번호를 입력해주세요');
-
-  //토큰저장
-  const [token, setToken] = useState('');
 
   const handleUserInfo = (e: any) => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
@@ -290,7 +288,6 @@ function Login(props: any) {
             const { accessToken, loginMethod } = res.data.data; //refreshToken
             //console.log(accessToken, loginMethod);
             if (accessToken) {
-              setToken(accessToken); // token state에 보관
               void tokenVerification(accessToken);
               //void tokenVerification();
             } else {
@@ -331,7 +328,6 @@ function Login(props: any) {
     console.log('hihi');
   };
 
-  const [AuthCode, setAuthCode] = useState('');
   const handleKakaoLogin = (e: any) => {
     e.preventDefault();
     console.log(Kakao);

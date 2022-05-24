@@ -19,7 +19,6 @@ import signinIndex from '../../img/signinIndex.png';
 import edit from '../../img/edit.jpg';
 import nothing from '../../img/profileImg.png';
 import { useNavigate } from 'react-router-dom';
-import { ConnectContactLens } from 'aws-sdk';
 //import AWS from 'aws-sdk/dist/aws-sdk-react-native';
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 const Wrapper = styled.div`
