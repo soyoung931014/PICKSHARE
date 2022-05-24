@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Board } from '../board/board.entity';
 import { GetUser } from '../token/get-user.decorator';
@@ -13,20 +13,22 @@ export class FeedController {
     
     //전체 피드 긁어오기(UNLOCK만 가져와야함)
     //페이지네이션(limit=6)
-    @Get('/mainfeed')
+    @Get()
     getAllFeed(
         // @Query('pageStart') pageStart: number,
         //@Query('pageSize') pageSize: number
       ): Promise<Board[]> {
-        return this.feedService.getAllFeed()
+        return this.feedService.getAllFeed();
     }
     
     //특정 유저의 피드 긁어오기(유저네임이 같은 피드 가져오기): Unlock
     //@Query(key?: string)	req.query / req.query[key]
     //깃북 localhost:5000/feed/userfeed?user_id=${user_id}로 변경필요
-    @Get()
-    getUserFeed(@Query('nickname') nickname: string): Promise<Board[]>{
-        return this.feedService.getUserFeed(nickname)
+    @Get('/mainfeed')
+    getUserFeed(
+        @Query('nickname') nickname: string,
+    ): Promise<Board[]>{
+        return this.feedService.getUserFeed(nickname);
     }
 
     //깃북 /feed?post_id=${post_id} 부분은 보드 부분에 있어서 생략(깃북 수정필요)
@@ -35,6 +37,30 @@ export class FeedController {
     @Get('/myfeed')
     @UseGuards(AuthGuard())
     getMyFeed(@GetUser() user: User): Promise<Board[]>{
-        return this.feedService.getMyFeed(user)
+        return this.feedService.getMyFeed(user);
     }
+
+    @Get('/myfeed/date')
+    @UseGuards(AuthGuard())
+    searchMineByDate( 
+        @GetUser() user: User,
+        @Query('date') date: string
+    ): Promise<Board[]> {
+        return this.feedService.searchMineByDate(user, date);
+    }
+
+    @Get('/user/date')
+    searchUsersByDate( 
+        @Query('nickname') nickname: string,
+        @Query('date') date: string
+    ): Promise<Board[]> {
+        return this.feedService.searchUsersByDate(nickname, date);
+    }
+
+    // @Get('/user/info')
+    // searchUserInfo(
+    //     @Query('nickname') nickname: string
+    // ): Promise<any> {
+    //     return this.feedService.searchUserInfo(nickname)
+    // }
 }

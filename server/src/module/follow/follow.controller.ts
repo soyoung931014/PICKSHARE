@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../token/get-user.decorator';
 import { User } from '../user/user.entity';
@@ -12,13 +12,13 @@ export class FollowController {
 	//팔로우 하기
 	//팔로우 목록 가져오기
 	//팔로우 삭제
-	
 	//팔로잉 목록 가져오기
 	
-	@Post('/following')
+	@Post('following')
 	@UseGuards(AuthGuard())
-	postFollowing(@GetUser() user: User, @Query('followingNickname') followingNickname: string): Promise<Follow[]> {
-		return this.followService.postFollowing(user, followingNickname);
+	postFollowing(@GetUser() user: User, @Body('followingNickname') followingNickname: string): any {
+		return console.log(followingNickname,"컨트롤러 닉네임")
+		// return this.followService.postFollowing(user, followingNickname);
 	}
 
 	@Get('/following')

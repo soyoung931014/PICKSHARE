@@ -87,4 +87,19 @@ export class UserService {
       throw new UnauthorizedException('invalid user information');
     }
   }
+
+  async getUserInfo(userNickname: string): Promise<{data: object}> {
+    const info = await this.userRepository.findOne({
+      nickname: userNickname
+    })
+
+    return {
+      data: {
+        "id": info.id,
+        "nickname": info.nickname,
+        "userImage": info.userImage,
+        "statusMessage": info.statusMessage
+      }
+    }
+  }
 }

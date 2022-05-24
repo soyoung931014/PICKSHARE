@@ -61,6 +61,9 @@ const UserNickname =  styled.div`
   border: pink dotted 3px;
   font-size: 28px;
   font-weight: 400;
+  &:hover{
+    cursor: pointer;
+  }
 `
 const DateDiv = styled.div`
   border: red dotted 3px;
@@ -101,11 +104,16 @@ export default function MainFeedList(props: any) {
   const [heart, setHeart] = useState(false);
 
   const postHeart = async () => {
-    console.log('엑세스토큰',accessToken)
+
     return await feedApi.postHeart(userInfo, props.id, accessToken)
     .then(()=>{
       setHeart(true);
-      props.setRender(!props.render);
+      const path = window.location.pathname.split("/")[1]
+      if(path === 'feed'){
+        props.setUserRender(!props.userRender)
+      } else if(path === 'mainfeed'){
+        props.setRender(!props.render);
+      }
     })
   }
 
@@ -113,13 +121,22 @@ export default function MainFeedList(props: any) {
     return await feedApi.deleteHeart(userInfo, props.id, accessToken)
     .then(() => {
       setHeart(false);
-      props.setRender(!props.render);
-
+      const path = window.location.pathname.split("/")[1]
+      if(path === 'feed'){
+        props.setUserRender(!props.userRender)
+      } else if(path === 'mainfeed'){
+        props.setRender(!props.render);
+      }
     })
   }
 
+  const moveToUsersFeed = (e: any) => {
+    console.log(e,'이벤트 타겟')
+    navigate(`/feed/${e}`)
+  }
+
   useEffect(()=>{
-  },[heart])
+  },[heart, props])
 
   const clickWithOutLoggedin = () => {
     alert('로그인이 필요한 서비스 입니다');
@@ -136,7 +153,12 @@ export default function MainFeedList(props: any) {
         <ContentRightDiv>
           <UserImg src={props.userImage}/>
           <UserDiv>
-            <UserNickname>{props.nickname}</UserNickname>
+            <UserNickname 
+              className='nickname'
+              onClick={() => moveToUsersFeed(props.nickname)}
+            >
+                {props.nickname}
+            </UserNickname>
             <DateDiv>{props.date}</DateDiv>
           </UserDiv>
         </ContentRightDiv>
@@ -157,7 +179,7 @@ export default function MainFeedList(props: any) {
             </HeartButton>
           ) : (
             <HeartButton onClick={deleteHeart}>
-              <BsSuitHeartFill style={{strokeWidth: 1}} size='25'/>
+              <BsSuitHeartFill style={{strokeWidth: 1}} size='25' color='red'/>
               {props.heartNum}
             </HeartButton>
           )}

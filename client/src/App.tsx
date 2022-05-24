@@ -16,7 +16,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         {/*  <Route path="/diary" element={<DiaryPage />} /> */}
         <Route path="/mainfeed" element={<MainFeed />} />
-        <Route path="/feed/:id" element={<UserFeed />} />
+        <Route path="/feed/:nickname" element={<UserFeed />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/mypage" element={<MyPage />} />

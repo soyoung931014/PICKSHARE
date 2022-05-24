@@ -3,7 +3,7 @@ import api from './index';
 
 const feedApi = {
 	getMainFeed: () => {
-		return api.get('/feed/mainfeed');
+		return api.get('/feed');
 	},
 	getHeart: (board_id: number) => {
 		return api.get(`/heart?board_id=${board_id}`);
@@ -49,6 +49,14 @@ const feedApi = {
 					authorization: `Bearer ${accessToken}`
 				}
 			}
+		)
+	},
+	// searchByDate: () => {
+	// 	return api.get(``)
+	// }
+	userInfo: (nickname: string) => {
+		return api.get(
+			`/user/userInfo?userNickname=${nickname}`
 		)
 	}
         

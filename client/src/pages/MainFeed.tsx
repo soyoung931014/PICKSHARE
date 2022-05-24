@@ -26,14 +26,21 @@ const UpperDiv = styled.div `
 const ButtonDiv = styled.div`
   border: green dotted 1px;
   display: flex;
-`
+  `
 
 const Button = styled.button`
   margin-right: 0.5rem;
+  font-size: 1rem;
+  text-align: center;
+  font-weight: 400;
   &:hover{
     cursor: pointer;
   }
-`
+  `
+const UpperRightDiv = styled.div`
+  display: flex;
+  margin: 0.5rem 0;
+`;
 const SearchBar = styled.div`
   border: green solid 1px;
   border-radius: 30rem;
@@ -43,19 +50,36 @@ const SearchBar = styled.div`
   background-color: white;
 `
 const SearchInput = styled.input`
+  outline: none;
+  border: 0;
+  height: 2rem;
   &::placeholder{
     font-style: italic;
     text-align: center;
   }
 `
-
 const SearchIcon = styled.button`
-  border: orchid solid 1px;
+  background-color: white;
   border-radius: 100%;
   display: flex;
   justify-content: center;
   width: 2rem;
   height: 2rem;
+  margin-left: 0.3rem;
+  &:hover{
+    cursor: pointer;
+  }
+`
+const PlusButton = styled.button`
+  background-color: #c4c4c4;
+  border-radius: 100%;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin-left: 0.3rem;
+  font-size: 1.8rem;
+  text-align: center;
+  font-weight: 400;
   &:hover{
     cursor: pointer;
   }
@@ -74,62 +98,92 @@ export default function MainFeed() {
     date: '',
     nickname: '',
     userImage: '',
-    heartNum: ''
+    heartNum: '0',
+    lock: ''
   });
-  const [ searchInput, setSearchInput ] = useState('')
+  const [ searchInput, setSearchInput ] = useState('');
+  const [ orderingH, setOrderingH ] = useState(false); 
 
   const handleSearchInput = debounce(async(e: any) => {
     // const { name, value } = e.target;
     setSearchInput(e.target.value)
   }, 300);
+
+  const sortFeedByRecent = () => {
+    setOrderingH(false)
+  }
+
+  const sortFeedByHeart = () => {
+    setOrderingH(true)
+  }
   
-  
+  const getUserFeed = async (searchInput: string) => {
+    return await feedApi.getUserFeed(searchInput)
+    .then(result => {
+      return setFeedlist(result.data)
+    })
+  }
+
   useEffect(() => {
 
-    const getMainFeedCon = async () => {
+    const getMainFeed = async () => {
       return await feedApi.getMainFeed()
       .then(result => {
-        
+        setFeedlist(result.data)
+      })
+    }
+
+    const getMainFeedH = async () => {
+      return await feedApi.getMainFeed()
+      .then(result => {
+        const orderByH = result.data.sort((a: any, b:any) => {
+          return b.heartNum - a.heartNum
+        })
         setFeedlist(result.data)
       })
     }
   
-    const getUserFeed = async (searchInput: string) => {
-      return await feedApi.getUserFeed(searchInput)
-      .then(result => {
-        setFeedlist(result.data)
-      })
-    }
 
     console.log('유저검색인풋',searchInput)
     if(searchInput === ''){
-      getMainFeedCon();
-    } else {
-      getUserFeed(searchInput);
+      if(orderingH === false){
+        getMainFeed();
+      } else{
+        getMainFeedH();
+      }
+
+    } else{
+      console.log('검색어 있음')
     }
-  }, [render, searchInput]);
+  }, [render, searchInput, orderingH]);
 
   console.log(feedlist,'피드리스트 ')
+  console.log(typeof(feedlist), '피드리스트 타입')
   return (
       <Wrapper>
         <Nav />
         <Div>
           <UpperDiv>
             <ButtonDiv>
-                <Button>최신순</Button>
-                <Button>인기순</Button>
+                <Button onClick={sortFeedByRecent}>최신순</Button>
+                <Button onClick={sortFeedByHeart}>인기순</Button>
             </ButtonDiv>
-            <SearchBar>
-              <SearchInput 
-                name='searchBar'
-                type={'text'}
-                placeholder='유저 검색'
-                onChange={handleSearchInput}
-              />
-              <SearchIcon>
-                <BiSearch size={'1.7rem'}/>
-              </SearchIcon>
-            </SearchBar>
+            <UpperRightDiv>
+            <form>
+              <SearchBar>
+                <SearchInput 
+                  name='searchBar'
+                  type={'text'}
+                  placeholder='유저 검색'
+                  onChange={handleSearchInput}
+                />
+                <SearchIcon onClick={() => getUserFeed(searchInput)}>
+                  <BiSearch size={'1.7rem'}/>
+                </SearchIcon>
+              </SearchBar>
+            </form>
+            <PlusButton> + </PlusButton>
+            </UpperRightDiv>
           </UpperDiv>
           <Feed>
             {feedlist.id === ''
