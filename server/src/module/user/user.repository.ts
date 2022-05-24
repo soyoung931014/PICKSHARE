@@ -39,4 +39,54 @@ export class UserRepository extends Repository<User> {
       }
     }
   }
+
+  async kakaoCreateUser(
+    email: string,
+    access_token: string,
+  ): Promise<{
+    message: string;
+    data: object;
+    accessToken: string;
+    statusCode: number;
+  }> {
+    console.log(email, 'hi');
+    const user = this.create({
+      email: email,
+      password: 'null',
+      nickname: '',
+      userImage: 'nothing',
+      statusMessage: 'nothing',
+      loginMethod: 2,
+    });
+
+    try {
+      await this.save(user);
+      const {
+        email,
+        password,
+        nickname,
+        userImage,
+        statusMessage,
+        loginMethod,
+      } = user;
+      return {
+        message: `${email} 회원가입 성공`,
+        data: {
+          email,
+          nickname,
+          userImage,
+          statusMessage,
+          loginMethod,
+        },
+        accessToken: access_token,
+        statusCode: 201,
+      };
+    } catch (error) {
+      if (error.code === 'ER_DUP_ENTRY') {
+        throw new ConflictException('Existing username');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
+  }
 }

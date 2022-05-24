@@ -44,6 +44,17 @@ export class UserController {
     return this.userService.login(loginDto);
   }
 
+  // 카카오 로그인 : 인가 코드 받기
+  @Get('/kakao')
+  kakaoAuth(
+    @Req() req: any,
+  ): Promise<{ message: string; data?: object; statusCode?: number }> {
+    //console.log(req.headers.authcode);
+    const authcode = req.headers.authcode.slice(6).split('&')[0];
+    console.log(authcode);
+    return this.userService.kakaoLogin(authcode);
+  }
+
   // 로그아웃
   @Get('/logout')
   @UseGuards(AuthGuard())

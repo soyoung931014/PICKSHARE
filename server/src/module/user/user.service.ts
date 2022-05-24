@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LoginDto } from './dto/login-user.dto';
@@ -5,6 +6,8 @@ import { SignUpDto } from './dto/singup-user.dto';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import axios from 'axios';
+require('dotenv').config();
 
 @Injectable()
 export class UserService {
@@ -85,6 +88,62 @@ export class UserService {
       };
     } else {
       throw new UnauthorizedException('invalid user information');
+    }
+  }
+
+  async kakaoLogin(authcode: string): Promise<{
+    message: string;
+    data?: object;
+    statusCode?: number;
+    accessToken?: string;
+  }> {
+    try {
+      //토큰 받기
+      //https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#request-token
+      const tokenRequest = await axios.post(
+        `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&code=${authcode}`,
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+          },
+        },
+      );
+      //토큰 정보 보기
+      const userInfoKakao = await axios.get(
+        'https://kapi.kakao.com/v2/user/me',
+        {
+          headers: {
+            Authorization: `Bearer ${tokenRequest.data.access_token}`,
+          },
+        },
+      );
+      /* console.log(tokenRequest, '토큰리퀘스트');
+      console.log(tokenRequest.data.access_token, 'token');
+      console.log(userInfoKakao, '토큰 정보'); */
+      const { access_token } = tokenRequest.data;
+      const { email } = userInfoKakao.data.kakao_account;
+
+      const userInfo = await this.userRepository.findOne({
+        email,
+      });
+      if (!userInfo) {
+        return this.userRepository.kakaoCreateUser(email, access_token);
+      } else {
+        const { email, nickname, userImage, statusMessage, loginMethod } =
+          userInfo;
+        if (userInfo.loginMethod === 2) {
+          return {
+            message: '로그인에 성공했습니다.',
+            statusCode: 200,
+            data: { email, nickname, userImage, statusMessage, loginMethod },
+            accessToken: access_token,
+          };
+        }
+        return { message: '일반 계정을 가지고 있습니다.', statusCode: 400 };
+      }
+    } catch (error) {
+      console.log(error, '찾을 수 없는 인가코드입니다.');
+      return { message: '찾을 수 없는 인가코드입니다.', data: error };
     }
   }
 }
