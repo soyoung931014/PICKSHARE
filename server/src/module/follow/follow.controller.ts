@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -19,16 +20,14 @@ export class FollowController {
   //팔로우 하기
   //팔로우 목록 가져오기
   //팔로우 삭제
-
   //팔로잉 목록 가져오기
 
-  @Get('/following')
+  @Post('following')
   @UseGuards(AuthGuard())
   postFollowing(
     @GetUser() user: User,
-    @Query('followingNickname') followingNickname: string,
+    @Body('followingNickname') followingNickname: string,
   ): Promise<Follow[]> {
-    console.log(followingNickname, 'follownick');
     return this.followService.postFollowing(user, followingNickname);
   }
 

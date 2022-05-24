@@ -6,6 +6,8 @@ import GlobalStyles from './GlobalStyles';
 // import DiaryPage from './pages/DiaryPage';
 import LandingPage from './pages/LandingPage';
 import Loading from './pages/Loading';
+import MainFeed from './pages/MainFeed';
+import UserFeed from './pages/UserFeed';
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         {/*  <Route path="/diary" element={<DiaryPage />} /> */}
+        <Route path="/mainfeed" element={<MainFeed />} />
+        <Route path="/feed/:nickname" element={<UserFeed />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/mypage" element={<MyPage />} />

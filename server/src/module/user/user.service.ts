@@ -146,4 +146,18 @@ export class UserService {
       return { message: '찾을 수 없는 인가코드입니다.', data: error };
     }
   }
+  async getUserInfo(userNickname: string): Promise<{ data: object }> {
+    const info = await this.userRepository.findOne({
+      nickname: userNickname,
+    });
+
+    return {
+      data: {
+        id: info.id,
+        nickname: info.nickname,
+        userImage: info.userImage,
+        statusMessage: info.statusMessage,
+      },
+    };
+  }
 }

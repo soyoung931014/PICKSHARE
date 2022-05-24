@@ -18,5 +18,5 @@ export class Follow extends BaseEntity {
 
   @ManyToOne(() => User, (user) => user.follows)
   @JoinColumn({name: 'user_id'})
-  user!: User;
+  user: User;
 }
