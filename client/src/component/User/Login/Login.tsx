@@ -315,7 +315,7 @@ function Login(props: any) {
           // console.log(userInfo);
           if (userInfo) {
             userInfoToStore(userInfo, token);
-            navigate('/mypage', { replace: true });
+            navigate('/board', { replace: true });
           } else {
             console.log('로그인 실패');
           }
@@ -393,7 +393,7 @@ function Login(props: any) {
           <TagHome
             src={homeIndex}
             onClick={() => {
-              navigate('/', { replace: true });
+              navigate('/mainfeed', { replace: true });
             }}
           ></TagHome>
           <TagSignin

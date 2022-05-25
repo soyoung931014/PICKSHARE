@@ -11,48 +11,33 @@ export class FeedService {
     private boardRepository: BoardRepository,
   ) {}
 
-  async getAllFeed(): //pageSize: number
-  Promise<Board[]> {
-    return this.boardRepository.find({
-      where: {
-        lock: 'UNLOCK',
-      },
-    });
-    //페이지네이션 => 무한스크롤
-    // const query = await this.boardRepository.createQueryBuilder('board')
-    // 	.where('board.lock = :lock', { lock: "UNLOCK"})
-    // 	.take(pageSize);
-    // console.log(query);
-
-    // let pageStart = 0;
-
-    // if( pageStart === 0 ){
-    // 	pageStart = 1;
-
-    // 	return this.boardRepository.find({
-    // 		where: {
-    // 			"lock": "UNLOCK"
-    // 		},
-    // 		take: pageSize
-    // 	})
-    // } else {
-    // 	return this.boardRepository.find({
-    // 		where: {
-    // 			"lock": "UNLOCK"
-    // 		},
-    // 		skip: pageSize,
-    // 		take: pageSize
-    // 	})
-    // }
+  async getAllFeed(): Promise<Board[]> {
+      return await this.boardRepository.createQueryBuilder('board')
+        .select([
+          'board.id AS id',
+          'board.picture AS contentImg',
+          'board.date AS date',
+          'board.createdAt AS createdAt',
+          'board.lock AS locked',
+          'user.nickname AS nickname',
+          'user.userImage As userImage',
+          'COUNT(heart.user_id) AS heartNum'
+        ])
+        .innerJoin(
+          'board.user', 'user'
+          )
+        .leftJoin(
+          'board.hearts', 'heart'
+        )
+        .where('board.Lock = :lock', {lock: 'UNLOCK'})
+        .groupBy('board.id')
+        .orderBy('board.createdAt', 'DESC')
+        .getRawMany()
   }
 
-  async getUserFeed(user_id: Board): Promise<Board[]> {
-    return this.boardRepository.find({
-      where: {
-        lock: 'UNLOCK',
-        user_id: user_id,
-      },
-    });
+  async getUserFeed(nickname: string): Promise<Board[]> {
+    const board = await this.getAllFeed();
+    return board.filter((el) => el.nickname === nickname);
   }
 
   async getMyFeed(user: User): Promise<Board[]> {
@@ -61,5 +46,16 @@ export class FeedService {
         user_id: user.id,
       },
     });
+  }
+
+  async searchMineByDate(user: User, date: string): Promise<Board[]> {
+    const searchedBoard = await this.getMyFeed(user);
+
+    return searchedBoard.filter((el) => el.date === date);
+  }
+
+  async searchUsersByDate(nickname: string, date: string): Promise<Board[]> {
+    const searchedBoard = await this.getUserFeed(nickname);
+    return searchedBoard.filter((el) => el.date === date);
   }
 }

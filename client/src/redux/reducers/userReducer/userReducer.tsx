@@ -47,6 +47,7 @@ const userReducer = (
         accessToken: action.accessToken,
         userInfo: { ...action.payload },
       };
+
     default:
       return state;
   }

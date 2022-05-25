@@ -43,14 +43,17 @@ export class Board extends BaseEntity {
   @Column()
   user_id: number;
 
+  @Column()
+  nickname: string;
+
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.boards)
-  @JoinColumn({name: 'user_id'})
+  @ManyToOne((type) => User, (user) => user.boards, { eager: false })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @OneToMany(() => Heart, (heart) => heart.board)

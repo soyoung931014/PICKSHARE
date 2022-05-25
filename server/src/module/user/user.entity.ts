@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -47,15 +48,18 @@ export class User extends BaseEntity {
   @Exclude()
   currentHashedRefreshToken?: string;
 
-  @OneToMany(() => Board, (board) => board.user)
+  @OneToMany((type) => Board, (board) => board.user, { eager: true })
   boards: Board[];
 
   @OneToMany(() => Follow, (follow) => follow.user)
+  @JoinColumn()
   follows: Follow[];
 
   @OneToMany(() => Heart, (heart) => heart.user)
+  @JoinColumn()
   hearts: Heart[];
 
   @OneToMany(() => Comment, (comment) => comment.user)
+  @JoinColumn()
   comments: Comment[];
 }

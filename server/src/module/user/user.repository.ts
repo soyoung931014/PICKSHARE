@@ -40,13 +40,9 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async kakaoCreateUser(
-    email: string,
-    access_token: string,
-  ): Promise<{
+  async kakaoCreateUser(email: string): Promise<{
     message: string;
     data: object;
-    accessToken: string;
     statusCode: number;
   }> {
     console.log(email, 'hi');
@@ -69,8 +65,9 @@ export class UserRepository extends Repository<User> {
         statusMessage,
         loginMethod,
       } = user;
+
       return {
-        message: `${email} 회원가입 성공`,
+        message: `${email} 회원가입 성공했습니다`,
         data: {
           email,
           nickname,
@@ -78,7 +75,6 @@ export class UserRepository extends Repository<User> {
           statusMessage,
           loginMethod,
         },
-        accessToken: access_token,
         statusCode: 201,
       };
     } catch (error) {

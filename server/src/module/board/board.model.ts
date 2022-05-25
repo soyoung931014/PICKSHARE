@@ -2,6 +2,7 @@ import { Lock, Mood, PictureMethod } from './board-state.union';
 
 export interface Board {
   id: number;
+  nickname: string;
   title: string;
   picture: string;
   pictureMethod: PictureMethod;
@@ -11,5 +12,5 @@ export interface Board {
   date: string;
   created_at: Date;
   updated_at: Date;
-  user_id: number;
+  user: number;
 }

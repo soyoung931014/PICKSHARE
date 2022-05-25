@@ -686,7 +686,7 @@ function MyPage(props: any) {
               <TagHome
                 src={homeIndex}
                 onClick={() => {
-                  navigate('/', { replace: true });
+                  navigate('/mainfeed', { replace: true });
                 }}
               ></TagHome>
               <TagSignin

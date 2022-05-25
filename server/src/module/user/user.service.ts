@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -127,16 +128,37 @@ export class UserService {
         email,
       });
       if (!userInfo) {
-        return this.userRepository.kakaoCreateUser(email, access_token);
+        const user = await this.userRepository.kakaoCreateUser(email);
+        const { data, message, statusCode } = user;
+        // console.log(data, message, statusCode);
+        const accessToken = this.token.sign({
+          access_token,
+          ...data,
+        });
+
+        return {
+          data,
+          statusCode,
+          message,
+          accessToken,
+        };
       } else {
         const { email, nickname, userImage, statusMessage, loginMethod } =
           userInfo;
         if (userInfo.loginMethod === 2) {
+          const accessToken = this.token.sign({
+            access_token,
+            email,
+            nickname,
+            userImage,
+            statusMessage,
+            loginMethod,
+          });
           return {
             message: '로그인에 성공했습니다.',
             statusCode: 200,
             data: { email, nickname, userImage, statusMessage, loginMethod },
-            accessToken: access_token,
+            accessToken,
           };
         }
         return { message: '일반 계정을 가지고 있습니다.', statusCode: 400 };
@@ -145,5 +167,19 @@ export class UserService {
       console.log(error, '찾을 수 없는 인가코드입니다.');
       return { message: '찾을 수 없는 인가코드입니다.', data: error };
     }
+  }
+  async getUserInfo(userNickname: string): Promise<{ data: object }> {
+    const info = await this.userRepository.findOne({
+      nickname: userNickname,
+    });
+
+    return {
+      data: {
+        id: info.id,
+        nickname: info.nickname,
+        userImage: info.userImage,
+        statusMessage: info.statusMessage,
+      },
+    };
   }
 }

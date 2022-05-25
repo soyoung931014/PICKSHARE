@@ -6,10 +6,12 @@ import {
   Get,
   Req,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { LoginDto } from './dto/login-user.dto';
 import { SignUpDto } from './dto/singup-user.dto';
+import { User } from './user.entity';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -60,5 +62,10 @@ export class UserController {
   @UseGuards(AuthGuard())
   logout(@Req() req: any) {
     console.log('req', req);
+  }
+
+  @Get('/userInfo')
+  getUserInfo(@Query('userNickname') userNickname: string): Promise<{data: object}> {
+    return this.userService.getUserInfo(userNickname);
   }
 }
