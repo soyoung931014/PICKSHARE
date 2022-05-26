@@ -1,10 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
+import { PassportModule, PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from '../user/user.entity';
 import { UserRepository } from '../user/user.repository';
 import * as dotenv from 'dotenv';
+import { constants } from 'buffer';
+import axios from 'axios';
 dotenv.config();
 
 @Injectable()
@@ -22,13 +24,40 @@ export class TokenService extends PassportStrategy(Strategy) {
 
   // 토큰 검증
   async validate(payload) {
-    const { email } = payload;
-    const user: User = await this.userRepository.findOne({ email });
+    const { email, access_token, loginMethod } = payload;
+    /* console.log(payload, 'fdfdfd');
+    console.log(access_token); */
+    try {
+      if (loginMethod === 2) {
+        const findKakaoEmail = await axios.get(
+          'https://kapi.kakao.com/v2/user/me',
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          },
+        );
 
-    if (!user) {
-      throw new UnauthorizedException('유저 없음');
+        if (findKakaoEmail) {
+          const user: User = await this.userRepository.findOne({
+            email: findKakaoEmail.data.kakao_account.email,
+          });
+          console.log(user, '카카오 유저');
+          return user;
+        } else {
+          throw new UnauthorizedException('토큰 만료');
+        }
+      } else {
+        const user: User = await this.userRepository.findOne({ email });
+        if (!user) {
+          throw new UnauthorizedException('유저 없음');
+        }
+        console.log(user, '일반 로그인 유저');
+        return user;
+      }
+    } catch (error) {
+      console.log(error);
     }
-    return user;
     // return 값은 @UseGuards(AuthGuard())를 이용한 모든 요청의 Request Object에 들어간다.
   }
 
