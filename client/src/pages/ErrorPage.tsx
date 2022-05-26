@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import React from 'react';
 import styled from 'styled-components';
 import background from '../img/diaryBackground.png';
@@ -18,11 +19,15 @@ const Pickshare = styled.div`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `;
-function ErrorPage() {
+function ErrorPage(props: any) {
   return (
     <>
       <Wrapper>
-        <Pickshare>404 Error</Pickshare>
+        {props.text ? (
+          <Pickshare>{props.text}</Pickshare>
+        ) : (
+          <Pickshare>404Error</Pickshare>
+        )}
       </Wrapper>
     </>
   );
