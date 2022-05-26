@@ -105,7 +105,6 @@ export default function MainFeed() {
   const [ orderingH, setOrderingH ] = useState(false); 
 
   const handleSearchInput = debounce(async(e: any) => {
-    // const { name, value } = e.target;
     setSearchInput(e.target.value)
   }, 300);
 
@@ -114,6 +113,7 @@ export default function MainFeed() {
   }
 
   const sortFeedByHeart = () => {
+    console.log('하트')
     setOrderingH(true)
   }
   
