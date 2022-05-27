@@ -132,6 +132,7 @@ export default function UserFeed() {
     return await feedApi.postFollow(userInfo, userlist.nickname, accessToken)
       .then(() => {
         setFollow(true)
+        console.log('포스트후 팔로우?',follow)
       })
   }
 
@@ -172,7 +173,7 @@ export default function UserFeed() {
       })
     }
 
-  }, [userRender])
+  }, [userRender, follow])
 
   return (
     <UserWapper>

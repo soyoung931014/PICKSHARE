@@ -56,7 +56,7 @@ const feedApi = {
       '/follow/following',
       {
         info,
-        nickname,
+        'followingNickname': nickname,
       },
       {
         headers: {
