@@ -6,6 +6,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { connect, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
+
 import styled from 'styled-components';
 import { BiHome } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
@@ -86,7 +87,7 @@ const Nav = (props: any) => {
               </Div>
               <Div>
                 <Link
-                  to="/feed"
+                  to={`/feed/${userInfo.nickname}`}
                   style={{
                     textDecoration: 'none',
                     color: 'black',
