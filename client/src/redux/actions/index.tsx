@@ -28,3 +28,13 @@ export const deleteUserInfo = () => {
     accessToken: '',
   };
 };
+
+// board
+export const addBoardInfo = (boardInfo: object, token: string) => {
+  return {
+    type: ADD_BOARD_INFO,
+    payload: boardInfo,
+    accessToken: token,
+  };
+};
+
