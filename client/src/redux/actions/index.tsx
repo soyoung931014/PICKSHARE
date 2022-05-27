@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-loss-of-precision */
+
 //eslint-disable
 // action 작성
 
 import { ADD_USER_INFO } from './actionTypes';
 import { DELETE_USER_INFO } from './actionTypes';
+import { ADD_BOARD_INFO } from './actionTypes';
 //user
 // export const addUserInfo = (userInfo: object, token: string) => {
 //   return {
@@ -37,4 +40,3 @@ export const addBoardInfo = (boardInfo: object, token: string) => {
     accessToken: token,
   };
 };
-

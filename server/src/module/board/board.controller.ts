@@ -48,9 +48,9 @@ export class BoardController {
   // ParseIntPipe: 숫자 형태로 입력이 되지 않을시 Err를 출력하는 내장 함수
   deleteBoard(
     @Param('id', ParseIntPipe) id: number,
-    @GetUser() user: User,
+    // @GetUser() user: User,
   ): Promise<void> {
-    return this.boardService.deleteBoard(id, user);
+    return this.boardService.deleteBoard(id);
   }
 
   // 게시물 공개 OR 비공개

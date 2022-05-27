@@ -10,7 +10,6 @@ import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import React, { useRef, useState } from 'react';
 import { addBoardInfo } from '../../redux/actions';
-import boardApi from '../../api/board';
 /*
 Container
   Left
