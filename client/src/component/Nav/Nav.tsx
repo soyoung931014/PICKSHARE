@@ -14,18 +14,18 @@ const Nav = () => {
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
-  console.log(userInfo, '네브 유저인포');
   return (
     <>
       <NavContainer>
         Nav
         {isLogin === true ? (
-          <StyledNavLink to={`/feed/${userInfo.id}`}>
+          <StyledNavLink to={`/feed/${userInfo.nickname}`}>
             {userInfo.nickname}의 피드
           </StyledNavLink>
         ) : (
           <div>user의 피드</div>
         )}
+        <StyledNavLink to='/mainfeed'>메인피드</StyledNavLink>
       </NavContainer>
     </>
   );

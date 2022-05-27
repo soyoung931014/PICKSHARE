@@ -315,7 +315,7 @@ function Login(props: any) {
           // console.log(userInfo);
           if (userInfo) {
             userInfoToStore(userInfo, token);
-            navigate('/board', { replace: true });
+            navigate('/mainfeed', { replace: true });
           } else {
             console.log('로그인 실패');
           }

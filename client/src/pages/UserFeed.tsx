@@ -8,8 +8,11 @@ import sampleImg from '../img/selfie4.jpg'
 import sampleImg2 from '../img/instafeed3.jpg'
 import Heatmap from '../component/Feed/PersonalFeed/Heatmap/Heatmap';
 import feedApi from '../api/feed';
-import { useParams } from 'react-router-dom';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
+import media from 'styled-media-query';
+import { useDispatch } from 'react-redux';
+import { followAction, unfollowAction } from '../redux/actions';
+import { follow } from '../redux/reducers/follow/followReducer';
 
 const UserWapper = styled.div`
   width: 100vw;
@@ -21,25 +24,53 @@ const UserWapper = styled.div`
 const Div = styled.div`
   margin: 150px;
   border: blue dotted 3px;
-  min-width: 35rem;
+  /* min-width: 35rem; */
+  min-width: 21rem;
 `
 const User = styled.div`
   border: red solid 1px;
   display: grid;
-  grid-template-columns: 1fr 1fr 3fr;
+  margin: 0.6rem 4.5rem;
+  margin-right: 4.5rem;
+  grid-template-columns: 1fr 1fr 1fr;
 `
+
+const UserDiv = styled.div`
+  border: green solid 1px ;
+`
+
 const UserImg = styled.img`
-  border: paleturquoise solid 3px;
+  border: #020f0f solid 3px;
+  position: relative;
   border-radius: 100%;
-  margin: 0.6rem 1rem;
-  margin-left: 3rem;
   width: 178px;
   height: 178px;
+  box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
+
+`
+const UserFollow = styled.div`
+  border: orangered dotted 1px;
+  background-color: white;
+  position: absolute;
+  border-radius: 20px;
+  box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
+  width: 94px;
+  height: 37px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  font-weight: 600;
+  left: 21rem;
+  top: 25.5rem;
 `
 const UserInfo = styled.div``
-const UserDiv = styled.div`
+const UserDescribe = styled.div`
   border: peachpuff solid 1.5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   border-radius: 1rem;
+  box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
   width: 261px;
   height: 40px;
   background-color: white;
@@ -49,12 +80,18 @@ const Content = styled.div`
   margin: 0.5rem;
   margin-left: 1rem;
 `
+const UserFollowInfo = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 const Feed = styled.div`
   display: grid;
   gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
 `
 export default function UserFeed() {
+  const dispatch = useDispatch();
   const [ userfeedlist, setUserFeedlist ]: any[] = useState({
     id: '',
     contentImg: '',
@@ -64,13 +101,17 @@ export default function UserFeed() {
     heartNum: 0,
     locked: ''
   });
+
   const [userlist, setUserlist]: any[] = useState({
     nickname: '',
     userImage: '',
     statusMessage: ''
   })
+
   const [ userRender, setUserRender ] = useState(false);
+  const [ follow, setFollow ] = useState( false );
   const { isLogin, accessToken, userInfo } = useSelector((userReducer: any) => userReducer.userInfo);
+  const { isFollow } = useSelector((followReducer: follow) => followReducer)
   const [ counts, setCounts ] = useState({
     totalCount: 0,
     totalByDay: [],
@@ -82,9 +123,23 @@ export default function UserFeed() {
       return; 
     }
   }
+
+  const handleFollow = async() => {
+    if(isLogin === false){
+      alert('로그인이 필요한 서비스입니다')
+    }
+    console.log('이름',userlist.nickname)
+    return await feedApi.postFollow(userInfo, userlist.nickname, accessToken)
+      .then(() => {
+        setFollow(true)
+      })
+  }
+
+
   useEffect(() => {
+    
     let path = window.location.pathname.split("/")[2]
-    console.log(path)
+    console.log("path",path)
 
     const userfeedinfo = async () => {
       return await feedApi.userInfo(path)
@@ -105,6 +160,18 @@ export default function UserFeed() {
     }
     userPage();
 
+    if(isLogin === true){
+      console.log('닉네임', path)
+      feedApi.searchFollow(path, accessToken)
+      .then((result) => {
+        console.log('서치팔로우리졸트',result.data);
+        if(result.data){
+          setFollow(true);
+          console.log('팔로우?',follow)
+        }
+      })
+    }
+
   }, [userRender])
 
   return (
@@ -113,20 +180,42 @@ export default function UserFeed() {
       <Div>
         <div>UserFeed</div>
           <User>
-            <UserImg src={userlist.userImage}/>
+            <div>
+              <UserDiv>
+                <UserImg src={userlist.userImage}/>
+                {isLogin === true 
+                ? follow === true 
+                ? <UserFollow >unfollow</UserFollow>
+                : <UserFollow onClick={handleFollow}>follow</UserFollow>
+                : <UserFollow onClick={handleFollow}>follow</UserFollow>
+                }
+              </UserDiv>
+            </div>
             <UserInfo>
-              <UserDiv>
+              <UserDescribe>
                 <Content>
-                  {userlist.nickname}
+                  닉네임{userlist.nickname}
                 </Content>
-              </UserDiv>
-              <UserDiv>
+              </UserDescribe>
+              <UserDescribe>
                 <Content>
-                  {userlist.statusMessage}
+                  상메{userlist.statusMessage}
                 </Content>
-              </UserDiv>
-              <UserDiv>
-              </UserDiv>
+              </UserDescribe>
+              <UserDescribe>
+                <div>
+                  <UserFollowInfo>게시물</UserFollowInfo>
+                  <UserFollowInfo>게시물 수</UserFollowInfo>
+                </div>
+                <div>
+                  <UserFollowInfo>팔로잉</UserFollowInfo>
+                  <UserFollowInfo>팔로잉 수</UserFollowInfo>
+                </div>
+                <div>
+                  <UserFollowInfo>팔로워</UserFollowInfo>
+                  <UserFollowInfo>팔로워 수</UserFollowInfo>
+                </div>
+              </UserDescribe>
             </UserInfo>
           </User>
           <Feed>
