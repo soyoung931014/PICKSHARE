@@ -12,13 +12,16 @@ export class HeartRepository extends Repository<Heart> {
 				board_id
 			}
 		})
+
 		if(findAlreadyExist.length !== 0){
-			throw new NotFoundException(`Already hearted board ${board_id}`)
+			throw new NotFoundException(`Already hearted board ${board_id}`);
 		}
+
 		const hearts = {
 			'user_id': user.id, 
 			'board_id': board_id
 		};
+		
 		await this.save(hearts);
 		const heartList = await this.find({
 			where: {

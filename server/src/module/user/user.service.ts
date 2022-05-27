@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LoginDto } from './dto/login-user.dto';
 import { SignUpDto } from './dto/singup-user.dto';
@@ -8,6 +8,7 @@ import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
+import { NotFoundError } from 'rxjs';
 require('dotenv').config();
 
 @Injectable()
@@ -172,6 +173,10 @@ export class UserService {
     const info = await this.userRepository.findOne({
       nickname: userNickname,
     });
+
+    if(!info){
+      throw new NotFoundException(`Can't find user nickname ${userNickname}`); 
+    }
 
     return {
       data: {

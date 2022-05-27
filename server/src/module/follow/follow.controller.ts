@@ -53,4 +53,13 @@ export class FollowController {
   ): Promise<Follow[]> {
     return this.followService.getFollowerList(followingNickname);
   }
+
+  @Get('/follow')
+  @UseGuards(AuthGuard())
+  getFollowOrNot(
+    @GetUser() user: User,
+    @Query('userNickname') userNickname: string,
+  ): Promise<boolean> {
+    return this.followService.getFollowOrNot(user, userNickname);
+  }
 }
