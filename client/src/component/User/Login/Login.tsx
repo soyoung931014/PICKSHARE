@@ -11,7 +11,7 @@ import axios from 'axios';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
 import { addUserInfo } from '../../../redux/actions/index';
-import userApi from '../../../api/user';
+import api from '../../../api/user';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import background from '../../../img/diaryBackground.png';
@@ -227,7 +227,7 @@ function Login(props: any) {
   // 중복되는 초기화를 막기 위해 isInitialized()로 SDK 초기화 여부를 판단한다.
   //console.log(props, 'props');
   const { Kakao } = window as any;
-  //console.log(Kakao);
+  console.log(Kakao);
 
   const { userInfoToStore } = props;
 
@@ -328,6 +328,7 @@ function Login(props: any) {
     console.log('hihi');
   };
 
+  console.log(process.env, 'enenene');
   const handleKakaoLogin = (e: any) => {
     e.preventDefault();
     console.log(Kakao);

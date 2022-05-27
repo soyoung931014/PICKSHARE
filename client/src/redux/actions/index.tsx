@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-loss-of-precision */
+
 //eslint-disable
 // action 작성
 
@@ -6,6 +8,7 @@ import {
   DELETE_USER_INFO,
   FINISH_USER_FEED,
   FOLLOW_USER,
+  ADD_BOARD_INFO,
   MODAL_OFF,
   MODAL_ON,
   SEARCH_USER_FEED,
@@ -38,6 +41,14 @@ export const deleteUserInfo = () => {
   };
 };
 
+// board
+export const addBoardInfo = (boardInfo: object, token: string) => {
+  return {
+    type: ADD_BOARD_INFO,
+    payload: boardInfo,
+    accessToken: token,
+  };
+};
 export const searchUserFeed = (data: string) => {
   return {
     type: SEARCH_USER_FEED,
