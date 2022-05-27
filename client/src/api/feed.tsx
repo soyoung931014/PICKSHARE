@@ -51,12 +51,11 @@ const feedApi = {
   userInfo: (nickname: string) => {
     return api.get(`/user/userInfo?userNickname=${nickname}`);
   },
-  postFollow: (info: any, nickname: string, accessToken: string) => {
+  postFollow: (nickname: string, accessToken: string) => {
     return api.post(
-      '/follow/following',
+      '/follow/',
       {
-        info,
-        'followingNickname': nickname,
+        nickname,
       },
       {
         headers: {

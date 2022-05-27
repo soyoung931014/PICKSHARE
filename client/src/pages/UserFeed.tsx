@@ -128,14 +128,19 @@ export default function UserFeed() {
     if(isLogin === false){
       alert('로그인이 필요한 서비스입니다')
     }
-    console.log('이름',userlist.nickname)
-    return await feedApi.postFollow(userInfo, userlist.nickname, accessToken)
+    return await feedApi.postFollow( userlist.nickname, accessToken)
       .then(() => {
         setFollow(true)
-        console.log('포스트후 팔로우?',follow)
       })
   }
 
+  // const handleUnFollow = async() => {
+  //   if(isLogin === false){
+  //     alert('로그인이 필요한 서비스입니다')
+  //   }
+  //   console.log('이름',userlist.nickname)
+  //   return await feedApi.
+  // }
 
   useEffect(() => {
     
@@ -145,7 +150,6 @@ export default function UserFeed() {
     const userfeedinfo = async () => {
       return await feedApi.userInfo(path)
       .then(result => {
-        console.log(result,"유저 인포 리스트")
         setUserlist(result.data.data)
       })
     }
@@ -155,7 +159,6 @@ export default function UserFeed() {
     const userPage = async () => {
       return await feedApi.getUserFeed(path)
       .then(result => {
-        console.log(result)
         setUserFeedlist(result.data)
       })
     }
@@ -165,10 +168,8 @@ export default function UserFeed() {
       console.log('닉네임', path)
       feedApi.searchFollow(path, accessToken)
       .then((result) => {
-        console.log('서치팔로우리졸트',result.data);
         if(result.data){
           setFollow(true);
-          console.log('팔로우?',follow)
         }
       })
     }

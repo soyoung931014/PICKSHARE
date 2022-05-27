@@ -102,12 +102,6 @@ export default function MainFeedList(props: any) {
     return await feedApi.postHeart(userInfo, props.id, accessToken)
       .then(() => {
         setHeart(true);
-      // const path = window.location.pathname.split("/")[1]
-      // if(path === 'feed'){
-      //   props.setUserRender(!props.userRender)
-      // } else if(path === 'mainfeed'){
-      //   props.setRender(!props.render);
-      // }
       });
   };
 
@@ -116,12 +110,6 @@ export default function MainFeedList(props: any) {
       .deleteHeart(userInfo, props.id, accessToken)
       .then(() => {
         setHeart(false);
-        // const path = window.location.pathname.split("/")[1]
-        // if(path === 'feed'){
-        //   props.setUserRender(!props.userRender)
-        // } else if(path === 'mainfeed'){
-        //   props.setRender(!props.render);
-        // }
       });
   };
 
