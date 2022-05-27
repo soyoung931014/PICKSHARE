@@ -25,7 +25,7 @@
   "rules": {
     "@typescript-eslint/no-explicit-any": "off",
     "no-loss-of-precision": "off",
-    "@typescript-eslint/no-loss-of-precision": ["error"]
+    "@typescript-eslint/no-loss-of-precision": "error"
   },
   "ignorePatterns": ["dist/", "node_modules/", ".env"]
 }

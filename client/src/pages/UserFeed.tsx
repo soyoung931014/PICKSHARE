@@ -1,16 +1,17 @@
 /*eslint-disable*/
+/* eslint-disable @typescript-eslint/no-loss-of-precision */
+
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Nav from '../component/Nav/Nav';
 import feedBG from '../img/feedBG.jpg';
-import sampleImg from '../img/selfie4.jpg';
-import sampleImg2 from '../img/instafeed3.jpg';
-import Heatmap from '../component/Feed/PersonalFeed/Heatmap/Heatmap';
+// import sampleImg from '../img/selfie4.jpg';
+// import sampleImg2 from '../img/instafeed3.jpg';
 import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { useDispatch } from 'react-redux';
-import { followAction, unfollowAction } from '../redux/actions';
+// import { followAction, unfollowAction } from '../redux/actions';
 import { follow } from '../redux/reducers/follow/followReducer';
 
 const UserWapper = styled.div`
