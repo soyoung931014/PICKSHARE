@@ -64,8 +64,6 @@ const Nav = (props: any) => {
     (userReducer: any) => userReducer.userInfo
   );
   const navigate = useNavigate();
-  console.log(userInfo, '네브 유저인포');
-  console.log(props);
 
   return (
     <>

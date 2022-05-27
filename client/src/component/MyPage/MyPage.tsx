@@ -82,11 +82,11 @@ const TagHome = styled.img`
 /// 세부사항
 
 const Img = styled.img`
-  // border: solid green 2px;
+  border: solid #bbbabe 3px;
+  padding: 0.5rem;
   box-sizing: border-box;
   width: 15vw;
   height: 28vh;
-
   border-radius: 100%;
 `;
 const UpdateProfileBox = styled.div`
@@ -119,7 +119,6 @@ const Form = styled.form<{ Left?: any }>`
 `;
 const InputBox = styled.div<{ button?: any }>`
   //border: solid 2px aqua;
-  //width: 10rem;
   height: 3.3rem;
   margin-top: ${(props) => (props.button ? '2rem' : '0')};
   box-sizing: border-box;
@@ -140,7 +139,6 @@ const Message = styled.div<{ UpdateProfile?: any }>`
 const Input = styled.input<{ Check?: any }>`
   height: 3rem;
   width: ${(props) => (props.Check ? '65%' : '77%')};
-  //width: 20rem;
   border-radius: 30px;
   box-sizing: border-box;
   box-shadow: 0 3px 5px #3c4a5645;
@@ -570,7 +568,7 @@ function MyPage(props: any) {
                             ref={inputNickname}
                             value={email}
                             disabled
-                            style={{ color: '#04A1A1', fontWeight: 'bolder' }}
+                            style={{ color: '#F548CC', fontWeight: 'bolder' }}
                           />
                         </Box>
                       </InputBox>

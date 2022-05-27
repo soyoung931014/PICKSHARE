@@ -2,6 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import background from '../img/diaryBackground.png';
+
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
