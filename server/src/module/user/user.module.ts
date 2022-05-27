@@ -6,21 +6,19 @@ import { UserRepository } from './user.repository';
 import { TokenService } from '../token/token.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { TokenModule } from '../token/token.module';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }), //UseGuards때문
     TypeOrmModule.forFeature([UserRepository]),
     JwtModule.register({
-      secret: process.env.SECRET,
+      secret: process.env.SECRET || process.env.REFRESH, // 토큰을 생성하기 위해
       signOptions: {
-        expiresIn: 60 * 60
-      }
+        expiresIn: 600 * 600,
+      },
     }),
-    TokenModule
   ],
-  providers: [UserService, TokenService, PassportModule],
+  providers: [UserService, TokenService, PassportModule,],
   controllers: [UserController],
-  //exports: [UserRepository]
 })
-export class UserModule { }
+export class UserModule {}

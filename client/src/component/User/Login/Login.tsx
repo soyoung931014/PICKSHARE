@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -9,6 +12,7 @@ import { useRef } from 'react';
 import { connect } from 'react-redux';
 import { addUserInfo } from '../../../redux/actions/index';
 import userApi from '../../../api/user';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import background from '../../../img/diaryBackground.png';
 import pickshareLogo from '../../../img/pickshare.png';
@@ -45,6 +49,7 @@ const Left = styled.div`
   box-shadow: 10px 10px 30px #3c4a5645;
   border-right: #b1b0b0 solid 2px;
 `;
+
 const Right = styled.div`
   width: 32vw;
   height: 85vh;
@@ -82,6 +87,7 @@ const TagSignin = styled.img`
   //border: solid 2px black;
 `;
 const TagSignup = styled.img`
+  //border: solid 2px black;
   width: 8rem;
   height: 5rem;
   cursor: pointer;
@@ -89,7 +95,8 @@ const TagSignup = styled.img`
     transform: scale(1.05);
     cursor: pointer;
   }
-  //border: solid 2px black;
+  position: relative;
+  top: -10px;
 `;
 
 /// 세부사항
@@ -102,115 +109,127 @@ const Img = styled.img`
   bottom: 10px;
 `;
 const LoginBox = styled.div`
+  //border: solid 2px red;
   height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  //border: solid 2px red;
   box-sizing: border-box;
 `;
-const Title = styled.h1`
+const Title = styled.div`
   //border: solid 2px teal;
-  //background: linear-gradient(#e66465, #9198e5);
-  //background: linear-gradient(45deg, #fe6b8b 30%, #ff8e53 90%);
+  font-size: 2rem;
+  font-weight: 900;
+  margin-top: 2.5rem;
+  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 const Form = styled.form`
   //border: dotted 2px red;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: 30vw;
   height: 50vh;
   box-sizing: border-box;
-  position: relative;
-  top: 30px;
 `;
 const InputBox = styled.div<{ button?: any }>`
-  // border: solid 2px aqua;
+  //border: solid 2px aqua;
   height: 3.3rem;
-  margin-top: ${(props) => (props.button ? '2.5rem' : '0')};
+  margin-top: ${(props) => (props.button ? '2rem' : '0')};
   box-sizing: border-box;
 `;
 const Message = styled.div`
   //border: solid 2px green;
   height: 1.7rem;
+  padding-top: 3px;
   box-sizing: border-box;
   font-size: 15px;
   text-align: left;
-  padding-left: 6em;
-  color: #ff0000bd;
+  color: #ff8686;
 `;
 const Input = styled.input`
-  width: 18rem;
   height: 3rem;
+  width: 68%;
   border-radius: 30px;
   box-sizing: border-box;
-  box-shadow: 0 4px 10px #3c4a5645;
+  box-shadow: 0 3px 5px #3c4a5645;
   text-decoration: none;
   font-size: large;
   outline: none;
   padding: 0 1em;
   border: 0;
+  opacity: 0.6;
 `;
 const Button = styled.button`
-  border: solid 2px green;
+  //border: solid 2px green;
   width: 18rem;
   height: 3rem;
   border-radius: 30px;
   box-sizing: border-box;
   border: 0;
-  box-shadow: 0 10px 25px #3c4a5645;
+  box-shadow: 0 5px 14px #3c4a5645;
   text-decoration: none;
   font-size: large;
-  background: linear-gradient(45deg, #fd40c8 10%, #a396f8 60%);
+  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
   cursor: pointer;
   font-size: large;
   font-weight: bold;
-  color: #4e4d4d;
-  //transition: all 0.5s ease-in-out;
-  &:hover {
-    transform: scale(1.1);
-    cursor: pointer;
-  }
+  color: white;
 `;
 const ButtonKakao = styled.button`
-  border: solid 2px green;
+  //border: solid 2px green;
   width: 18rem;
   height: 3rem;
   border-radius: 30px;
   box-sizing: border-box;
   border: 0;
-  box-shadow: 0 10px 25px #3c4a5645;
+  box-shadow: 0 5px 14px #3c4a5645;
   text-decoration: none;
   font-size: large;
   font-weight: bold;
   color: #4e4d4d;
   background-color: #fdf772;
   cursor: pointer;
-  //transition: all 0.5s ease-in-out;
-  &:hover {
-    transform: scale(1.1);
-    cursor: pointer;
-  }
+  margin-top: 0.7rem;
 `;
 const Div = styled.div`
-  height: 1.8rem;
+  height: 2rem;
   width: 20rem;
   border-top: solid purple 1px;
   opacity: 0.3;
   font-size: 0.9rem;
-  margin-top: 10px;
-  padding-top: 2px;
+  margin-top: 0.7rem;
+  padding: 0.7rem 0rem;
+  //border: solid 2px green;
 `;
 
 const Box = styled.div`
+  // border: red solid 2px;
   display: flex;
   justify-content: center;
   text-align: center;
 `;
+const BoxMessage = styled.div`
+  display: flex;
+  margin-left: 5.3rem;
+  text-align: center;
+  padding-right: 7rem;
+`;
 
 function Login(props: any) {
+  const navigate = useNavigate();
+
+  /*  const kakao = (window as any).Kakao;
+  console.log(kakao); */
+  // 중복되는 초기화를 막기 위해 isInitialized()로 SDK 초기화 여부를 판단한다.
   //console.log(props, 'props');
+  const { Kakao } = window as any;
+  //console.log(Kakao);
+
   const { userInfoToStore } = props;
-  //axios.defaults.withCredentials = true;
 
   const inputEmail: any = useRef();
   const inputpassword: any = useRef();
@@ -220,9 +239,6 @@ function Login(props: any) {
     useState('이메일을 입력해주세요');
   const [passwordMessage, setPasswordMessage] =
     useState('비밀번호를 입력해주세요');
-
-  //토큰저장
-  const [token, setToken] = useState('');
 
   const handleUserInfo = (e: any) => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
@@ -255,7 +271,7 @@ function Login(props: any) {
   // 로그인
   const Login = async (e: any) => {
     e.preventDefault();
-    console.log(userInfo);
+    //console.log(userInfo);
     if (emailRegExp.test(userInfo.email) === false) {
       inputEmail.current.focus();
       return;
@@ -269,11 +285,11 @@ function Login(props: any) {
         await axios
           .post(`http://localhost:5000/user/login`, userInfo)
           .then((res) => {
-            const { accessToken, loginMethod } = res.data.data;
-            console.log(accessToken, loginMethod);
+            const { accessToken, loginMethod } = res.data.data; //refreshToken
+            //console.log(accessToken, loginMethod);
             if (accessToken) {
-              setToken(accessToken);
-              void tokenVerification();
+              void tokenVerification(accessToken);
+              //void tokenVerification();
             } else {
               console.log('토큰이 없습니다.');
             }
@@ -288,7 +304,7 @@ function Login(props: any) {
   };
 
   // 토큰 검증 후 유저 정보 불러오는 함수
-  const tokenVerification = async () => {
+  const tokenVerification = async (token: string) => {
     try {
       await axios
         .get(`http://localhost:5000/token`, {
@@ -298,7 +314,8 @@ function Login(props: any) {
           const { userInfo } = res.data.data;
           // console.log(userInfo);
           if (userInfo) {
-            void goToStore(userInfo);
+            userInfoToStore(userInfo, token);
+            navigate('/board', { replace: true });
           } else {
             console.log('로그인 실패');
           }
@@ -307,10 +324,17 @@ function Login(props: any) {
       console.log('error');
     }
   };
-  // 유저정보 store에 담기
-  const goToStore = async (userInfo: any) => {
-    await userInfoToStore(userInfo);
+  const taghome = () => {
+    console.log('hihi');
   };
+
+  const handleKakaoLogin = (e: any) => {
+    e.preventDefault();
+    console.log(Kakao);
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=be17a9e882217a14ba581b03ea87c38f&redirect_uri=http://localhost:3000/loading&response_type=code&state=kakao`;
+    //navigate(window.location.href);
+  };
+
   return (
     <Wrapper>
       <Book>
@@ -322,41 +346,68 @@ function Login(props: any) {
             <Title>Log in to your account</Title>
             <Form>
               <InputBox>
-                <Input
-                  type="text"
-                  ref={inputEmail}
-                  name="email"
-                  placeholder="이메일"
-                  onChange={emailValidation}
-                />
+                <Box>
+                  <Input
+                    type="text"
+                    ref={inputEmail}
+                    name="email"
+                    placeholder="이메일"
+                    onChange={emailValidation}
+                  />
+                </Box>
               </InputBox>
-              <Message>{emailcheckMessage}</Message>
+              <BoxMessage>
+                <Message>{emailcheckMessage}</Message>
+              </BoxMessage>
               <InputBox>
-                <Input
-                  type="current-password"
-                  ref={inputpassword}
-                  name="password"
-                  placeholder="비밀번호"
-                  onChange={passwordValidation}
-                />
+                <Box>
+                  <Input
+                    type="current-password"
+                    ref={inputpassword}
+                    name="password"
+                    placeholder="비밀번호"
+                    onChange={passwordValidation}
+                  />
+                </Box>
               </InputBox>
-              <Message>{passwordMessage}</Message>
+              <BoxMessage>
+                <Message>{passwordMessage}</Message>
+              </BoxMessage>
               <InputBox button>
-                <Button onClick={Login}>SignIn</Button>
+                <Box>
+                  <Button onClick={Login}>SignIn</Button>
+                </Box>
                 <Box>
                   <Div>SNS 계정으로 편하게 시작하기</Div>
                 </Box>
               </InputBox>
               <InputBox button>
-                <ButtonKakao>kakao</ButtonKakao>
+                <Box>
+                  <ButtonKakao onClick={handleKakaoLogin}>kakao</ButtonKakao>
+                </Box>
               </InputBox>
             </Form>
           </LoginBox>
         </Right>
         <Index>
-          <TagHome src={homeIndex}></TagHome>
-          <TagSignin src={signinIndex}></TagSignin>
-          <TagSignup src={signupIndex}></TagSignup>
+          <TagHome
+            src={homeIndex}
+            onClick={() => {
+              navigate('/mainfeed', { replace: true });
+            }}
+          ></TagHome>
+          <TagSignin
+            src={signinIndex}
+            onClick={() => {
+              navigate('/login', { replace: true });
+            }}
+          ></TagSignin>
+          <TagSignup
+            src={signupIndex}
+            onClick={() => {
+              navigate('/signup', { replace: true });
+            }}
+          ></TagSignup>
         </Index>
       </Book>
     </Wrapper>
@@ -372,8 +423,8 @@ const mapStateToProps = (state: object) => {
 };
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    userInfoToStore: (userInfo: object) => {
-      dispatch(addUserInfo(userInfo));
+    userInfoToStore: (userInfo: object, token: string) => {
+      dispatch(addUserInfo(userInfo, token));
     },
   };
 };

@@ -7,21 +7,226 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
-//import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import background from '../../../img/diaryBackground.png';
+import pickshareLogo from '../../../img/pickshare.png';
+import homeIndex from '../../../img/homeIndex.png';
+import signupIndex from '../../../img/signupIndex.png';
+import signinIndex from '../../../img/signinIndex.png';
 
-const Container = styled.div``;
-const SignupBox = styled.form`
-  width: 40rem;
-  height: 100rem;
-  border: 2px solid red;
-  padding: 30px;
-  margin-left: 10rem;
+const Wrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+  background-image: url(${background});
+`;
+const Book = styled.div`
+  //border: solid 2px red;
+  height: 100vh;
+  width: 90vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 1em;
+  position: relative;
+  left: 8rem;
+`;
+const Left = styled.div`
+  display: flex;
+  align-items: flex-end;
+  width: 32vw;
+  height: 85vh;
+  padding-left: 1em;
+  background-color: white;
+  //border: dotted 2px green;
+  border-radius: 30px 20px 20px 30px;
+  box-shadow: 10px 10px 30px #3c4a5645;
+  border-right: #b1b0b0 solid 2px;
+`;
+
+const Right = styled.div`
+  width: 32vw;
+  height: 85vh;
+  background-color: white;
+  padding-left: 1em;
+  //border: solid 2px black;
+  border-radius: 20px 30px 30px 20px;
+  box-shadow: 30px 10px 10px #3c4a5645;
+  border-left: #b1b0b0 solid 2px;
+`;
+const Index = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  //border: solid 2px black;
+`;
+const TagHome = styled.img`
+  width: 7rem;
+  height: 4.5rem;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+  //border: solid 2px black;
+`;
+const TagSignin = styled.img`
+  width: 11rem;
+  height: 4rem;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+  //border: solid 2px black;
+`;
+const TagSignup = styled.img`
+  //border: solid 2px black;
+  width: 8rem;
+  height: 5rem;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+  position: relative;
+  top: -10px;
+`;
+
+/// 세부사항
+
+const Img = styled.img`
+  width: 8em;
+  height: 23em;
+  position: relative;
+  left: -15px;
+  bottom: 10px;
+`;
+const LoginBox = styled.div`
+  //border: solid 2px red;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  box-sizing: border-box;
+`;
+const Title = styled.div`
+  //border: solid 2px teal;
+  font-size: 2rem;
+  font-weight: 900;
+  margin-top: 2.5rem;
+  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+`;
+const Form = styled.form`
+  //border: dotted 3px blue;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 30vw;
+  height: 50vh;
+  box-sizing: border-box;
+`;
+const InputBox = styled.div<{ button?: any }>`
+  // border: solid 2px aqua;
+  height: 3.4rem;
+  margin-top: ${(props) => (props.button ? '0' : '0')};
+  box-sizing: border-box;
+`;
+const Message = styled.div`
+  //border: solid 2px green;
+  height: 1.7rem;
+  padding-top: 3px;
+  box-sizing: border-box;
+  font-size: 15px;
+  text-align: left;
+  color: #ff8686;
+`;
+const Input = styled.input<{ Password?: any }>`
+  height: 3rem;
+  width: ${(props) => (props.Password ? '72%' : '52%')};
+  border-radius: 30px;
+  box-sizing: border-box;
+  box-shadow: 0 3px 5px #3c4a5645;
+  text-decoration: none;
+  font-size: large;
+  outline: none;
+  padding: 0 1em;
+  border: 0;
+  opacity: 0.6;
+`;
+const InputP = styled.input`
+  visibility: hidden;
+`;
+const Button = styled.button`
+  //border: solid 2px black;
+  width: 72%;
+  height: 3rem;
+  border-radius: 30px;
+  box-sizing: border-box;
+  border: 0;
+  box-shadow: 0 5px 14px #3c4a5645;
+  text-decoration: none;
+  font-size: large;
+  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
+  cursor: pointer;
+  font-size: large;
+  font-weight: bold;
+  color: white;
+  margin-top: 0.8rem;
+`;
+
+const TwinCheckButton = styled.button`
+  width: 18%;
+  height: 3rem;
+  margin-left: 2%;
+  border-radius: 5px;
+  box-sizing: border-box;
+  border: 0;
+  box-shadow: 0 5px 14px #3c4a5645;
+  text-decoration: none;
+  font-size: large;
+  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
+`;
+const ButtonKakao = styled.button`
+  //border: solid 2px green;
+  width: 72%;
+  height: 3rem;
+  border-radius: 30px;
+  box-sizing: border-box;
+  border: 0;
+  box-shadow: 0 5px 14px #3c4a5645;
+  text-decoration: none;
+  font-size: large;
+  font-weight: bold;
+  color: #4e4d4d;
+  background-color: #fdf772;
+  cursor: pointer;
+  margin-top: 0.7rem;
+`;
+
+const Box = styled.div`
+  //border: red solid 2px;
+  margin: 3px 0;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+`;
+const BoxMessage = styled.div`
+  display: flex;
+  margin-left: 5.3rem;
+  text-align: center;
+  padding-right: 7rem;
 `;
 
 function Signup() {
   //axios.defaults.withCredentials = true;
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const inputEmail: any = useRef();
   const inputNickname: any = useRef();
@@ -219,10 +424,14 @@ function Signup() {
       try {
         await axios
           .post(`http://localhost:5000/user/signup`, userInfo)
-          .then((res) => console.log(res));
-        alert('회원가입이 완료되었습니다. 로그인을 시도해주세요');
-        //🙋‍♀️ 로그인 화면으로 넘어가기
-        //navigate('/login');
+          .then((res) => {
+            console.log(res);
+            alert('회원가입이 완료되었습니다. 로그인을 시도해주세요');
+            navigate('/login', { replace: true });
+          });
+        /*  .then(() => {
+            navigate('/login', { replace: true });
+          }); */
       } catch (error) {
         console.log('error');
       }
@@ -230,60 +439,111 @@ function Signup() {
   };
 
   return (
-    <Container>
-      <SignupBox>
-        <div>
-          <input
-            placeholder="이메일"
-            ref={inputEmail}
-            name="email"
-            value={signupInfo.email}
-            onChange={handleEmailValidation}
-          />
-          <button onClick={emailCheck}>중복검사</button>
-          <div>{emailcheckMessage}</div>
-        </div>
-        <div>
-          <input
-            placeholder="닉네임"
-            ref={inputNickname}
-            name="nickname"
-            /* value={signupInfo.nickname} */
-            onChange={handleNicknameValidation}
-          />
-          <button onClick={nicknameCheck}>중복검사</button>
-          <div>{nicknamecheckMessage}</div>
-        </div>
-        <div>
-          <input
-            placeholder="비밀번호"
-            ref={inputPassword}
-            name="password"
-            type="new-password"
-            /* value={signupInfo.password} */
-            onChange={passwordValidation}
-          />
-        </div>
-
-        <div>
-          <input
-            placeholder="비밀번호확인"
-            ref={inputPasswordCheck}
-            name="passwordcheck"
-            type="new-password"
-            value={signupInfo.passwordcheck}
-            onChange={passwordCheck}
-          />
-        </div>
-        <div>{passwordMessage}</div>
-        <div>
-          <button onClick={signupcheck}>회원가입</button>
-        </div>
-        <div>
-          <button>카카오</button>
-        </div>
-      </SignupBox>
-    </Container>
+    <Wrapper>
+      <Book>
+        <Left>
+          <Img src={pickshareLogo} />
+        </Left>
+        <Right>
+          <LoginBox>
+            <Title>Create a new Account</Title>
+            <Form>
+              <InputBox>
+                <Box>
+                  <Input
+                    placeholder="이메일"
+                    ref={inputEmail}
+                    name="email"
+                    value={signupInfo.email}
+                    onChange={handleEmailValidation}
+                  />
+                  <TwinCheckButton onClick={emailCheck}>
+                    중복검사
+                  </TwinCheckButton>
+                </Box>
+              </InputBox>
+              <BoxMessage>
+                <Message>{emailcheckMessage}</Message>
+              </BoxMessage>
+              <InputBox>
+                <Box>
+                  <Input
+                    placeholder="닉네임"
+                    ref={inputNickname}
+                    name="nickname"
+                    onChange={handleNicknameValidation}
+                  />
+                  <TwinCheckButton onClick={nicknameCheck}>
+                    중복검사
+                  </TwinCheckButton>
+                </Box>
+              </InputBox>
+              <BoxMessage>
+                <Message>{nicknamecheckMessage}</Message>
+              </BoxMessage>
+              <InputBox>
+                <Box>
+                  <Input
+                    Password
+                    placeholder="비밀번호"
+                    ref={inputPassword}
+                    name="password"
+                    type="new-password"
+                    onChange={passwordValidation}
+                  />
+                </Box>
+              </InputBox>
+              <InputBox>
+                <Box>
+                  <Input
+                    Password
+                    placeholder="비밀번호확인"
+                    ref={inputPasswordCheck}
+                    name="passwordcheck"
+                    type="new-password"
+                    value={signupInfo.passwordcheck}
+                    onChange={passwordCheck}
+                  />
+                </Box>
+              </InputBox>
+              <BoxMessage>
+                <Message>{passwordMessage}</Message>
+              </BoxMessage>
+              <InputBox button>
+                <Box>
+                  <Button onClick={signupcheck}>회원가입</Button>
+                </Box>
+              </InputBox>
+              <InputBox button>
+                <Box>
+                  <ButtonKakao>kakao</ButtonKakao>
+                </Box>
+              </InputBox>
+            </Form>
+          </LoginBox>
+        </Right>
+        <Index>
+          <TagHome
+            src={homeIndex}
+            onClick={() => {
+              navigate('/', { replace: true });
+            }}
+          ></TagHome>
+          <TagSignin
+            src={signinIndex}
+            onClick={() => {
+              navigate('/login', { replace: true });
+            }}
+          ></TagSignin>
+          <TagSignup
+            src={signupIndex}
+            onClick={() => {
+              navigate('/signup', { replace: true });
+            }}
+          ></TagSignup>
+        </Index>
+      </Book>
+    </Wrapper>
   );
 }
 

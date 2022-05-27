@@ -11,23 +11,34 @@ export class HeartService {
 		private heartRepository: HeartRepository,
 	) {}
 
-	postHeart(user: User, board_id: number): Promise<number>{
+	postHeart(user: User, board_id: number): Promise<Heart[]>{
 		return this.heartRepository.postHeart(user, board_id);
 	}
 
-	async cancelHeart(user: User, board_id: number): Promise<number>{
+	async cancelHeart(user: User, board_id: number): Promise<Heart[]>{
 		const result = await this.heartRepository.delete({user, board_id});
 
 		if(result.affected === 0) {
 			throw new NotFoundException(`Can't find Board with board_id ${board_id}`)
 		}
 
-		const afterDeleteList = this.heartRepository.find({
+		const afterDeleteList = await this.heartRepository.find({
 			where: {
-				board_id
+				board_id,
 			}
 		})
 
-		return (await afterDeleteList).length;
+		return afterDeleteList;
+	}
+
+	async searchHeart(user: User, board_id: number): Promise<number>{
+		const heartlist = await this.heartRepository.find({
+			where: {
+				'user_id': user.id,
+				board_id
+			}
+		})
+		
+		return heartlist.length;
 	}
 }

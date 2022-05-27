@@ -6,6 +6,8 @@ import { AppController } from './app.controller';
 import { UserModule } from './module/user/user.module';
 import { TokenModule } from './module/token/token.module';
 import { HeartModule } from './module/heart/heart.module';
+import { MypageModule } from './module/mypage/mypage.module';
+import { FollowModule } from './module/follow/follow.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { HeartModule } from './module/heart/heart.module';
     UserModule,
     TokenModule,
     HeartModule,
+    MypageModule,
+    FollowModule,
   ],
   controllers: [AppController],
   providers: [],
