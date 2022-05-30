@@ -71,7 +71,7 @@ const MenuFabar = styled.a`
     }
   }
 `;
-const NavList = styled.section<{ Menu?: any }>`
+const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
   //border: solid blue 2px;
   width: 100%;
   height: 10vh;
@@ -80,20 +80,22 @@ const NavList = styled.section<{ Menu?: any }>`
   align-items: center;
   margin-right: 1.5rem;
   @media screen and (max-width: 977px) {
-    width: 50vw;
-    height: 40vh;
-    display: ${({ Menu }) => {
-      return Menu ? 'flex' : 'none';
-    }};
+    width: ${(props) => (props.InitialNav ? '46vw' : '50vw')};
+    height: ${(props) => (props.InitialNav ? '35vh' : '45vh')};
     flex-direction: column;
     align-items: flex-end;
     justify-content: flex-start;
     background-color: #fffceb;
-    margin-top: 39vh;
+    border-radius: 5%;
+    margin-top: ${(props) => (props.InitialNav ? '34vh' : '44.4vh')};
     position: relative;
-    left: 64%;
+    left: ${(props) => (props.InitialNav ? '65%' : '64%')};
     top: 54%;
     padding-right: 5%;
+    transform: ${({ Menu }) => {
+      return Menu ? 'translatex(7%)' : 'translateX(100%)';
+    }};
+    transition: transform 1s ease-in-out;
   }
 `;
 const Div = styled.div<{ Text?: any }>`
@@ -206,7 +208,7 @@ const Nav = (props: any) => {
           </>
         ) : (
           <>
-            <NavList Menu={menu}>
+            <NavList Menu={menu} InitialNav>
               <Div>
                 <NavLink
                   to="/mainfeed"
