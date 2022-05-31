@@ -63,7 +63,7 @@ const LoadingBox = styled.div`
   height: 4.5vh;
 `;
 
-function Loading(props: any) {
+function kakaoLoading(props: any) {
   const { userInfoToStore } = props;
   const navigate = useNavigate();
   useEffect(() => {
@@ -104,4 +104,4 @@ const mapDispatchToProps = (dispatch: any) => {
     },
   };
 };
-export default connect(null, mapDispatchToProps)(Loading);
+export default connect(null, mapDispatchToProps)(kakaoLoading);

@@ -10,7 +10,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
-import { addUserInfo } from '../../../redux/actions/index';
+import { addUserInfo, deleteUserInfo } from '../../../redux/actions/index';
 import api from '../../../api/user';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -222,14 +222,10 @@ const BoxMessage = styled.div`
 function Login(props: any) {
   const navigate = useNavigate();
 
-  /*  const kakao = (window as any).Kakao;
-  console.log(kakao); */
-  // 중복되는 초기화를 막기 위해 isInitialized()로 SDK 초기화 여부를 판단한다.
-  //console.log(props, 'props');
-  const { Kakao } = window as any;
-  console.log(Kakao);
-
-  const { userInfoToStore } = props;
+  const { userInfoToStore, initialUserInfoToStore } = props;
+  useEffect(() => {
+    initialUserInfoToStore();
+  }, []);
 
   const inputEmail: any = useRef();
   const inputpassword: any = useRef();
@@ -295,7 +291,7 @@ function Login(props: any) {
             }
           });
       } catch (error) {
-        console.log('로그인 실패');
+        //console.log('로그인 실패');
         alert(
           '아이디 또는 비밀번호를 잘못 입력했습니다. 입력하신 내용을 다시 확인해주세요'
         );
@@ -324,14 +320,11 @@ function Login(props: any) {
       console.log('error');
     }
   };
-  const taghome = () => {
-    console.log('hihi');
-  };
 
-  console.log(process.env, 'enenene');
+  //console.log(process.env, 'enenene');
   const handleKakaoLogin = (e: any) => {
     e.preventDefault();
-    console.log(Kakao);
+    //console.log(Kakao);
     window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=be17a9e882217a14ba581b03ea87c38f&redirect_uri=http://localhost:3000/loading&response_type=code&state=kakao`;
     //navigate(window.location.href);
   };
@@ -426,6 +419,9 @@ const mapDispatchToProps = (dispatch: any) => {
   return {
     userInfoToStore: (userInfo: object, token: string) => {
       dispatch(addUserInfo(userInfo, token));
+    },
+    initialUserInfoToStore: () => {
+      dispatch(deleteUserInfo());
     },
   };
 };

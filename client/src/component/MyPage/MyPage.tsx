@@ -17,7 +17,8 @@ import homeIndex from '../../img/homeIndex.png';
 import edit from '../../img/edit.jpg';
 import nothing from '../../img/profileImg.png';
 import { useNavigate } from 'react-router-dom';
-import ErrorPage from '../../pages/ErrorPage';
+import ErrorPage from '../../pages/ErrorLoadingPage';
+import ErrorLoadingPage from '../../pages/ErrorLoadingPage';
 
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
@@ -255,16 +256,8 @@ function MyPage(props: any) {
   const navigate = useNavigate();
 
   const { userInfoToStore, user, deleteUserInfo } = props;
-  console.log(userInfoToStore);
+  //console.log(userInfoToStore);
   const { isLogin, accessToken } = props.user;
-
-  if (isLogin === false) {
-    setTimeout(() => {
-      alert('로그인해주세요');
-      navigate('/login');
-      return;
-    }, 1000);
-  }
 
   const { email, loginMethod, nickname, statusMessage, userImage } =
     props.user.userInfo;
@@ -275,6 +268,7 @@ function MyPage(props: any) {
   const inputNickname: any = useRef();
   const statusmessage: any = useRef();
 
+  const [loading, setLoading] = useState(false); // 회원정보 삭제시 로딩페이지 분기
   const [nicknamecheckMessage, setNicknameCheckMessage] = useState('');
   const [nicknameValidate, setNicknameValidate] = useState(false);
   const [nicknameState, setNicknameState] = useState(false);
@@ -400,40 +394,78 @@ function MyPage(props: any) {
   //탈퇴하기 버튼
   const withdrawl = async (e: any) => {
     e.preventDefault();
-    const { password, passwordCheck } = passwordValue;
-    if (password !== passwordCheck || password === '') {
-      alert('비밀번호를 확인해주세요');
-      return;
-    } else {
-      try {
-        if (
-          !window.confirm(
-            '정말 탈퇴하시겠습니까? 탈퇴한 계정의 데이터는 복구가 불가합니다.'
-          )
-        ) {
+    if (loginMethod === 1) {
+      setWithdraw(!withdraw);
+      if (withdraw === true) {
+        const { password, passwordCheck } = passwordValue;
+        if (password !== passwordCheck || password === '') {
+          alert('비밀번호를 확인해주세요');
           return;
         } else {
+          try {
+            if (
+              !window.confirm(
+                '정말 탈퇴하시겠습니까? 탈퇴한 계정의 데이터는 복구가 불가합니다.'
+              )
+            ) {
+              return;
+            } else {
+              await axios
+                .delete('http://localhost:5000/mypage/withdrawl', {
+                  data: { password: passwordCheck },
+                  headers: { authorization: `Bearer ${accessToken}` },
+                })
+                .then((res) => {
+                  if (res.data.statusCode === 200) {
+                    void deleteUserInfo();
+                    setLoading(!loading);
+                    setTimeout(() => {
+                      alert('계정이 삭제되었습니다.');
+                      navigate('/mainfeed');
+                      return;
+                    }, 2000);
+                  } else {
+                    console.log('탈퇴실패');
+                    alert('탈퇴에 실패했습니다. 비밀번호를 확인해주세요');
+                  }
+                });
+            }
+          } catch (error) {
+            console.log('server error');
+          }
+        }
+      }
+    } else if (loginMethod === 2) {
+      if (
+        !window.confirm(
+          '정말 탈퇴하시겠습니까? 탈퇴한 계정의 데이터는 복구가 불가합니다.'
+        )
+      ) {
+        return;
+      } else {
+        try {
           await axios
-            .delete('http://localhost:5000/mypage/withdrawl', {
-              data: { password: passwordCheck },
+            .delete('http://localhost:5000/mypage/withdrawl/kakao', {
               headers: { authorization: `Bearer ${accessToken}` },
             })
             .then((res) => {
               if (res.data.statusCode === 200) {
-                console.log('탈퇴성공');
                 void deleteUserInfo();
+                setLoading(!loading);
                 setTimeout(() => {
-                  alert('계정 탈퇴에 성공했습니다');
-                  navigate('/mainfeed', { replace: true });
+                  alert('계정이 삭제되었습니다.');
+                  navigate('/mainfeed');
+                  return;
                 }, 2000);
-              } else {
-                console.log('탈퇴실패');
-                alert('탈퇴에 실패했습니다. 비밀번호를 확인해주세요');
               }
             });
+        } catch (error) {
+          if (error) {
+            console.log(error);
+            alert('회원 탈퇴에 실패했습니다.');
+            return;
+          }
         }
-      } catch (error) {
-        console.log('server error');
       }
     }
   };
@@ -486,9 +518,11 @@ function MyPage(props: any) {
   //console.log(preUserImage);
   return (
     <>
-      {!isLogin ? (
+      {isLogin === false && loading ? (
+        <ErrorLoadingPage text="deleting..." />
+      ) : isLogin === false ? (
         <>
-          <ErrorPage text="PICKSHARE" />
+          <ErrorLoadingPage />
         </>
       ) : (
         <Wrapper>
@@ -648,7 +682,7 @@ function MyPage(props: any) {
                             MyPageButton
                             onClick={() => {
                               setWithdraw(!withdraw);
-                              console.log(updateProfile);
+                              //console.log(updateProfile);
                             }}
                           >
                             되돌아가기
@@ -673,12 +707,7 @@ function MyPage(props: any) {
                         </Button>
                       </Box>
                       <Box>
-                        <Button
-                          MyPageButton
-                          onClick={() => {
-                            setWithdraw(!withdraw);
-                          }}
-                        >
+                        <Button MyPageButton onClick={withdrawl}>
                           탈퇴하기
                         </Button>
                       </Box>
