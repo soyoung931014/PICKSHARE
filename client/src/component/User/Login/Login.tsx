@@ -11,7 +11,7 @@ import axios from 'axios';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
 import { addUserInfo, deleteUserInfo } from '../../../redux/actions/index';
-import api from '../../../api/user';
+//import api from '../../../api/user';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import background from '../../../img/diaryBackground.png';

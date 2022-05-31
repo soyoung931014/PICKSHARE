@@ -157,9 +157,7 @@ const Input = styled.input<{ Password?: any }>`
   border: 0;
   opacity: 0.6;
 `;
-const InputP = styled.input`
-  visibility: hidden;
-`;
+
 const Button = styled.button`
   //border: solid 2px black;
   width: 72%;

@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
@@ -17,7 +17,6 @@ import homeIndex from '../../img/homeIndex.png';
 import edit from '../../img/edit.jpg';
 import nothing from '../../img/profileImg.png';
 import { useNavigate } from 'react-router-dom';
-import ErrorPage from '../../pages/ErrorLoadingPage';
 import ErrorLoadingPage from '../../pages/ErrorLoadingPage';
 
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
@@ -255,7 +254,7 @@ const InputProfile = styled.input`
 function MyPage(props: any) {
   const navigate = useNavigate();
 
-  const { userInfoToStore, user, deleteUserInfo } = props;
+  const { userInfoToStore, deleteUserInfo } = props;
   //console.log(userInfoToStore);
   const { isLogin, accessToken } = props.user;
 
@@ -333,7 +332,7 @@ function MyPage(props: any) {
   // 수정완료
   const updateFinish = async (e: any) => {
     e.preventDefault();
-    const { email, nickname, statusMessage, userImage } = updateUserInfo;
+    const { nickname, statusMessage, userImage } = updateUserInfo;
     // console.log(email, nickname, statusMessage, nicknamecheck, '🙋‍♀️');
     if (inputNickname.current.value === '') {
       updateUserInfo.nickname = inputNickname.current.placeholder;
