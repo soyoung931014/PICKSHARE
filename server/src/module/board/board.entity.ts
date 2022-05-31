@@ -3,13 +3,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Comment } from '../comment/comment.entity';
-import { Like } from '../like/like.entity';
+import { Heart } from '../heart/heart.entity';
 import { User } from '../user/user.entity';
 import { Lock, Mood, PictureMethod } from './board-state.union';
 
@@ -39,17 +40,24 @@ export class Board extends BaseEntity {
   @Column()
   date: string;
 
+  @Column()
+  user_id: number;
+
+  @Column()
+  nickname: string;
+
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.boards)
+  @ManyToOne((type) => User, (user) => user.boards, { eager: false })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @OneToMany(() => Like, (like) => like.board)
-  likes: Like[];
+  @OneToMany(() => Heart, (heart) => heart.board)
+  hearts: Heart;
 
   @OneToMany(() => Comment, (comment) => comment.board)
   comments: Comment[];

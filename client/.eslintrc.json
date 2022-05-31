@@ -14,6 +14,7 @@
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json",
+    // "tsconfigRootDir": "client",
     "ecmaFeatures": {
       "jsx": true
     },
@@ -21,6 +22,10 @@
     "sourceType": "module"
   },
   "plugins": ["react", "@typescript-eslint"],
-  "rules": {},
-  "ignorePatterns": ["dist/", "node_modules/"]
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    "no-loss-of-precision": "off",
+    "@typescript-eslint/no-loss-of-precision": "error"
+  },
+  "ignorePatterns": ["dist/", "node_modules/", ".env"]
 }

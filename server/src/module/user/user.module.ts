@@ -9,16 +9,16 @@ import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }), //UseGuards때문
     TypeOrmModule.forFeature([UserRepository]),
     JwtModule.register({
-      secret: 'Secret1234',
+      secret: process.env.SECRET || process.env.REFRESH, // 토큰을 생성하기 위해
       signOptions: {
-        expiresIn: 60 * 60
-      }
-    })
+        expiresIn: 600 * 600,
+      },
+    }),
   ],
-  providers: [UserService, TokenService, PassportModule],
+  providers: [UserService, TokenService, PassportModule,],
   controllers: [UserController],
-  //exports: [UserRepository]
 })
-export class UserModule { }
+export class UserModule {}

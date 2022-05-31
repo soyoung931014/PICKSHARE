@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -15,6 +16,10 @@ export class Follow extends BaseEntity {
   @Column()
   followingNickname: string;
 
+  @Column()
+  user_id: number;
+
   @ManyToOne(() => User, (user) => user.follows)
+  @JoinColumn({name: 'user_id'})
   user: User;
 }
