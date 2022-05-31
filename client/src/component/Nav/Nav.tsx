@@ -10,6 +10,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { BiHome } from 'react-icons/bi';
 import camera from '../../img/camera.jpg';
+import defaultprofileImg from '../../img/profileImg.png';
 import { deleteUserInfo } from '../../redux/actions';
 import { FaBars } from 'react-icons/fa';
 import { useState } from 'react';
@@ -80,7 +81,7 @@ const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
   align-items: center;
   margin-right: 1.5rem;
   @media screen and (max-width: 977px) {
-    width: ${(props) => (props.InitialNav ? '46vw' : '50vw')};
+    width: ${(props) => (props.InitialNav ? '40vw' : '50vw')};
     height: ${(props) => (props.InitialNav ? '35vh' : '45vh')};
     flex-direction: column;
     align-items: flex-end;
@@ -89,7 +90,7 @@ const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
     border-radius: 5%;
     margin-top: ${(props) => (props.InitialNav ? '34vh' : '44.4vh')};
     position: relative;
-    left: ${(props) => (props.InitialNav ? '65%' : '64%')};
+    left: ${(props) => (props.InitialNav ? '69%' : '64%')};
     top: 54%;
     padding-right: 5%;
     transform: ${({ Menu }) => {
@@ -114,12 +115,14 @@ const Div = styled.div<{ Text?: any }>`
 `;
 
 const Img = styled.img`
-  //border: solid red 2px;
+  border: solid gray 1px;
   height: 3.5vh;
-  width: 1.8vw;
+  width: 2vw;
   border-radius: 50%;
-  padding: 2px;
   margin-right: 0.5rem;
+  @media screen and (max-width: 977px) {
+    width: 3.2vw;
+  }
 `;
 const Info = styled.div`
   display: flex;
@@ -145,7 +148,7 @@ const Nav = (props: any) => {
   return (
     <>
       <Wrapper>
-        <Logo onClick={() => navigate('/mainfeed')}>PICHSHARE</Logo>
+        <Logo onClick={() => navigate('/mainfeed')}>PICKSHARE</Logo>
         <div>
           <CameraImg onClick={() => navigate('/mainfeed')} src={camera} />
         </div>
@@ -168,7 +171,11 @@ const Nav = (props: any) => {
               <Div>
                 <Info>
                   <div>
-                    <Img src={userInfo.userImage} />
+                    {userInfo.userImage === 'nothing' ? (
+                      <Img src={defaultprofileImg} />
+                    ) : (
+                      <Img src={userInfo.userImage} />
+                    )}
                   </div>
                   <NavLink
                     to={`/feed/${userInfo.nickname}`}
