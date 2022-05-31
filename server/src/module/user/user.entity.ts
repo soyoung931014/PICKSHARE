@@ -48,7 +48,7 @@ export class User extends BaseEntity {
   @Exclude()
   currentHashedRefreshToken?: string;
 
-  @OneToMany((type) => Board, (board) => board.user, { eager: true })
+  @OneToMany((type) => Board, (board) => board.user)
   boards: Board[];
 
   @OneToMany(() => Follow, (follow) => follow.user)
