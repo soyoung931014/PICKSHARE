@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { addUserInfo, deleteUserInfo } from '../../redux/actions/index';
 // import userApi from '../../../api/user';
 import styled from 'styled-components';
-import background from '../../img/diaryBackground.png';
+import background from '../../img/feedBG.jpg';
 import homeIndex from '../../img/homeIndex.png';
 import edit from '../../img/edit.jpg';
 import nothing from '../../img/profileImg.png';

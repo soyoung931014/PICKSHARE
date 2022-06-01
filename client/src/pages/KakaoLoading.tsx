@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { addUserInfo } from '../redux/actions';
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import styled from 'styled-components';
-import background from '../img/diaryBackground.png';
+import background from '../img/feedBG.jpg';
 import camera from '../img/camera.jpg';
 const Wrapper = styled.div`
   width: 100vw;

@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import background from '../../../img/diaryBackground.png';
+import background from '../../../img/feedBG.jpg';
 import pickshareLogo from '../../../img/pickshare.png';
 import homeIndex from '../../../img/homeIndex.png';
 import signupIndex from '../../../img/signupIndex.png';

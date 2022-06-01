@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import React from 'react';
 import styled from 'styled-components';
-import background from '../img/diaryBackground.png';
+import background from '../img/feedBG.jpg';
 import camera from '../img/camera.jpg';
 
 const Wrapper = styled.div`

@@ -14,7 +14,7 @@ import { addUserInfo, deleteUserInfo } from '../../../redux/actions/index';
 //import api from '../../../api/user';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import background from '../../../img/diaryBackground.png';
+import background from '../../../img/feedBG.jpg';
 import pickshareLogo from '../../../img/pickshare.png';
 import homeIndex from '../../../img/homeIndex.png';
 import signupIndex from '../../../img/signupIndex.png';

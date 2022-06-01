@@ -79,20 +79,24 @@ const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-right: 1.5rem;
+  //margin-right: 1.5rem;
   @media screen and (max-width: 977px) {
-    width: ${(props) => (props.InitialNav ? '40vw' : '50vw')};
+    width: ${(props) => (props.InitialNav ? '11vh' : '50vw')};
     height: ${(props) => (props.InitialNav ? '35vh' : '45vh')};
     flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
     background-color: #fffceb;
     border-radius: 5%;
     margin-top: ${(props) => (props.InitialNav ? '34vh' : '44.4vh')};
-    position: relative;
-    left: ${(props) => (props.InitialNav ? '69%' : '64%')};
-    top: 54%;
+    /*   position: relative;
+    //left: ${(props) => (props.InitialNav ? '69%' : '64%')};
+    right: ${(props) => (props.InitialNav ? '0' : '64%')}; */
+    position: absolute;
+
+    top: 0;
     padding-right: 5%;
+
     transform: ${({ Menu }) => {
       return Menu ? 'translatex(7%)' : 'translateX(100%)';
     }};
@@ -184,7 +188,7 @@ const Nav = (props: any) => {
                       color: '#3d3c3c',
                     }}
                   >
-                    {userInfo.nickname}님의 피드
+                    피드
                   </NavLink>
                 </Info>
               </Div>
@@ -196,7 +200,7 @@ const Nav = (props: any) => {
                     color: '#3d3c3c',
                   }}
                 >
-                  mypage
+                  회원정보
                 </NavLink>
               </Div>
               <Div Text>
