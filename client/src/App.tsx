@@ -3,12 +3,12 @@ import MyPage from './component/MyPage/MyPage';
 import Login from './component/User/Login/Login';
 import Signup from './component/User/Signup/Signup';
 import GlobalStyles from './GlobalStyles';
-import ErrorPage from './pages/ErrorPage';
-// import DiaryPage from './pages/DiaryPage';
 import LandingPage from './pages/LandingPage';
-import Loading from './pages/Loading';
+
 import MainFeed from './pages/MainFeed';
 import UserFeed from './pages/UserFeed';
+import ErrorLoadingPage from './pages/ErrorLoadingPage';
+import KakaoLoading from './pages/KakaoLoading';
 
 function App() {
   return (
@@ -22,8 +22,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/mypage" element={<MyPage />} />
-        <Route path="/loading" element={<Loading />} />
-        <Route path="error" element={<ErrorPage />} />
+        <Route path="/loading" element={<KakaoLoading />} />
+        <Route path="/errorloading" element={<ErrorLoadingPage />} />
       </Routes>
     </BrowserRouter>
   );
