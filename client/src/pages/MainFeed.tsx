@@ -94,6 +94,7 @@ const Feed = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
 `;
 //https://studiomeal.com/archives/533
+
 export default function MainFeed() {
   const dispatch = useDispatch();
 
@@ -104,7 +105,7 @@ export default function MainFeed() {
     date: '',
     nickname: '',
     userImage: '',
-    heartNum: '0',
+    heartNum: 0,
     lock: '',
   });
   const [searchInput, setSearchInput] = useState('');
@@ -150,6 +151,7 @@ export default function MainFeed() {
       setFeedlist(result.data);
     });
   };
+
   useEffect(() => {
     if (orderingH === false) {
       getMainFeed();
@@ -158,8 +160,6 @@ export default function MainFeed() {
     }
   }, [render]);
 
-  console.log(feedlist, '피드리스트 ');
-  console.log(typeof feedlist, '피드리스트 타입');
   return (
     <Wrapper>
       <Nav />

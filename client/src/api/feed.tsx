@@ -51,11 +51,10 @@ const feedApi = {
   userInfo: (nickname: string) => {
     return api.get(`/user/userInfo?userNickname=${nickname}`);
   },
-  postFollow: (info: any, nickname: string, accessToken: string) => {
+  postFollow: ( nickname: string, accessToken: string ) => {
     return api.post(
-      '/follow/following',
+      '/follow/',
       {
-        info,
         'followingNickname': nickname,
       },
       {
@@ -64,6 +63,16 @@ const feedApi = {
         },
       }
     );
+  },
+  deleteFollow: (nickname: string, accessToken: string ) => {
+    return api.delete(
+      `/follow?followingNickname=${nickname}`,
+      {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
   },
   searchFollow: (nickname: string, accessToken: string) => {
     return api.get(
@@ -75,6 +84,16 @@ const feedApi = {
       }
     )
   },
+  getFollowingList: (nickname: string) => {
+    return api.get(
+       `/follow/following?nickname=${nickname}`
+    )
+  },
+  getFollowerList: (nickname: string) => {
+    return api.get(
+      `follow/follower?nickname=${nickname}`
+    )
+  }
 };
 
 export default feedApi;

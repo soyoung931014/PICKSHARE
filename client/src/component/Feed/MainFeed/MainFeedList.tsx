@@ -91,7 +91,7 @@ const Comment = styled.div`
   margin: 0.5rem 0;
 `;
 
-export default function MainFeedList(props: any) {
+export default function MainFeedList(props: { id: number; contentImg: string | undefined; userImage: string | undefined; nickname: string | undefined; date: string | undefined; heartNum: number | null; }) {
   const navigate = useNavigate();
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
@@ -102,12 +102,6 @@ export default function MainFeedList(props: any) {
     return await feedApi.postHeart(userInfo, props.id, accessToken)
       .then(() => {
         setHeart(true);
-      // const path = window.location.pathname.split("/")[1]
-      // if(path === 'feed'){
-      //   props.setUserRender(!props.userRender)
-      // } else if(path === 'mainfeed'){
-      //   props.setRender(!props.render);
-      // }
       });
   };
 
@@ -116,12 +110,6 @@ export default function MainFeedList(props: any) {
       .deleteHeart(userInfo, props.id, accessToken)
       .then(() => {
         setHeart(false);
-        // const path = window.location.pathname.split("/")[1]
-        // if(path === 'feed'){
-        //   props.setUserRender(!props.userRender)
-        // } else if(path === 'mainfeed'){
-        //   props.setRender(!props.render);
-        // }
       });
   };
 

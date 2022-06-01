@@ -13,6 +13,9 @@ import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { useDispatch } from 'react-redux';
 // import { followAction, unfollowAction } from '../redux/actions';
 import { follow } from '../redux/reducers/follow/followReducer';
+import FollowingList from '../component/Feed/PersonalFeed/FollowingList';
+import Modal from '../component/Modal/Modal';
+import FollowerList from '../component/Feed/PersonalFeed/FollowerList';
 
 const UserWapper = styled.div`
   width: 100vw;
@@ -47,7 +50,7 @@ const UserImg = styled.img`
   height: 178px;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
 `;
-const UserFollow = styled.div`
+const UserFollow = styled.button`
   border: orangered dotted 1px;
   background-color: white;
   position: absolute;
@@ -58,12 +61,17 @@ const UserFollow = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
   left: 21rem;
   top: 25.5rem;
+  &:hover{
+    cursor: pointer;
+  }
 `;
-const UserInfo = styled.div``;
+const UserInfo = styled.div`
+  margin-left: 0.7rem;
+`;
 const UserDescribe = styled.div`
   border: peachpuff solid 1.5px;
   display: grid;
@@ -76,6 +84,7 @@ const UserDescribe = styled.div`
   margin: 1rem;
 `;
 const Content = styled.div`
+  border: paleturquoise solid 1px;
   margin: 0.5rem;
   margin-left: 1rem;
 `;
@@ -112,11 +121,22 @@ export default function UserFeed() {
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
-  const { isFollow } = useSelector((followReducer: follow) => followReducer);
-  const [counts, setCounts] = useState({
-    totalCount: 0,
-    totalByDay: [],
-  });
+  // const { isFollow } = useSelector((followReducer: follow) => followReducer);
+  const [counts, setCounts] = useState(0);
+  
+  let path = window.location.pathname.split('/')[2];
+  // let followingList: any[] = [];
+  const [following, setFollowing]: any[] = useState({
+    id: '',
+    followingNickname: '',
+    followerNickname: ''
+  })
+
+  const [follower, setFollower]: any[] = useState({
+    id: '',
+    user_id: '',
+    followerNickname: ''
+  })
 
   const searchShareHandler = (value: {}) => {
     if (!value) {
@@ -129,48 +149,76 @@ export default function UserFeed() {
     if (isLogin === false) {
       alert('로그인이 필요한 서비스입니다');
     }
-    console.log('이름', userlist.nickname);
-    return await feedApi
-      .postFollow(userInfo, userlist.nickname, accessToken)
+    return await feedApi.postFollow( userlist.nickname, accessToken)
       .then(() => {
         setFollow(true);
-        console.log('포스트후 팔로우?', follow);
-      });
-  };
+      })
+  }
 
+  const handleUnFollow = async() => {
+    if(isLogin === false){
+      alert('로그인이 필요한 서비스입니다')
+    }
+    return await feedApi.deleteFollow(userlist.nickname, accessToken)
+      .then(() => {
+        setFollow(false);
+      })
+  }
+  
   useEffect(() => {
-    let path = window.location.pathname.split('/')[2];
-    console.log('path', path);
+    // let path = window.location.pathname.split('/')[2];
 
     const userfeedinfo = async () => {
-      return await feedApi.userInfo(path).then((result) => {
-        console.log(result, '유저 인포 리스트');
-        setUserlist(result.data.data);
-      });
-    };
+      return await feedApi.userInfo(path)
+      .then(result => {
+        setUserlist(result.data.data)
+      })
+    }
 
     userfeedinfo();
 
     const userPage = async () => {
-      return await feedApi.getUserFeed(path).then((result) => {
-        console.log(result);
-        setUserFeedlist(result.data);
-      });
+      return await feedApi.getUserFeed(path)
+      .then(result => {
+        setUserFeedlist(result.data)
+      })
     };
     userPage();
 
-    if (isLogin === true) {
-      console.log('닉네임', path);
-      feedApi.searchFollow(path, accessToken).then((result) => {
-        console.log('서치팔로우리졸트', result.data);
-        if (result.data) {
+    if(isLogin === true){
+      feedApi.searchFollow(path, accessToken)
+      .then((result) => {
+        if(result.data){
           setFollow(true);
-          console.log('팔로우?', follow);
         }
       });
-    }
-  }, [userRender, follow]);
+    };
 
+    const getFollowingList = async () => {
+      return await feedApi.getFollowingList(path)
+      .then((result) => {
+        setFollowing(result.data)
+      })
+    };
+    
+    getFollowingList();
+
+    const getFollowerList = async () => {
+      return await feedApi.getFollowerList(path)
+      .then((result) => {
+        console.log('팔로워',result.data)
+        setFollower(result.data)
+      })
+    }
+    getFollowerList();
+    
+    const countFeed = () => {
+      return setCounts(userfeedlist.length)
+    }
+    countFeed();
+
+  }, [userRender, follow, path]);
+  
   return (
     <UserWapper>
       <Nav />
@@ -182,34 +230,37 @@ export default function UserFeed() {
               <UserImg src={userlist.userImage} />
               {isLogin === true ? (
                 follow === true ? (
-                  <UserFollow>unfollow</UserFollow>
+                  //로그인o 팔로우o
+                  <UserFollow onClick={handleUnFollow}>unfollow</UserFollow>
                 ) : (
+                  //로그인o 팔로우x
                   <UserFollow onClick={handleFollow}>follow</UserFollow>
                 )
               ) : (
+                //로그인x
                 <UserFollow onClick={handleFollow}>follow</UserFollow>
               )}
             </UserDiv>
           </div>
           <UserInfo>
             <UserDescribe>
-              <Content>닉네임{userlist.nickname}</Content>
+              <Content>{userlist.nickname}</Content>
             </UserDescribe>
             <UserDescribe>
-              <Content>상메{userlist.statusMessage}</Content>
+              <Content>{userlist.statusMessage}</Content>
             </UserDescribe>
             <UserDescribe>
               <div>
                 <UserFollowInfo>게시물</UserFollowInfo>
-                <UserFollowInfo>게시물 수</UserFollowInfo>
+                <UserFollowInfo>{counts}</UserFollowInfo>
               </div>
               <div>
                 <UserFollowInfo>팔로잉</UserFollowInfo>
-                <UserFollowInfo>팔로잉 수</UserFollowInfo>
+                <UserFollowInfo>{following.length}</UserFollowInfo>
               </div>
               <div>
                 <UserFollowInfo>팔로워</UserFollowInfo>
-                <UserFollowInfo>팔로워 수</UserFollowInfo>
+                <UserFollowInfo>{follower.length}</UserFollowInfo>
               </div>
             </UserDescribe>
           </UserInfo>
@@ -219,13 +270,38 @@ export default function UserFeed() {
             ? `${userlist.nickname}님의 피드가 없습니다`
             : userfeedlist.map((el: any) => (
                 <MainFeedList
-                  {...el}
-                  key={el.id}
-                  userRender={userRender}
-                  setUserRender={setUserRender}
+                {...el}
+                key={el.id}
+                userRender={userRender}
+                setUserRender={setUserRender}
                 />
               ))}
         </Feed>
+        <div>
+          팔로잉
+          {following.id === ''
+          ? `${following}이 없습니다`
+          : following.map((el: any) => (
+            <FollowingList 
+              {...el}
+              key={el.id}
+              follow={follow}
+              setFollow={setFollow}
+            />
+          ))}
+        </div>
+        <div>
+          팔로워
+          {follower.id === ''
+          ? `${follower}없습니다`
+          : follower.map((el: any) => {
+            <FollowerList
+              {...el}
+              key={el.id}
+            />
+          })
+          }
+        </div>
       </Div>
     </UserWapper>
   );

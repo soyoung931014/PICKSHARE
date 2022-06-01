@@ -5,11 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FollowRepository } from './follow.repository';
 import { UserModule } from '../user/user.module';
 import { PassportModule } from '@nestjs/passport';
+import { UserRepository } from '../user/user.repository';
 
 @Module({
   imports:[
     TypeOrmModule.forFeature([FollowRepository]),
-    UserModule,
+    TypeOrmModule.forFeature([UserRepository]),
     PassportModule.register({ defaultStrategy: 'jwt' })
   ],
   providers: [FollowService],
