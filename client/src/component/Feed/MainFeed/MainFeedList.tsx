@@ -91,7 +91,7 @@ const Comment = styled.div`
   margin: 0.5rem 0;
 `;
 
-export default function MainFeedList(props: any) {
+export default function MainFeedList(props: { id: number; contentImg: string | undefined; userImage: string | undefined; nickname: string | undefined; date: string | undefined; heartNum: number | null; }) {
   const navigate = useNavigate();
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
