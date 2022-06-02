@@ -1,6 +1,6 @@
 #!/bin/bash
 cd /home/ubuntu/PICKSHARE/server
-npm install --legacy-peer-deps
+npm install --force
 npm install pm2@latest -g
 sudo apt-get update
 sudo apt-get install authbind
