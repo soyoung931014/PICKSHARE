@@ -14,6 +14,7 @@ import pickshareLogo from '../../../img/pickshare.png';
 import homeIndex from '../../../img/homeIndex.png';
 import signupIndex from '../../../img/signupIndex.png';
 import signinIndex from '../../../img/signinIndex.png';
+import signupApi from '../../../api/signup';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -254,7 +255,7 @@ function Signup() {
   //비밀번호 중복검사 필터
   const passwordRegExp = /^[a-zA-z0-9]{4,12}$/;
 
-  useEffect(() => {}, [emailcheck]);
+  //useEffect(() => {}, [emailcheck]);
 
   const handleChangeState = (e: any) => {
     setSignupInfo({ ...signupInfo, [e.target.name]: e.target.value });
@@ -271,7 +272,7 @@ function Signup() {
   };
 
   //이메일 중복검사
-  async function emailCheck(e: any) {
+  const emailCheck = async (e: any) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     e.preventDefault();
@@ -284,26 +285,25 @@ function Signup() {
     }
     if (emailRegExp.test(email) === true) {
       try {
-        await axios
-          .get(`http://localhost:5000/user/emailcheck/${email}`)
-          .then((res) => {
-            if (res.data === false) {
-              console.log(res.data);
-              setEmailCheckMessage('사용할 수 있는 이메일입니다.');
-              setEmailCheck(email);
-              /* console.log(emailcheck);
+        await signupApi.emailcheck(email).then((res) => {
+          console.log(res, 'res');
+          if (res.data === false) {
+            console.log(res.data);
+            setEmailCheckMessage('사용할 수 있는 이메일입니다.');
+            setEmailCheck(email);
+            /* console.log(emailcheck);
               console.log(signupInfo); */
-            } else {
-              setEmailCheckMessage('이미 사용중인 이메일입니다.');
-              /* console.log(emailcheck);
+          } else {
+            setEmailCheckMessage('이미 사용중인 이메일입니다.');
+            /* console.log(emailcheck);
               console.log(signupInfo); */
-            }
-          });
+          }
+        });
       } catch (error) {
-        console.log('error');
+        console.log(error);
       }
     }
-  }
+  };
 
   // 닉네임 유효성검사
   const handleNicknameValidation = (e: any) => {
