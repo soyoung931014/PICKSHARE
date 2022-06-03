@@ -10,4 +10,5 @@ export REFRESH=$(aws ssm get-parameters --region ap-northeast-2 --names REFRESH 
 export SECRET=$(aws ssm get-parameters --region ap-northeast-2 --names SECRET --query Parameters[0].Value | sed 's/"//g')
 export REDIRECT_URI=$(aws ssm get-parameters --region ap-northeast-2 --names REDIRECT_URI --query Parameters[0].Value | sed 's/"//g')
 export CLIENT_ID=$(aws ssm get-parameters --region ap-northeast-2 --names CLIENT_ID --query Parameters[0].Value | sed 's/"//g')
+export SERVER_PORT=$(aws ssm get-parameters --region ap-northeast-2 --names SERVER_PORT --query Parameters[0].Value | sed 's/"//g')
 authbind --deep pm2 start dist/main.js
