@@ -1,5 +1,4 @@
 /*eslint-disable*/
-
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -20,7 +19,7 @@ const FollowButton = styled.button`
 `
 
 export default function FollowerList(props: any) {
-  console.log('props', props)
+  // console.log('props', props)
   const { isLogin, accessToken } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
@@ -38,9 +37,10 @@ export default function FollowerList(props: any) {
       });
     };
     findFollow();
-  }, [props.setFollow()]);
-  return (
+  }, []);
+  return ( 
     <Wrapper>
+      아에이오우
       <UserImage src={userlist.userImage}/>
       <UserNick>{userlist.nickname}</UserNick>
     </Wrapper>

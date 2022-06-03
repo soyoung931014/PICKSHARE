@@ -98,6 +98,7 @@ const Feed = styled.div`
   gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
 `;
+
 export default function UserFeed() {
   const dispatch = useDispatch();
   const [userfeedlist, setUserFeedlist]: any[] = useState({
@@ -125,7 +126,7 @@ export default function UserFeed() {
   const [counts, setCounts] = useState(0);
   
   let path = window.location.pathname.split('/')[2];
-  // let followingList: any[] = [];
+
   const [following, setFollowing]: any[] = useState({
     id: '',
     followingNickname: '',
@@ -166,8 +167,14 @@ export default function UserFeed() {
   }
   
   useEffect(() => {
-    // let path = window.location.pathname.split('/')[2];
 
+    // let gate = window.location.pathname.split('/')[2];
+    // const changePath = () => {
+      //   return setPath(gate);
+      // }
+      
+      // changePath();
+      
     const userfeedinfo = async () => {
       return await feedApi.userInfo(path)
       .then(result => {
@@ -193,7 +200,7 @@ export default function UserFeed() {
         }
       });
     };
-
+    
     const getFollowingList = async () => {
       return await feedApi.getFollowingList(path)
       .then((result) => {
@@ -217,7 +224,10 @@ export default function UserFeed() {
     }
     countFeed();
 
-  }, [userRender, follow, path]);
+    console.log('패스',path)
+    
+  },[follow])
+  
   
   return (
     <UserWapper>
@@ -293,13 +303,20 @@ export default function UserFeed() {
         <div>
           팔로워
           {follower.id === ''
-          ? `${follower}없습니다`
-          : follower.map((el: any) => {
+          ? (
+            <>
+            `없습니다`
+            </>
+          ) : (
+            follower.map((el: any) => (
             <FollowerList
               {...el}
               key={el.id}
+              follow={follow}
+              setFollow={setFollow}
             />
-          })
+          ))
+          )
           }
         </div>
       </Div>

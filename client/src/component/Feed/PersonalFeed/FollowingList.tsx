@@ -42,10 +42,12 @@ export default function FollowingList(props: any) {
       await feedApi.userInfo(props.followingNickname)
       .then(result => {
         setUserlist(result.data.data);
+        return;
       });
     };
     findFollow();
-  }, [props.setFollow()]);
+  }, []);
+  //useMemo()
   return (
     <Wrapper>
       <UserImage src={userlist.userImage}/>

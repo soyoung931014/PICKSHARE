@@ -7,8 +7,6 @@ import feedApi from '../../../api/feed';
 import { useSelector } from 'react-redux';
 import { FaRegCommentDots } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import sampleImg from '../../../img/selfie4.jpg';
-import sampleImg2 from '../../../img/instafeed3.jpg';
 
 const Div = styled.div`
   border: red solid 1px;
