@@ -12,7 +12,7 @@ export class FeedService {
   ) {}
 
   async getAllFeed(): Promise<Board[]> {
-      return await this.boardRepository.createQueryBuilder('board')
+      const result =  await this.boardRepository.createQueryBuilder('board')
         .select([
           'board.id AS id',
           'board.picture AS contentImg',
@@ -31,8 +31,10 @@ export class FeedService {
         )
         .where('board.Lock = :lock', {lock: 'UNLOCK'})
         .groupBy('board.id')
-        .orderBy('board.createdAt', 'DESC')
+        .orderBy('board.date', 'DESC')
         .getRawMany()
+
+      return result;
   }
 
   async getUserFeed(nickname: string): Promise<Board[]> {

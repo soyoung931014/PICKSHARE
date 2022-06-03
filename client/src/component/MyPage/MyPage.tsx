@@ -5,22 +5,22 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
 import { addUserInfo, deleteUserInfo } from '../../redux/actions/index';
 // import userApi from '../../../api/user';
 import styled from 'styled-components';
-import background from '../../img/diaryBackground.png';
+import background from '../../img/feedBG.jpg';
 import homeIndex from '../../img/homeIndex.png';
-import signupIndex from '../../img/signupIndex.png';
-import signinIndex from '../../img/signinIndex.png';
 import edit from '../../img/edit.jpg';
 import nothing from '../../img/profileImg.png';
 import { useNavigate } from 'react-router-dom';
-//import AWS from 'aws-sdk/dist/aws-sdk-react-native';
+import ErrorLoadingPage from '../../pages/ErrorLoadingPage';
+
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
+
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
@@ -39,6 +39,7 @@ const Book = styled.div`
   left: 8rem;
 `;
 const Left = styled.div`
+  //border: dotted 2px green;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -46,18 +47,17 @@ const Left = styled.div`
   height: 85vh;
   padding-left: 1em;
   background-color: white;
-  border: dotted 2px green;
   border-radius: 30px 20px 20px 30px;
   box-shadow: 10px 10px 30px #3c4a5645;
   border-right: #b1b0b0 solid 2px;
 `;
 
 const Right = styled.div`
+  //border: solid 2px black;
   width: 32vw;
   height: 85vh;
   background-color: white;
   padding-left: 1em;
-  //border: solid 2px black;
   border-radius: 20px 30px 30px 20px;
   box-shadow: 30px 10px 10px #3c4a5645;
   border-left: #b1b0b0 solid 2px;
@@ -78,37 +78,15 @@ const TagHome = styled.img`
   }
   //border: solid 2px black;
 `;
-const TagSignin = styled.img`
-  width: 11rem;
-  height: 4rem;
-  cursor: pointer;
-  &:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-  }
-  //border: solid 2px black;
-`;
-const TagSignup = styled.img`
-  //border: solid 2px black;
-  width: 8rem;
-  height: 5rem;
-  cursor: pointer;
-  &:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-  }
-  position: relative;
-  top: -10px;
-`;
 
 /// 세부사항
 
 const Img = styled.img`
-  border: solid green 2px;
+  border: solid #bbbabe 3px;
+  padding: 0.5rem;
   box-sizing: border-box;
   width: 15vw;
   height: 28vh;
-
   border-radius: 100%;
 `;
 const UpdateProfileBox = styled.div`
@@ -130,7 +108,7 @@ const Title = styled.div`
   -webkit-text-fill-color: transparent;
 `;
 const Form = styled.form<{ Left?: any }>`
-  border: dotted 2px red;
+  //border: dotted 2px red;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -140,14 +118,13 @@ const Form = styled.form<{ Left?: any }>`
   box-sizing: border-box;
 `;
 const InputBox = styled.div<{ button?: any }>`
-  border: solid 2px aqua;
-  //width: 10rem;
+  //border: solid 2px aqua;
   height: 3.3rem;
   margin-top: ${(props) => (props.button ? '2rem' : '0')};
   box-sizing: border-box;
 `;
 const Message = styled.div<{ UpdateProfile?: any }>`
-  border: solid 2px green;
+  // border: solid 2px green;
   height: 1.7rem;
   padding-top: 3px;
   box-sizing: border-box;
@@ -162,7 +139,6 @@ const Message = styled.div<{ UpdateProfile?: any }>`
 const Input = styled.input<{ Check?: any }>`
   height: 3rem;
   width: ${(props) => (props.Check ? '65%' : '77%')};
-  //width: 20rem;
   border-radius: 30px;
   box-sizing: border-box;
   box-shadow: 0 3px 5px #3c4a5645;
@@ -174,9 +150,10 @@ const Input = styled.input<{ Check?: any }>`
   opacity: 0.6;
   font-weight: bolder;
 `;
-const Button = styled.button<{ MyPageButton?: any }>`
-  border: solid 2px green;
-  width: 20rem;
+const Button = styled.button<{ MyPageButton?: any; Return?: any }>`
+  //border: solid 2px green;
+  width: ${(props) => (props.MyPageButton ? '20rem' : '12rem')};
+  width: ${(props) => (props.Return ? '12rem' : null)};
   height: 3rem;
   border-radius: 30px;
   box-sizing: border-box;
@@ -189,7 +166,8 @@ const Button = styled.button<{ MyPageButton?: any }>`
   font-size: large;
   font-weight: bold;
   color: white;
-  margin-top: ${(props) => (props.MyPageButton ? '1rem' : '0')};
+  // margin-top: ${(props) => (props.MyPageButton ? '1rem' : '0')};
+  margin: 0.1rem;
 `;
 
 const CheckButton = styled.button`
@@ -197,14 +175,19 @@ const CheckButton = styled.button`
   //width: 4rem;
   box-shadow: 0 5px 14px #3c4a5645;
   box-sizing: border-box;
+  color: white;
+  border-radius: 10px;
+  margin: 0.1rem;
+  margin-left: 0.2rem;
+  padding: 0.1rem;
 `;
 
 const Div = styled.div`
+  //border: 2px dotted black;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  border: 2px dotted black;
   width: 20rem;
   height: 50%;
   /* height: 2rem;
@@ -217,7 +200,7 @@ const Div = styled.div`
 `;
 
 const Box = styled.div`
-  border: red solid 2px;
+  //border: red solid 2px;
   display: flex;
   justify-content: center;
   text-align: center;
@@ -253,6 +236,12 @@ const Edit = styled.img`
     opacity: 0.6;
   }
 `;
+const StatusMessage = styled.div`
+  font-weight: bolder;
+  font-size: 1.2rem;
+  color: #5f5e5e;
+  margin-top: 1rem;
+`;
 
 // input file(프로필 변경태그, 이 부분 숨김)
 const InputProfile = styled.input`
@@ -264,9 +253,11 @@ const InputProfile = styled.input`
 
 function MyPage(props: any) {
   const navigate = useNavigate();
-  const { userInfoToStore, user, deleteUserInfo } = props;
+
+  const { userInfoToStore, deleteUserInfo } = props;
   //console.log(userInfoToStore);
   const { isLogin, accessToken } = props.user;
+
   const { email, loginMethod, nickname, statusMessage, userImage } =
     props.user.userInfo;
   const [updateProfile, setUpdateProfile] = useState(false);
@@ -276,6 +267,7 @@ function MyPage(props: any) {
   const inputNickname: any = useRef();
   const statusmessage: any = useRef();
 
+  const [loading, setLoading] = useState(false); // 회원정보 삭제시 로딩페이지 분기
   const [nicknamecheckMessage, setNicknameCheckMessage] = useState('');
   const [nicknameValidate, setNicknameValidate] = useState(false);
   const [nicknameState, setNicknameState] = useState(false);
@@ -340,7 +332,7 @@ function MyPage(props: any) {
   // 수정완료
   const updateFinish = async (e: any) => {
     e.preventDefault();
-    const { email, nickname, statusMessage, userImage } = updateUserInfo;
+    const { nickname, statusMessage, userImage } = updateUserInfo;
     // console.log(email, nickname, statusMessage, nicknamecheck, '🙋‍♀️');
     if (inputNickname.current.value === '') {
       updateUserInfo.nickname = inputNickname.current.placeholder;
@@ -401,37 +393,78 @@ function MyPage(props: any) {
   //탈퇴하기 버튼
   const withdrawl = async (e: any) => {
     e.preventDefault();
-    const { password, passwordCheck } = passwordValue;
-    if (password !== passwordCheck || password === '') {
-      alert('비밀번호를 확인해주세요');
-      return;
-    } else {
-      try {
-        if (
-          !window.confirm(
-            '정말 탈퇴하시겠습니까? 탈퇴한 계정의 데이터는 복구가 불가합니다.'
-          )
-        ) {
+    if (loginMethod === 1) {
+      setWithdraw(!withdraw);
+      if (withdraw === true) {
+        const { password, passwordCheck } = passwordValue;
+        if (password !== passwordCheck || password === '') {
+          alert('비밀번호를 확인해주세요');
           return;
         } else {
+          try {
+            if (
+              !window.confirm(
+                '정말 탈퇴하시겠습니까? 탈퇴한 계정의 데이터는 복구가 불가합니다.'
+              )
+            ) {
+              return;
+            } else {
+              await axios
+                .delete('http://localhost:5000/mypage/withdrawl', {
+                  data: { password: passwordCheck },
+                  headers: { authorization: `Bearer ${accessToken}` },
+                })
+                .then((res) => {
+                  if (res.data.statusCode === 200) {
+                    void deleteUserInfo();
+                    setLoading(!loading);
+                    setTimeout(() => {
+                      alert('계정이 삭제되었습니다.');
+                      navigate('/mainfeed');
+                      return;
+                    }, 2000);
+                  } else {
+                    console.log('탈퇴실패');
+                    alert('탈퇴에 실패했습니다. 비밀번호를 확인해주세요');
+                  }
+                });
+            }
+          } catch (error) {
+            console.log('server error');
+          }
+        }
+      }
+    } else if (loginMethod === 2) {
+      if (
+        !window.confirm(
+          '정말 탈퇴하시겠습니까? 탈퇴한 계정의 데이터는 복구가 불가합니다.'
+        )
+      ) {
+        return;
+      } else {
+        try {
           await axios
-            .delete('http://localhost:5000/mypage/withdrawl', {
-              data: { password: passwordCheck },
+            .delete('http://localhost:5000/mypage/withdrawl/kakao', {
               headers: { authorization: `Bearer ${accessToken}` },
             })
             .then((res) => {
               if (res.data.statusCode === 200) {
-                console.log('탈퇴성공');
                 void deleteUserInfo();
-                navigate('/login', { replace: true });
-              } else {
-                console.log('탈퇴실패');
-                alert('탈퇴에 실패했습니다. 비밀번호를 확인해주세요');
+                setLoading(!loading);
+                setTimeout(() => {
+                  alert('계정이 삭제되었습니다.');
+                  navigate('/mainfeed');
+                  return;
+                }, 2000);
               }
             });
+        } catch (error) {
+          if (error) {
+            console.log(error);
+            alert('회원 탈퇴에 실패했습니다.');
+            return;
+          }
         }
-      } catch (error) {
-        console.log('server error');
       }
     }
   };
@@ -484,8 +517,12 @@ function MyPage(props: any) {
   //console.log(preUserImage);
   return (
     <>
-      {!isLogin ? (
-        <> alert('로그인을 해주세요')</>
+      {isLogin === false && loading ? (
+        <ErrorLoadingPage text="deleting..." />
+      ) : isLogin === false ? (
+        <>
+          <ErrorLoadingPage />
+        </>
       ) : (
         <Wrapper>
           <Book>
@@ -544,7 +581,7 @@ function MyPage(props: any) {
                         )}
                       </Profile>
                     </Div>
-                    {statusMessage}
+                    <StatusMessage>{statusMessage}</StatusMessage>
                   </Form>
                 </>
               )}
@@ -564,7 +601,7 @@ function MyPage(props: any) {
                             ref={inputNickname}
                             value={email}
                             disabled
-                            style={{ color: '#04A1A1', fontWeight: 'bolder' }}
+                            style={{ color: '#F548CC', fontWeight: 'bolder' }}
                           />
                         </Box>
                       </InputBox>
@@ -639,16 +676,17 @@ function MyPage(props: any) {
                       </InputBox>
                       <InputBox button>
                         <Box>
-                          <Button onClick={withdrawl}>탈퇴하기</Button>
                           <Button
+                            Return
                             MyPageButton
                             onClick={() => {
                               setWithdraw(!withdraw);
-                              console.log(updateProfile);
+                              //console.log(updateProfile);
                             }}
                           >
                             되돌아가기
                           </Button>
+                          <Button onClick={withdrawl}>탈퇴하기</Button>
                         </Box>
                       </InputBox>
                     </Form>
@@ -668,12 +706,7 @@ function MyPage(props: any) {
                         </Button>
                       </Box>
                       <Box>
-                        <Button
-                          MyPageButton
-                          onClick={() => {
-                            setWithdraw(!withdraw);
-                          }}
-                        >
+                        <Button MyPageButton onClick={withdrawl}>
                           탈퇴하기
                         </Button>
                       </Box>
@@ -689,18 +722,6 @@ function MyPage(props: any) {
                   navigate('/mainfeed', { replace: true });
                 }}
               ></TagHome>
-              <TagSignin
-                src={signinIndex}
-                onClick={() => {
-                  navigate('/login', { replace: true });
-                }}
-              ></TagSignin>
-              <TagSignup
-                src={signupIndex}
-                onClick={() => {
-                  navigate('/signup', { replace: true });
-                }}
-              ></TagSignup>
             </Index>
           </Book>
         </Wrapper>

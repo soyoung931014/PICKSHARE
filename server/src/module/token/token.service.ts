@@ -5,7 +5,6 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from '../user/user.entity';
 import { UserRepository } from '../user/user.repository';
 import * as dotenv from 'dotenv';
-import { constants } from 'buffer';
 import axios from 'axios';
 dotenv.config();
 
@@ -56,7 +55,10 @@ export class TokenService extends PassportStrategy(Strategy) {
         return user;
       }
     } catch (error) {
-      console.log(error);
+      if (error.response.status === 401) {
+        return { message: '토큰 만료', data: error.response.status };
+      }
+      console.log(error.response.status);
     }
     // return 값은 @UseGuards(AuthGuard())를 이용한 모든 요청의 Request Object에 들어간다.
   }

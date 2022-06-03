@@ -42,4 +42,19 @@ export class FollowService {
 
 		return nickFollowerList;
 	}
+
+	async getFollowOrNot(user: User, userNickname: string): Promise<boolean> {
+		const FindExistOrNot = await this.followRepository.find({
+			where: {
+				user_id: user.id,
+				followingNickname: userNickname
+			}
+		})
+
+		if(FindExistOrNot.length !== 0) {
+			//팔로우 중
+			return true;
+		}
+		return false;
+	}
 }

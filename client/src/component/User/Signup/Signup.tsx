@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import background from '../../../img/diaryBackground.png';
+import background from '../../../img/feedBG.jpg';
 import pickshareLogo from '../../../img/pickshare.png';
 import homeIndex from '../../../img/homeIndex.png';
 import signupIndex from '../../../img/signupIndex.png';
@@ -157,9 +157,7 @@ const Input = styled.input<{ Password?: any }>`
   border: 0;
   opacity: 0.6;
 `;
-const InputP = styled.input`
-  visibility: hidden;
-`;
+
 const Button = styled.button`
   //border: solid 2px black;
   width: 72%;
@@ -225,7 +223,7 @@ const BoxMessage = styled.div`
 `;
 
 function Signup() {
-  //axios.defaults.withCredentials = true;
+  const { Kakao } = window as any;
   const navigate = useNavigate();
 
   const inputEmail: any = useRef();
@@ -257,7 +255,6 @@ function Signup() {
   const passwordRegExp = /^[a-zA-z0-9]{4,12}$/;
 
   useEffect(() => {}, [emailcheck]);
-  /* useEffect(() => {}, [nicknamecheck]); */
 
   const handleChangeState = (e: any) => {
     setSignupInfo({ ...signupInfo, [e.target.name]: e.target.value });
@@ -438,6 +435,12 @@ function Signup() {
     }
   };
 
+  const handleKakaoSignup = (e: any) => {
+    e.preventDefault();
+    console.log(Kakao);
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=be17a9e882217a14ba581b03ea87c38f&redirect_uri=http://localhost:3000/loading&response_type=code&state=kakao`;
+    //navigate(window.location.href);
+  };
   return (
     <Wrapper>
       <Book>
@@ -516,7 +519,7 @@ function Signup() {
               </InputBox>
               <InputBox button>
                 <Box>
-                  <ButtonKakao>kakao</ButtonKakao>
+                  <ButtonKakao onClick={handleKakaoSignup}>kakao</ButtonKakao>
                 </Box>
               </InputBox>
             </Form>
@@ -526,7 +529,7 @@ function Signup() {
           <TagHome
             src={homeIndex}
             onClick={() => {
-              navigate('/', { replace: true });
+              navigate('/mainfeed', { replace: true });
             }}
           ></TagHome>
           <TagSignin
