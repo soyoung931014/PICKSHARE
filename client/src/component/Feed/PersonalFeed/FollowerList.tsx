@@ -17,6 +17,9 @@ const FollowButton = styled.button`
     cursor: pointer;
   }
 `
+// type FollowerListProps = {
+//   follow
+// };
 
 export default function FollowerList(props: any) {
   // console.log('props', props)

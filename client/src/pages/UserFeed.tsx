@@ -1,7 +1,7 @@
 /*eslint-disable*/
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Nav from '../component/Nav/Nav';
@@ -108,6 +108,7 @@ export default function UserFeed() {
     nickname: '',
     userImage: '',
     heartNum: 0,
+    commentNum: 0,
     locked: '',
   });
 
@@ -117,12 +118,12 @@ export default function UserFeed() {
     statusMessage: '',
   });
 
-  const [userRender, setUserRender] = useState(false);
+  const [render, setRender] = useState(false);
+
   const [follow, setFollow] = useState(false);
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
-  // const { isFollow } = useSelector((followReducer: follow) => followReducer);
   const [counts, setCounts] = useState(0);
   
   let path = window.location.pathname.split('/')[2];
@@ -153,6 +154,7 @@ export default function UserFeed() {
     return await feedApi.postFollow( userlist.nickname, accessToken)
       .then(() => {
         setFollow(true);
+        setRender(!render);
       })
   }
 
@@ -163,17 +165,11 @@ export default function UserFeed() {
     return await feedApi.deleteFollow(userlist.nickname, accessToken)
       .then(() => {
         setFollow(false);
+        setRender(!render);
       })
   }
   
-  useEffect(() => {
-
-    // let gate = window.location.pathname.split('/')[2];
-    // const changePath = () => {
-      //   return setPath(gate);
-      // }
-      
-      // changePath();
+  useMemo(() => {
       
     const userfeedinfo = async () => {
       return await feedApi.userInfo(path)
@@ -183,14 +179,6 @@ export default function UserFeed() {
     }
 
     userfeedinfo();
-
-    const userPage = async () => {
-      return await feedApi.getUserFeed(path)
-      .then(result => {
-        setUserFeedlist(result.data)
-      })
-    };
-    userPage();
 
     if(isLogin === true){
       feedApi.searchFollow(path, accessToken)
@@ -226,7 +214,19 @@ export default function UserFeed() {
 
     console.log('패스',path)
     
-  },[follow])
+  },[follow]);
+
+  useEffect(() => {
+    const userPage = async () => {
+      return await feedApi.getUserFeed(path)
+      .then(result => {
+        setUserFeedlist(result.data)
+      })
+    };
+    userPage();
+  },[
+    render
+  ])
   
   
   return (
@@ -282,8 +282,8 @@ export default function UserFeed() {
                 <MainFeedList
                 {...el}
                 key={el.id}
-                userRender={userRender}
-                setUserRender={setUserRender}
+                render={render}
+                setRender={setRender}
                 />
               ))}
         </Feed>
@@ -297,6 +297,8 @@ export default function UserFeed() {
               key={el.id}
               follow={follow}
               setFollow={setFollow}
+              // render={render}
+              // setRender={setRender}
             />
           ))}
         </div>
@@ -314,6 +316,8 @@ export default function UserFeed() {
               key={el.id}
               follow={follow}
               setFollow={setFollow}
+              // render={render}
+              // setRender={setRender}
             />
           ))
           )

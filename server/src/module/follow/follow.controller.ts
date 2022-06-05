@@ -26,6 +26,7 @@ export class FollowController {
   @UseGuards(AuthGuard())
   postFollowing(
     @GetUser() user: User,
+    //have to make pipe that validate whether nickname is same with user's nickname or not
     @Body('followingNickname') followingNickname: string,
   ): Promise<Follow[]> {
     return this.followService.postFollowing(user, followingNickname);

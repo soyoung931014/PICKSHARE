@@ -5,8 +5,15 @@ const feedApi = {
   getMainFeed: () => {
     return api.get('/feed');
   },
-  getHeart: (board_id: number) => {
-    return api.get(`/heart?board_id=${board_id}`);
+  getHeart: (board_id: number, accessToken: string) => {
+    return api.get(
+      `/heart?board_id=${board_id}`,
+      {
+        headers: {
+          authorization: `Bearer ${accessToken}`
+        }
+      }
+      );
   },
   getComment: () => {
     return api.get('/comment');

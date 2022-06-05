@@ -108,6 +108,7 @@ export default function MainFeed() {
     heartNum: 0,
     lock: '',
   });
+
   const [searchInput, setSearchInput] = useState('');
   const [orderingH, setOrderingH] = useState(false);
   const { searchNickname } = useSelector((feedReducer: feed) => feedReducer);

@@ -7,15 +7,15 @@ import { CreateCommentDto } from './dto/create-comment-dto';
 @EntityRepository(Comment)
 export class CommentRepository extends Repository<Comment> {
   async createComment(
-    createCommentDto: CreateCommentDto,
     user: User,
-    board: Board,
+    createCommentDto: CreateCommentDto,
+    board_id: number,
   ): Promise<Comment> {
     const { text } = createCommentDto;
     const createComment = this.create({
       text,
       user,
-      board,
+      board_id,
     });
     await this.save(createComment);
     return;

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 import { UserRepository } from '../user/user.repository';
@@ -13,7 +13,15 @@ export class FollowService {
 		private userRepository: UserRepository
 	) {}
 
-	postFollowing(user: User, followingNickname: string): Promise<Follow[]> {
+	async postFollowing(user: User, followingNickname: string): Promise<Follow[]> {
+		const findUser = await this.userRepository.find({
+            where: {
+                nickname: followingNickname
+            }
+        })
+		if(user.id === findUser[0].id){
+			throw new BadRequestException(`Can not follow userself ${followingNickname}`)
+		}
 		return this.followRepository.postFollowing(user, followingNickname);
 	}
 
@@ -25,9 +33,6 @@ export class FollowService {
 				nickname
 			}
 		})
-		console.log('팔로우를 한 유저1',findUser[0])
-		console.log('팔로우를 한 유저2',findUser[0].id)
-
 
 		const followingList = await this.followRepository.createQueryBuilder('follow')
 			.select([
