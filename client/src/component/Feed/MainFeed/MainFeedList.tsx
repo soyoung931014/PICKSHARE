@@ -8,8 +8,7 @@ import { useSelector } from 'react-redux';
 import { FaRegCommentDots } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { heartOffAction, heartOnAction } from '../../../redux/actions';
-import { RootState } from '../../../redux';
+
 
 const Div = styled.div`
   border: red solid 1px;
