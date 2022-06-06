@@ -163,7 +163,7 @@ export default function MainFeed() {
 
   return (
     <Wrapper>
-      <Nav />
+      <Nav render={render} setRender={setRender}/>
       <Div>
         <UpperDiv>
           <ButtonDiv>
