@@ -101,7 +101,6 @@ type MainFeedListProps = {
   heartNum: number;
   commentNum: number;
   render: boolean;
-  userRender: boolean;
   setRender: (render: boolean) => boolean;
 };
 export default function MainFeedList({
