@@ -201,7 +201,6 @@ export default function UserFeed() {
     const getFollowerList = async () => {
       return await feedApi.getFollowerList(path)
       .then((result) => {
-        console.log('팔로워',result.data)
         setFollower(result.data)
       })
     }
@@ -211,8 +210,6 @@ export default function UserFeed() {
       return setCounts(userfeedlist.length)
     }
     countFeed();
-
-    console.log('패스',path)
     
   },[follow]);
 
@@ -239,12 +236,17 @@ export default function UserFeed() {
             <UserDiv>
               <UserImg src={userlist.userImage} />
               {isLogin === true ? (
-                follow === true ? (
-                  //로그인o 팔로우o
-                  <UserFollow onClick={handleUnFollow}>unfollow</UserFollow>
+                //로그인o 내계정o
+                userInfo.nickname === path ? (
+                  null
                 ) : (
-                  //로그인o 팔로우x
-                  <UserFollow onClick={handleFollow}>follow</UserFollow>
+                  follow === true ? (
+                    //로그인o 팔로우o
+                    <UserFollow onClick={handleUnFollow}>unfollow</UserFollow>
+                  ) : (
+                    //로그인o 팔로우x
+                    <UserFollow onClick={handleFollow}>follow</UserFollow>
+                  )
                 )
               ) : (
                 //로그인x
