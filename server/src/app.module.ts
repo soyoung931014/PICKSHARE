@@ -10,6 +10,7 @@ import { CommentModule } from './module/comment/comment.module';
 import { FollowModule } from './module/follow/follow.module';
 import { FeedModule } from './module/feed/feed.module';
 import { MypageModule } from './module/mypage/mypage.module';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -26,4 +27,6 @@ import { MypageModule } from './module/mypage/mypage.module';
   controllers: [AppController],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}
