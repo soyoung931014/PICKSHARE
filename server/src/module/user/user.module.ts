@@ -6,6 +6,7 @@ import { UserRepository } from './user.repository';
 import { TokenService } from '../token/token.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { Connection } from 'typeorm';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { PassportModule } from '@nestjs/passport';
       },
     }),
   ],
-  providers: [UserService, TokenService, PassportModule,],
+  providers: [UserService, TokenService, PassportModule],
   controllers: [UserController],
 })
 export class UserModule {}

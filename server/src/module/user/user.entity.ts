@@ -15,8 +15,8 @@ import { Comment } from '../comment/comment.entity';
 import { Heart } from '../heart/heart.entity';
 import { Exclude } from 'class-transformer'; // refreshToken때문(민감한 정보 제외해주기위해)
 
-@Entity('User')
-export class User {
+@Entity()
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

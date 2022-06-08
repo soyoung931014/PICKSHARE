@@ -14,14 +14,14 @@ import { MypageModule } from './module/mypage/mypage.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeORMConfig),
-    //TokenModule,
-    /*  MypageModule, */
-    /*   FeedModule,
+    TokenModule,
+    MypageModule,
+    FeedModule,
     BoardModule,
     CommentModule,
     FollowModule,
-    HeartModule, */
-    //UserModule,
+    HeartModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [],
