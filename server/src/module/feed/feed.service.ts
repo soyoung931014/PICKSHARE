@@ -21,13 +21,17 @@ export class FeedService {
           'board.lock AS locked',
           'user.nickname AS nickname',
           'user.userImage As userImage',
-          'COUNT(heart.user_id) AS heartNum'
+          'COUNT(heart.user_id) AS heartNum',
+          'COUNT(comment.board_id) AS commentNum',
         ])
         .innerJoin(
           'board.user', 'user'
           )
         .leftJoin(
           'board.hearts', 'heart'
+        )
+        .leftJoin(
+          'board.comments', 'comment'
         )
         .where('board.Lock = :lock', {lock: 'UNLOCK'})
         .groupBy('board.id')

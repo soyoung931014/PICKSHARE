@@ -25,6 +25,12 @@ export class Comment extends BaseEntity {
   @UpdateDateColumn()
   updated_at: Date;
 
+  @Column()
+  board_id: number;
+
+  @Column()
+  user_id: number;
+
   @ManyToOne(() => Board, (board) => board.comments)
   @JoinColumn({name: 'board_id' })
   board: Board;

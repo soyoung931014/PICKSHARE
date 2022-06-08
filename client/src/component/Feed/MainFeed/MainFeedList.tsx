@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { BsSuitHeart } from 'react-icons/bs';
 import { BsSuitHeartFill } from 'react-icons/bs';
@@ -7,8 +7,8 @@ import feedApi from '../../../api/feed';
 import { useSelector } from 'react-redux';
 import { FaRegCommentDots } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import sampleImg from '../../../img/selfie4.jpg';
-import sampleImg2 from '../../../img/instafeed3.jpg';
+import { useDispatch } from 'react-redux';
+
 
 const Div = styled.div`
   border: red solid 1px;
@@ -76,53 +76,64 @@ const HeartDiv = styled.div`
   column-gap: 3px;
   margin: 1rem;
 `;
-const HeartButton = styled.button`
+const Button = styled.button`
   border: purple solid 1px;
-  margin-top: 0.2rem;
+  /* margin-top: 0.2rem; */
   background-color: white;
-  font-size: 20px;
-  font-weight: bold;
+  display: flex;
+  justify-content: center;
   &:hover {
     cursor: pointer;
   }
 `;
-const Comment = styled.div`
-  border: yellow solid 1px;
-  margin: 0.5rem 0;
+const Num = styled.div`
+  font-size: 25px;
+  margin-left: 2px;
 `;
 
-export default function MainFeedList(props: any) {
+type MainFeedListProps = {
+  id: number;
+  contentImg: string | undefined;
+  userImage: string | undefined;
+  nickname: string | undefined;
+  date: string | undefined;
+  heartNum: number;
+  commentNum: number;
+  render: boolean;
+  setRender: (render: boolean) => boolean;
+};
+export default function MainFeedList({
+  id,
+  contentImg,
+  userImage,
+  nickname,
+  date,
+  heartNum,
+  commentNum,
+  render,
+  setRender,
+}: MainFeedListProps) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
   const [heart, setHeart] = useState(false);
 
   const postHeart = async () => {
-    return await feedApi.postHeart(userInfo, props.id, accessToken)
-      .then(() => {
-        setHeart(true);
-      // const path = window.location.pathname.split("/")[1]
-      // if(path === 'feed'){
-      //   props.setUserRender(!props.userRender)
-      // } else if(path === 'mainfeed'){
-      //   props.setRender(!props.render);
-      // }
-      });
+    return await feedApi.postHeart(userInfo, id, accessToken).then(() => {
+      setHeart(true);
+      setRender(!render);
+      console.log('하트넣기-리스트', render);
+    });
   };
 
   const deleteHeart = async () => {
-    return await feedApi
-      .deleteHeart(userInfo, props.id, accessToken)
-      .then(() => {
-        setHeart(false);
-        // const path = window.location.pathname.split("/")[1]
-        // if(path === 'feed'){
-        //   props.setUserRender(!props.userRender)
-        // } else if(path === 'mainfeed'){
-        //   props.setRender(!props.render);
-        // }
-      });
+    return await feedApi.deleteHeart(userInfo, id, accessToken).then(() => {
+      setHeart(false);
+      setRender(!render);
+      console.log('하트삭제-리스트', render);
+    });
   };
 
   const moveToUsersFeed = (e: any) => {
@@ -130,60 +141,69 @@ export default function MainFeedList(props: any) {
     navigate(`/feed/${e}`);
   };
 
-  useEffect(() => {
-
-  }, [heart, props]);
-
   const clickWithOutLoggedin = () => {
     alert('로그인이 필요한 서비스 입니다');
     navigate('/login');
   };
 
+  useMemo(() => {
+    if (isLogin) {
+      const getHeart = async () => {
+        //하트 기록이 있는지 서치, 하트가 있으면, 하트 트루, 없 false
+        await feedApi.getHeart(id, accessToken).then((result) => {
+          result.data === 1 ? setHeart(true) : setHeart(false);
+        });
+      };
+      getHeart();
+    }
+  }, []);
+
+  useEffect(() => {}, [render]);
   return (
     <Div>
       <ImgDiv>
-        <Img src={props.contentImg} />
+        <Img src={contentImg} />
       </ImgDiv>
       <ContentDiv>
         <ContentRightDiv>
-          <UserImg src={props.userImage} />
+          <UserImg src={userImage} />
           <UserDiv>
             <UserNickname
               className="nickname"
-              onClick={() => moveToUsersFeed(props.nickname)}
+              onClick={() => moveToUsersFeed(nickname)}
             >
-              {props.nickname}
+              {nickname}
             </UserNickname>
-            <DateDiv>{props.date}</DateDiv>
+            <DateDiv>{date}</DateDiv>
           </UserDiv>
         </ContentRightDiv>
         <ContentLeftDiv>
           {isLogin === false ? (
             <HeartDiv>
-              <HeartButton onClick={clickWithOutLoggedin}>
+              <Button onClick={clickWithOutLoggedin}>
                 <BsSuitHeart style={{ strokeWidth: 1 }} size="25" />
-              </HeartButton>
-              <div>{props.heartNum}</div>
+              </Button>
+              <Num>{heartNum}</Num>
             </HeartDiv>
           ) : heart === false ? (
-            <HeartButton onClick={postHeart}>
+            <Button onClick={postHeart}>
               <BsSuitHeart style={{ strokeWidth: 1 }} size="25" />
-              {props.heartNum}
-            </HeartButton>
+              <Num>{heartNum}</Num>
+            </Button>
           ) : (
-            <HeartButton onClick={deleteHeart}>
+            <Button onClick={deleteHeart}>
               <BsSuitHeartFill
                 style={{ strokeWidth: 1 }}
                 size="25"
                 color="red"
               />
-              {props.heartNum}
-            </HeartButton>
+              <Num>{heartNum}</Num>
+            </Button>
           )}
-          <Comment>
-            <FaRegCommentDots />
-            <>2</>
-          </Comment>
+          <Button>
+            <FaRegCommentDots style={{ strokeWidth: 1 }} size="27" />
+            <Num>{commentNum}</Num>
+          </Button>
         </ContentLeftDiv>
       </ContentDiv>
     </Div>
