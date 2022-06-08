@@ -19,7 +19,7 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   //중복검사(emailcheck)
-  @Get('/emailcheck/:id')
+  @Get('emailcheck/:id')
   emailCheck(@Param('id') id: string): Promise<boolean> {
     return this.userService.getEmailCheck(id);
   }
@@ -65,9 +65,7 @@ export class UserController {
   }
 
   @Get('/userInfo')
-  getUserInfo(
-    @Query('userNickname') userNickname: string,
-  ): Promise<{ data: object }> {
+  getUserInfo(@Query('userNickname') userNickname: string): Promise<{data: object}> {
     return this.userService.getUserInfo(userNickname);
   }
 }
