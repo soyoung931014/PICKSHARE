@@ -11,13 +11,12 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
   entities: [
-    'dist/**/*.entity{.ts,.js}',
-    /*  './dist/module/user/user.entity.js',
+    './dist/module/user/user.entity.js',
     './dist/module/board/board.entity.js',
     './dist/module/heart/heart.entity.js',
     './dist/module/comment/comment.entity.js',
-    './dist/module/follow/follow.entity.js', */
-    //'./dist/module/comment/comment.entity.js',
+    './dist/module/follow/follow.entity.js',
+    './dist/module/comment/comment.entity.js',
   ],
   synchronize: true,
   logging: false,
