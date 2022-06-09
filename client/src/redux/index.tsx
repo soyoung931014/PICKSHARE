@@ -7,16 +7,10 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import userReducer from './reducers/userReducer/userReducer';
 import boardReducer from './reducers/boardReducer';
-import followReducer from './reducers/follow/followReducer';
-import modalReducer from './reducers/modalReducer/modalReducer';
-import heartReducer from './reducers/heartReducer/heartReducer';
 
 const rootReducer = combineReducers({
   userInfo: userReducer,
   boardInfo: boardReducer,
-  followInfo: followReducer,
-  heartReducer,
-  modalInfo: modalReducer,
 });
 const persistConfig = {
   key: 'root',
@@ -25,4 +19,3 @@ const persistConfig = {
 };
 
 export default persistReducer(persistConfig, rootReducer);
-export type RootState = ReturnType<typeof rootReducer>;

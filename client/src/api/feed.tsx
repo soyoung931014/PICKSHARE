@@ -5,15 +5,8 @@ const feedApi = {
   getMainFeed: () => {
     return api.get('/feed');
   },
-  getHeart: (board_id: number, accessToken: string) => {
-    return api.get(
-      `/heart?board_id=${board_id}`,
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`
-        }
-      }
-      );
+  getHeart: (board_id: number) => {
+    return api.get(`/heart?board_id=${board_id}`);
   },
   getComment: () => {
     return api.get('/comment');
@@ -58,10 +51,11 @@ const feedApi = {
   userInfo: (nickname: string) => {
     return api.get(`/user/userInfo?userNickname=${nickname}`);
   },
-  postFollow: ( nickname: string, accessToken: string ) => {
+  postFollow: (info: any, nickname: string, accessToken: string) => {
     return api.post(
-      '/follow/',
+      '/follow/following',
       {
+        info,
         'followingNickname': nickname,
       },
       {
@@ -70,16 +64,6 @@ const feedApi = {
         },
       }
     );
-  },
-  deleteFollow: (nickname: string, accessToken: string ) => {
-    return api.delete(
-      `/follow?followingNickname=${nickname}`,
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      }
-    )
   },
   searchFollow: (nickname: string, accessToken: string) => {
     return api.get(
@@ -91,16 +75,6 @@ const feedApi = {
       }
     )
   },
-  getFollowingList: (nickname: string) => {
-    return api.get(
-       `/follow/following?nickname=${nickname}`
-    )
-  },
-  getFollowerList: (nickname: string) => {
-    return api.get(
-      `follow/follower?nickname=${nickname}`
-    )
-  }
 };
 
 export default feedApi;

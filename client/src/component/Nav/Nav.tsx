@@ -135,7 +135,6 @@ const Info = styled.div`
 `;
 
 const Nav = (props: any) => {
-  console.log('네브에 전해진 프롭스', props);
   const { isLogin, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
@@ -184,7 +183,6 @@ const Nav = (props: any) => {
                   </div>
                   <NavLink
                     to={`/feed/${userInfo.nickname}`}
-                    onClick={() => props.setRender(!props.render)}
                     style={{
                       textDecoration: 'none',
                       color: '#3d3c3c',

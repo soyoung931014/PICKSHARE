@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -15,6 +16,7 @@ import homeIndex from '../../../img/homeIndex.png';
 import signupIndex from '../../../img/signupIndex.png';
 import signinIndex from '../../../img/signinIndex.png';
 import signupApi from '../../../api/signup';
+import ErrorLoadingPage from '../../../pages/ErrorLoadingPage';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -239,6 +241,7 @@ function Signup() {
     passwordcheck: '',
   });
 
+  const [loading, setLoading] = useState(false);
   //이메일,닉네임 중복검사(signupInfo.email과 정보 맞는지 확인하기위해)
   const [emailcheck, setEmailCheck] = useState('');
   const [nicknamecheck, setNicknameCheck] = useState('');
@@ -331,23 +334,21 @@ function Signup() {
     }
     if (nicknamevalidation === true) {
       try {
-        await axios
-          .get(`http://localhost:5000/user/nicknamecheck/${nickname}`)
-          .then((res) => {
-            console.log('res');
-            //닉네임을 userInfo value값에 넣어놓기
-            if (res.data === false) {
-              console.log(res.data);
-              setNicknameCheckMessage('사용할 수 있는 닉네임입니다.');
-              setNicknameCheck(nickname); // 나중에 회원가입 버튼을 누를 시  signupInfo.nickname과 nicknamecheck의 정보가 일치하는지를 확인
-              console.log(nicknamecheck);
-              console.log(signupInfo);
-            } else {
-              setNicknameCheckMessage('이미 사용중인 닉네임입니다');
-              console.log(nicknamecheck);
-              console.log(signupInfo);
-            }
-          });
+        await signupApi.nicknamecheck(nickname).then((res) => {
+          console.log('res');
+          //닉네임을 userInfo value값에 넣어놓기
+          if (res.data === false) {
+            console.log(res.data);
+            setNicknameCheckMessage('사용할 수 있는 닉네임입니다.');
+            setNicknameCheck(nickname); // 나중에 회원가입 버튼을 누를 시  signupInfo.nickname과 nicknamecheck의 정보가 일치하는지를 확인
+            console.log(nicknamecheck);
+            console.log(signupInfo);
+          } else {
+            setNicknameCheckMessage('이미 사용중인 닉네임입니다');
+            console.log(nicknamecheck);
+            console.log(signupInfo);
+          }
+        });
       } catch (error) {
         console.log('error');
       }
@@ -419,134 +420,140 @@ function Signup() {
     const userInfo = { email, nickname, password };
     if (userInfo) {
       try {
-        await axios
-          .post(`http://localhost:5000/user/signup`, userInfo)
-          .then((res) => {
-            console.log(res);
+        await signupApi.signup(userInfo).then((res) => {
+          console.log(res);
+          setLoading(!loading);
+          setTimeout(() => {
             alert('회원가입이 완료되었습니다. 로그인을 시도해주세요');
             navigate('/login', { replace: true });
-          });
-        /*  .then(() => {
-            navigate('/login', { replace: true });
-          }); */
+          }, 3000);
+        });
       } catch (error) {
-        console.log('error');
+        alert('회원가입 실패! 다시 회원가입해주세요');
+        console.log(error);
       }
     }
   };
 
   const handleKakaoSignup = (e: any) => {
     e.preventDefault();
-    console.log(Kakao);
     window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=be17a9e882217a14ba581b03ea87c38f&redirect_uri=http://localhost:3000/loading&response_type=code&state=kakao`;
     //navigate(window.location.href);
   };
   return (
-    <Wrapper>
-      <Book>
-        <Left>
-          <Img src={pickshareLogo} />
-        </Left>
-        <Right>
-          <LoginBox>
-            <Title>Create a new Account</Title>
-            <Form>
-              <InputBox>
-                <Box>
-                  <Input
-                    placeholder="이메일"
-                    ref={inputEmail}
-                    name="email"
-                    value={signupInfo.email}
-                    onChange={handleEmailValidation}
-                  />
-                  <TwinCheckButton onClick={emailCheck}>
-                    중복검사
-                  </TwinCheckButton>
-                </Box>
-              </InputBox>
-              <BoxMessage>
-                <Message>{emailcheckMessage}</Message>
-              </BoxMessage>
-              <InputBox>
-                <Box>
-                  <Input
-                    placeholder="닉네임"
-                    ref={inputNickname}
-                    name="nickname"
-                    onChange={handleNicknameValidation}
-                  />
-                  <TwinCheckButton onClick={nicknameCheck}>
-                    중복검사
-                  </TwinCheckButton>
-                </Box>
-              </InputBox>
-              <BoxMessage>
-                <Message>{nicknamecheckMessage}</Message>
-              </BoxMessage>
-              <InputBox>
-                <Box>
-                  <Input
-                    Password
-                    placeholder="비밀번호"
-                    ref={inputPassword}
-                    name="password"
-                    type="new-password"
-                    onChange={passwordValidation}
-                  />
-                </Box>
-              </InputBox>
-              <InputBox>
-                <Box>
-                  <Input
-                    Password
-                    placeholder="비밀번호확인"
-                    ref={inputPasswordCheck}
-                    name="passwordcheck"
-                    type="new-password"
-                    value={signupInfo.passwordcheck}
-                    onChange={passwordCheck}
-                  />
-                </Box>
-              </InputBox>
-              <BoxMessage>
-                <Message>{passwordMessage}</Message>
-              </BoxMessage>
-              <InputBox button>
-                <Box>
-                  <Button onClick={signupcheck}>회원가입</Button>
-                </Box>
-              </InputBox>
-              <InputBox button>
-                <Box>
-                  <ButtonKakao onClick={handleKakaoSignup}>kakao</ButtonKakao>
-                </Box>
-              </InputBox>
-            </Form>
-          </LoginBox>
-        </Right>
-        <Index>
-          <TagHome
-            src={homeIndex}
-            onClick={() => {
-              navigate('/mainfeed', { replace: true });
-            }}
-          ></TagHome>
-          <TagSignin
-            src={signinIndex}
-            onClick={() => {
-              navigate('/login', { replace: true });
-            }}
-          ></TagSignin>
-          <TagSignup
-            src={signupIndex}
-            onClick={() => {
-              navigate('/signup', { replace: true });
-            }}
-          ></TagSignup>
-        </Index>
-      </Book>
-    </Wrapper>
+    <>
+      {loading ? (
+        <ErrorLoadingPage text="loading" />
+      ) : (
+        <Wrapper>
+          <Book>
+            <Left>
+              <Img src={pickshareLogo} />
+            </Left>
+            <Right>
+              <LoginBox>
+                <Title>Create a new Account</Title>
+                <Form>
+                  <InputBox>
+                    <Box>
+                      <Input
+                        placeholder="이메일"
+                        ref={inputEmail}
+                        name="email"
+                        value={signupInfo.email}
+                        onChange={handleEmailValidation}
+                      />
+                      <TwinCheckButton onClick={emailCheck}>
+                        중복검사
+                      </TwinCheckButton>
+                    </Box>
+                  </InputBox>
+                  <BoxMessage>
+                    <Message>{emailcheckMessage}</Message>
+                  </BoxMessage>
+                  <InputBox>
+                    <Box>
+                      <Input
+                        placeholder="닉네임"
+                        ref={inputNickname}
+                        name="nickname"
+                        onChange={handleNicknameValidation}
+                      />
+                      <TwinCheckButton onClick={nicknameCheck}>
+                        중복검사
+                      </TwinCheckButton>
+                    </Box>
+                  </InputBox>
+                  <BoxMessage>
+                    <Message>{nicknamecheckMessage}</Message>
+                  </BoxMessage>
+                  <InputBox>
+                    <Box>
+                      <Input
+                        Password
+                        placeholder="비밀번호"
+                        ref={inputPassword}
+                        name="password"
+                        type="new-password"
+                        onChange={passwordValidation}
+                      />
+                    </Box>
+                  </InputBox>
+                  <InputBox>
+                    <Box>
+                      <Input
+                        Password
+                        placeholder="비밀번호확인"
+                        ref={inputPasswordCheck}
+                        name="passwordcheck"
+                        type="new-password"
+                        value={signupInfo.passwordcheck}
+                        onChange={passwordCheck}
+                      />
+                    </Box>
+                  </InputBox>
+                  <BoxMessage>
+                    <Message>{passwordMessage}</Message>
+                  </BoxMessage>
+                  <InputBox button>
+                    <Box>
+                      <Button onClick={signupcheck}>회원가입</Button>
+                    </Box>
+                  </InputBox>
+                  <InputBox button>
+                    <Box>
+                      <ButtonKakao onClick={handleKakaoSignup}>
+                        kakao
+                      </ButtonKakao>
+                    </Box>
+                  </InputBox>
+                </Form>
+              </LoginBox>
+            </Right>
+            <Index>
+              <TagHome
+                src={homeIndex}
+                onClick={() => {
+                  navigate('/mainfeed', { replace: true });
+                }}
+              ></TagHome>
+              <TagSignin
+                src={signinIndex}
+                onClick={() => {
+                  navigate('/login', { replace: true });
+                }}
+              ></TagSignin>
+              <TagSignup
+                src={signupIndex}
+                onClick={() => {
+                  navigate('/signup', { replace: true });
+                }}
+              ></TagSignup>
+            </Index>
+          </Book>
+        </Wrapper>
+      )}
+    </>
   );
 }
 

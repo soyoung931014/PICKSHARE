@@ -11,11 +11,10 @@ const ErrorLoadingPage = lazy(() => import('./pages/ErrorLoadingPage'));
 const KakaoLoading = lazy(() => import('./pages/KakaoLoading'));
 
 function App() {
-  const renderLoader = () => <div>로딩중</div>;
   return (
     <BrowserRouter>
       <GlobalStyles />
-      <Suspense fallback={renderLoader()}>
+      <Suspense fallback={<div>로딩중</div>}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           {/*  <Route path="/diary" element={<DiaryPage />} /> */}
