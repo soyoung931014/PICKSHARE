@@ -11,7 +11,7 @@ import { HeartService } from './heart.service';
   imports: [
     TypeOrmModule.forFeature([HeartRepository]), 
     UserModule,
-    BoardModule, 
+    BoardModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   controllers: [HeartController],

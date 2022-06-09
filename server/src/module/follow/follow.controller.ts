@@ -22,10 +22,11 @@ export class FollowController {
   //팔로우 삭제
   //팔로잉 목록 가져오기
 
-  @Post('following')
+  @Post()
   @UseGuards(AuthGuard())
   postFollowing(
     @GetUser() user: User,
+    //have to make pipe that validate whether nickname is same with user's nickname or not
     @Body('followingNickname') followingNickname: string,
   ): Promise<Follow[]> {
     return this.followService.postFollowing(user, followingNickname);
@@ -33,12 +34,12 @@ export class FollowController {
 
   @Get('/following')
   getFollowingList(
-    @Query('followingNickname') followingNickname: string,
+    @Query('nickname') nickname: string,
   ): Promise<Follow[]> {
-    return this.followService.getFollowingList(followingNickname);
+    return this.followService.getFollowingList(nickname);
   }
 
-  @Delete('/following')
+  @Delete()
   @UseGuards(AuthGuard())
   cancelFollowing(
     @GetUser() user: User,
@@ -49,9 +50,9 @@ export class FollowController {
 
   @Get('/follower')
   getFollowerList(
-    @Query('followingNickname') followingNickname: string,
+    @Query('nickname') nickname: string,
   ): Promise<Follow[]> {
-    return this.followService.getFollowerList(followingNickname);
+    return this.followService.getFollowerList(nickname);
   }
 
   @Get('/follow')

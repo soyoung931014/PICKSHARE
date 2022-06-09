@@ -60,11 +60,10 @@ function ErrorLoadingPage(props: any) {
       <Wrapper>
         {props.text ? (
           <>
-            (<Pickshare>{props.text}</Pickshare>
+            <Pickshare>{props.text}</Pickshare>
             <LoadingBox>
               <Img src={camera} />
             </LoadingBox>
-            )
           </>
         ) : (
           <Pickshare>404Error</Pickshare>
