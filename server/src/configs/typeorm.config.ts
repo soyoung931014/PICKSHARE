@@ -10,14 +10,8 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
-  entities: [
-    './dist/module/user/user.entity.js',
-    './dist/module/board/board.entity.js',
-    './dist/module/heart/heart.entity.js',
-    './dist/module/comment/comment.entity.js',
-    './dist/module/follow/follow.entity.js',
-    './dist/module/comment/comment.entity.js',
-  ],
+  entities: [__dirname + '/../**/*.entity.{js,ts}'],
+  // entities: ["./dist/**/*.entity.js"],
   synchronize: true,
   logging: false,
 };
