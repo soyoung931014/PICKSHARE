@@ -6,8 +6,8 @@ import { UserRepository } from './user.repository';
 import { TokenService } from '../token/token.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { Connection } from 'typeorm';
-
+import * as dotenv from 'dotenv';
+dotenv.config();
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }), //UseGuards때문
