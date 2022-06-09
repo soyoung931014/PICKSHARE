@@ -19,7 +19,6 @@ import pickshareLogo from '../../../img/pickshare.png';
 import homeIndex from '../../../img/homeIndex.png';
 import signupIndex from '../../../img/signupIndex.png';
 import signinIndex from '../../../img/signinIndex.png';
-import loginApi from '../../../api/login';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -279,16 +278,18 @@ function Login(props: any) {
     }
     if (userInfo) {
       try {
-        await loginApi.login(userInfo).then((res) => {
-          const { accessToken, loginMethod } = res.data.data; //refreshToken
-          //console.log(accessToken, loginMethod);
-          if (accessToken) {
-            void tokenVerification(accessToken);
-            //void tokenVerification();
-          } else {
-            console.log('토큰이 없습니다.');
-          }
-        });
+        await axios
+          .post(`http://localhost:5000/user/login`, userInfo)
+          .then((res) => {
+            const { accessToken, loginMethod } = res.data.data; //refreshToken
+            //console.log(accessToken, loginMethod);
+            if (accessToken) {
+              void tokenVerification(accessToken);
+              //void tokenVerification();
+            } else {
+              console.log('토큰이 없습니다.');
+            }
+          });
       } catch (error) {
         //console.log('로그인 실패');
         alert(
@@ -301,16 +302,20 @@ function Login(props: any) {
   // 토큰 검증 후 유저 정보 불러오는 함수
   const tokenVerification = async (token: string) => {
     try {
-      await loginApi.token(token).then((res) => {
-        const { userInfo } = res.data.data;
-        // console.log(userInfo);
-        if (userInfo) {
-          userInfoToStore(userInfo, token);
-          navigate('/mainfeed', { replace: true });
-        } else {
-          console.log('로그인 실패');
-        }
-      });
+      await axios
+        .get(`http://localhost:5000/token`, {
+          headers: { authorization: `Bearer ${token}` },
+        })
+        .then((res) => {
+          const { userInfo } = res.data.data;
+          // console.log(userInfo);
+          if (userInfo) {
+            userInfoToStore(userInfo, token);
+            navigate('/mainfeed', { replace: true });
+          } else {
+            console.log('로그인 실패');
+          }
+        });
     } catch (error) {
       console.log('error');
     }

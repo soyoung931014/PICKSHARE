@@ -1,7 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 
 export const typeORMConfig: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -13,4 +13,5 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   // entities: ["./dist/**/*.entity.js"],
   synchronize: true,
+  logging: false,
 };
