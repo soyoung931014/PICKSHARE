@@ -16,6 +16,7 @@ import { follow } from '../redux/reducers/follow/followReducer';
 import FollowingList from '../component/Feed/PersonalFeed/FollowingList';
 import Modal from '../component/Modal/Modal';
 import FollowerList from '../component/Feed/PersonalFeed/FollowerList';
+import { stringList } from 'aws-sdk/clients/datapipeline';
 
 const UserWapper = styled.div`
   width: 100vw;
@@ -224,9 +225,7 @@ export default function UserFeed() {
       })
     };
     userPage();
-  },[
-    render
-  ])
+  },[render])
   
   
   return (
@@ -287,6 +286,7 @@ export default function UserFeed() {
                 />
               ))}
         </Feed>
+        <Modal />
         <div>
           팔로잉
           {following.id === ''
@@ -307,7 +307,7 @@ export default function UserFeed() {
           {follower.id === ''
           ? (
             <>
-            `없습니다`
+            팔로워가 없습니다
             </>
           ) : (
             follower.map((el: any) => (

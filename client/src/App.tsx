@@ -4,11 +4,11 @@ import Login from './component/User/Login/Login';
 import Signup from './component/User/Signup/Signup';
 import GlobalStyles from './GlobalStyles';
 import LandingPage from './pages/LandingPage';
-
 import MainFeed from './pages/MainFeed';
 import UserFeed from './pages/UserFeed';
 import ErrorLoadingPage from './pages/ErrorLoadingPage';
 import KakaoLoading from './pages/KakaoLoading';
+import DiaryPage from './pages/DiaryPage';
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
       <GlobalStyles />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        {/*  <Route path="/diary" element={<DiaryPage />} /> */}
+        <Route path="/diary" element={<DiaryPage />} />
         <Route path="/mainfeed" element={<MainFeed />} />
         <Route path="/feed/:nickname" element={<UserFeed />} />
         <Route path="/signup" element={<Signup />} />

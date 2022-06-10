@@ -15,31 +15,40 @@ const ModalBackdrop = styled.div`
 
 const ModalContainer = styled.div`
   width: 20rem;
-  height: 20rem;
+  height: 30rem;
   border: solid 2px #abccff;
   background-color: #ebf1f1;
   opacity: 0.8;
-
   border-radius: 12%;
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+`;
+const List = styled.button`
   display: flex;
   justify-content: center;
-  align-items: center;
+  margin: 2rem 0;
+  font-size: 17px;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export default function Modal() {
-  const [open, setOpen] = useState(false);
-  const openModalHandler = () => {
-    setOpen(!open);
-  };
+  const [follower, setFollower] = useState(false);
+  // const openModalHandler = () => {
+  //   setOpen(!open);
+  // };
   return (
     <>
-      {open === false ? (
-        <ModalBackdrop>
-          <ModalContainer>
-            <div> 모달 </div>
-          </ModalContainer>
-        </ModalBackdrop>
-      ) : null}
+      <ModalBackdrop>
+        <ModalContainer>
+          <List>팔로워</List>
+          <List>팔로잉</List>
+        </ModalContainer>
+      </ModalBackdrop>
     </>
   );
 }
