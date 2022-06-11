@@ -50,11 +50,11 @@ export class CommentService {
       console.log(comments);
       if (comments) {
         const user = await Promise.all(
-          comments.map((el) => {
-            return this.userRepository.findOne({ id: el.user_id });
+          comments.map(async (el) => {
+            return await this.userRepository.findOne({ id: el.user_id });
           }),
         );
-        console.log(user, 'user');
+        // console.log(user, 'user');
         const result = [];
         for (let i = 0; i < comments.length; i++) {
           const { id, text, created_at, updated_at } = comments[i];
@@ -78,7 +78,6 @@ export class CommentService {
           statusMessage: `게시글 ${id}번 댓글 불러오기 성공했습니다`,
           data: result,
         };
-        console.log(result, 'result');
       } else {
         return { data: null, statusMessage: `댓글 없어요` };
       }
