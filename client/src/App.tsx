@@ -1,6 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import GlobalStyles from './GlobalStyles';
 import { lazy, Suspense } from 'react';
+import CommentSection from './component/Comment/Comments';
+
 const MyPage = lazy(() => import('./component/MyPage/MyPage'));
 const Login = lazy(() => import('./component/User/Login/Login'));
 const Signup = lazy(() => import('./component/User/Signup/Signup'));
@@ -25,6 +27,7 @@ function App() {
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/loading" element={<KakaoLoading />} />
           <Route path="/errorloading" element={<ErrorLoadingPage />} />
+          <Route path="/commentsection" element={<CommentSection />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

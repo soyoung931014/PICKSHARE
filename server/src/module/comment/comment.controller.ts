@@ -67,7 +67,6 @@ export class CommentController {
 
   // 선택한 게시글 댓글 삭제하기
   @Delete('/:id')
-  @UseGuards(AuthGuard())
   delete(@Body('comment_id') comment_id: number): Promise<object> {
     return this.commentService.delete(comment_id);
   }
