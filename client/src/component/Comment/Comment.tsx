@@ -2,11 +2,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { BiPencil } from 'react-icons/bi';
 import { CgTrash } from 'react-icons/cg';
+import { FaCheck } from 'react-icons/fa';
 import axios from 'axios';
+import { AnyAaaaRecord, AnyARecord } from 'node:dns';
 
 const Wrapper = styled.div`
   border: solid red 2px;
@@ -38,8 +40,21 @@ function Comment(props: any) {
   const { email, nickname, userImage } = props.userInfo; //email
   const { id, text, updated_at } = props.comment; //id
   const date: any = updated_at.slice(0, 10);
-  const update = () => {
-    console.log('업뎃', id);
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [updateText, setUpdateText] = useState({ text: text });
+
+  const updatecheck = async () => {
+    console.log('업뎃체크', id);
+    await axios
+      .patch(`http://localhost:3001/comment/1`, {
+        comment_id: id,
+        text: updateText.text,
+      })
+      .then((res) => {
+        console.log(res);
+        setOpenUpdate(!openUpdate);
+        setUpdateComment(!updateComment);
+      });
   };
   const deleteComment = async () => {
     console.log('삭제', id);
@@ -65,17 +80,33 @@ function Comment(props: any) {
           <div>{date}</div>
         </div>
       </UserInfo>
-      <Content>{text}</Content>
-      {userEmail === email ? (
+      {!openUpdate ? (
         <>
-          <Update onClick={update}>
-            <BiPencil />
-          </Update>
-          <Delete onClick={deleteComment}>
-            <CgTrash />
-          </Delete>
+          <Content>{text}</Content>
+          {userEmail === email ? (
+            <>
+              <Update onClick={() => setOpenUpdate(!openUpdate)}>
+                <BiPencil />
+              </Update>
+              <Delete onClick={deleteComment}>
+                <CgTrash />
+              </Delete>
+            </>
+          ) : null}
         </>
-      ) : null}
+      ) : (
+        <>
+          <input
+            type="text"
+            placeholder={text}
+            name="text"
+            onChange={(e: any) =>
+              setUpdateText({ ...updateText, [e.target.name]: e.target.value })
+            }
+          />
+          <FaCheck onClick={updatecheck} />
+        </>
+      )}
     </Wrapper>
   );
 }

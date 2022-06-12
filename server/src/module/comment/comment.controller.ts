@@ -57,7 +57,6 @@ export class CommentController {
 
   // 선택한 게시글 댓글 수정하기
   @Patch('/:id')
-  @UseGuards(AuthGuard())
   update(
     @Body() createCommentDto: CreateCommentDto,
     @Body('comment_id') comment_id: number,

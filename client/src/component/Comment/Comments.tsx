@@ -14,7 +14,8 @@ import Comment from './Comment';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useMemo } from 'react';
+import commentApi from '../../api/comment';
+
 const Wrapper = styled.div`
   border: solid black 2px;
   padding: 1rem;
@@ -30,7 +31,7 @@ const CommentBox = styled.div`
 const Input = styled.input``;
 const Button = styled.button``;
 
-// 위 컴포넌트에서 게시글 번호 받아오기
+// 🚀 위 컴포넌트에서 게시글 번호 받아오기
 function CommentSection({ user }: any) {
   console.log(user);
   const { isLogin, accessToken } = user;
@@ -44,11 +45,11 @@ function CommentSection({ user }: any) {
   });
   const [updatecomment, setUpdateComment] = useState(false);
   useEffect(() => {
-    void axios.get(`http://localhost:3001/comment/1`).then((res) => {
+    void commentApi.findAllComment().then((res) => {
       setCommentdata(res.data.data);
     });
   }, [updatecomment]);
-  // console.log(sendComment);
+
   const send = async () => {
     try {
       await axios
@@ -65,6 +66,7 @@ function CommentSection({ user }: any) {
         .then((res) => {
           if (res.status === 201) {
             setUpdateComment(!updatecomment);
+            inputComment.current.value = '';
             console.log(res);
           } else {
             return;
@@ -95,10 +97,10 @@ function CommentSection({ user }: any) {
         <Input
           type="text"
           ref={inputComment}
-          name="comment"
-          placeholder="댓글"
+          name="text"
+          placeholder="댓글을 작성하세요"
           onChange={(e: any) => {
-            setSendComment({ ...sendComment, text: e.target.value });
+            setSendComment({ ...sendComment, [e.target.name]: e.target.value });
           }}
         />
         {isLogin ? (
@@ -117,7 +119,7 @@ function CommentSection({ user }: any) {
     </Wrapper>
   );
 }
-// 내 토큰 검증해서 나온 정보의 닉네임과 그려져있는닉네임이 같으면 수정, 삭제 버튼 나오기
+
 const mapStateToProps = (state: any) => {
   return {
     user: state.userInfo,
