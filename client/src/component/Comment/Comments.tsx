@@ -21,22 +21,42 @@ const Wrapper = styled.div`
   padding: 1rem;
 `;
 const CommentsListBox = styled.div`
-  border: dotted black 2px;
+  //border: dotted black 2px;
   height: 50vh;
 `;
 const CommentBox = styled.div`
-  border: dotted black 2px;
+  //border: dotted black 2px;
+  height: 2.2rem;
+  margin-top: 13px;
 `;
 
-const Input = styled.input``;
-const Button = styled.button``;
+const Input = styled.input`
+  border: solid #a396f8 2px;
+  border-radius: 5px;
+  width: 80vw;
+  height: 1rem;
+  font-size: 1rem;
+  padding: 0.8rem;
+`;
+const Button = styled.button`
+  font-size: 1rem;
+  width: 3rem;
+  height: 2rem;
+  margin-left: 8px;
+  color: white;
+  border-radius: 5px;
+  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
+  &:hover {
+    cursor: pointer;
+  }
+`;
 
 // 🚀 위 컴포넌트에서 게시글 번호 받아오기
 function CommentSection({ user }: any) {
   console.log(user);
   const { isLogin, accessToken } = user;
   const { email } = user.userInfo;
-  console.log(isLogin);
+  //console.log(isLogin);
   const inputComment: any = useRef();
   const navigate = useNavigate();
   const [commentdata, setCommentdata] = useState([]);
