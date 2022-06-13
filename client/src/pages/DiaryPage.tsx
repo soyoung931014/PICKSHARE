@@ -28,6 +28,8 @@ Container
 const Container = styled.section`
   height: 100vh;
   background-image: url(${background});
+  background-size: cover;
+  background-attachment: scroll;
   display: flex;
   justify-content: center;
   align-items: center;
