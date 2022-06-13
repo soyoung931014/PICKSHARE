@@ -4,7 +4,7 @@ import { GetUser } from '../token/get-user.decorator';
 import { User } from '../user/user.entity';
 import { Heart } from './heart.entity';
 import { HeartService } from './heart.service';
-import { HeartStatusPipe } from './pipes/heart-validation.pip';
+import { HeartStatusPipe } from './pipes/heart-validation.pipe';
 
 @Controller('heart')
 export class HeartController {

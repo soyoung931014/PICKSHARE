@@ -34,8 +34,16 @@ export class MypageController {
     @Body() passwordDto: PasswordCheckDto,
   ): Promise<object> {
     const { user } = req;
-    /* console.log(user, 'user');
-    console.log(passwordDto); */
+    console.log(user, 'user');
+    console.log(passwordDto);
     return this.mypage.removeUserInfo(user, passwordDto);
+  }
+
+  //카카오 회원탈퇴
+  @Delete('/withdrawl/kakao')
+  kakaoDeleteUser(@Req() req: any): Promise<object> {
+    const { user } = req;
+    //console.log(user);
+    return this.mypage.removeKakaoUserInfo(req.user);
   }
 }

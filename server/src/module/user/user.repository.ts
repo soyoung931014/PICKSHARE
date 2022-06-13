@@ -45,11 +45,11 @@ export class UserRepository extends Repository<User> {
     data: object;
     statusCode: number;
   }> {
-    console.log(email, 'hi');
+    // console.log(email, 'hi');
     const user = this.create({
       email: email,
       password: 'null',
-      nickname: '',
+      nickname: 'kakao 로그인',
       userImage: 'nothing',
       statusMessage: 'nothing',
       loginMethod: 2,

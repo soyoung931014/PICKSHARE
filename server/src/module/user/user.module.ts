@@ -6,7 +6,8 @@ import { UserRepository } from './user.repository';
 import { TokenService } from '../token/token.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-
+import * as dotenv from 'dotenv';
+dotenv.config();
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }), //UseGuards때문
@@ -18,7 +19,7 @@ import { PassportModule } from '@nestjs/passport';
       },
     }),
   ],
-  providers: [UserService, TokenService, PassportModule,],
+  providers: [UserService, TokenService, PassportModule],
   controllers: [UserController],
 })
 export class UserModule {}

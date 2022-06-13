@@ -12,7 +12,7 @@ export class FeedService {
   ) {}
 
   async getAllFeed(): Promise<Board[]> {
-      return await this.boardRepository.createQueryBuilder('board')
+      const result =  await this.boardRepository.createQueryBuilder('board')
         .select([
           'board.id AS id',
           'board.picture AS contentImg',
@@ -21,7 +21,8 @@ export class FeedService {
           'board.lock AS locked',
           'user.nickname AS nickname',
           'user.userImage As userImage',
-          'COUNT(heart.user_id) AS heartNum'
+          'COUNT(heart.user_id) AS heartNum',
+          'COUNT(comment.board_id) AS commentNum',
         ])
         .innerJoin(
           'board.user', 'user'
@@ -29,10 +30,15 @@ export class FeedService {
         .leftJoin(
           'board.hearts', 'heart'
         )
+        .leftJoin(
+          'board.comments', 'comment'
+        )
         .where('board.Lock = :lock', {lock: 'UNLOCK'})
         .groupBy('board.id')
-        .orderBy('board.createdAt', 'DESC')
+        .orderBy('board.date', 'DESC')
         .getRawMany()
+
+      return result;
   }
 
   async getUserFeed(nickname: string): Promise<Board[]> {

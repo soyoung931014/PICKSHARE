@@ -10,15 +10,16 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
-import { addUserInfo } from '../../../redux/actions/index';
-import userApi from '../../../api/user';
+import { addUserInfo, deleteUserInfo } from '../../../redux/actions/index';
+//import api from '../../../api/user';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import background from '../../../img/diaryBackground.png';
+import background from '../../../img/feedBG.jpg';
 import pickshareLogo from '../../../img/pickshare.png';
 import homeIndex from '../../../img/homeIndex.png';
 import signupIndex from '../../../img/signupIndex.png';
 import signinIndex from '../../../img/signinIndex.png';
+import loginApi from '../../../api/login';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -222,14 +223,10 @@ const BoxMessage = styled.div`
 function Login(props: any) {
   const navigate = useNavigate();
 
-  /*  const kakao = (window as any).Kakao;
-  console.log(kakao); */
-  // 중복되는 초기화를 막기 위해 isInitialized()로 SDK 초기화 여부를 판단한다.
-  //console.log(props, 'props');
-  const { Kakao } = window as any;
-  //console.log(Kakao);
-
-  const { userInfoToStore } = props;
+  const { userInfoToStore, initialUserInfoToStore } = props;
+  useEffect(() => {
+    initialUserInfoToStore();
+  }, []);
 
   const inputEmail: any = useRef();
   const inputpassword: any = useRef();
@@ -282,20 +279,18 @@ function Login(props: any) {
     }
     if (userInfo) {
       try {
-        await axios
-          .post(`http://localhost:5000/user/login`, userInfo)
-          .then((res) => {
-            const { accessToken, loginMethod } = res.data.data; //refreshToken
-            //console.log(accessToken, loginMethod);
-            if (accessToken) {
-              void tokenVerification(accessToken);
-              //void tokenVerification();
-            } else {
-              console.log('토큰이 없습니다.');
-            }
-          });
+        await loginApi.login(userInfo).then((res) => {
+          const { accessToken, loginMethod } = res.data.data; //refreshToken
+          //console.log(accessToken, loginMethod);
+          if (accessToken) {
+            void tokenVerification(accessToken);
+            //void tokenVerification();
+          } else {
+            console.log('토큰이 없습니다.');
+          }
+        });
       } catch (error) {
-        console.log('로그인 실패');
+        //console.log('로그인 실패');
         alert(
           '아이디 또는 비밀번호를 잘못 입력했습니다. 입력하신 내용을 다시 확인해주세요'
         );
@@ -306,31 +301,25 @@ function Login(props: any) {
   // 토큰 검증 후 유저 정보 불러오는 함수
   const tokenVerification = async (token: string) => {
     try {
-      await axios
-        .get(`http://localhost:5000/token`, {
-          headers: { authorization: `Bearer ${token}` },
-        })
-        .then((res) => {
-          const { userInfo } = res.data.data;
-          // console.log(userInfo);
-          if (userInfo) {
-            userInfoToStore(userInfo, token);
-            navigate('/board', { replace: true });
-          } else {
-            console.log('로그인 실패');
-          }
-        });
+      await loginApi.token(token).then((res) => {
+        const { userInfo } = res.data.data;
+        // console.log(userInfo);
+        if (userInfo) {
+          userInfoToStore(userInfo, token);
+          navigate('/mainfeed', { replace: true });
+        } else {
+          console.log('로그인 실패');
+        }
+      });
     } catch (error) {
       console.log('error');
     }
   };
-  const taghome = () => {
-    console.log('hihi');
-  };
 
+  //console.log(process.env, 'enenene');
   const handleKakaoLogin = (e: any) => {
     e.preventDefault();
-    console.log(Kakao);
+    //console.log(Kakao);
     window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=be17a9e882217a14ba581b03ea87c38f&redirect_uri=http://localhost:3000/loading&response_type=code&state=kakao`;
     //navigate(window.location.href);
   };
@@ -425,6 +414,9 @@ const mapDispatchToProps = (dispatch: any) => {
   return {
     userInfoToStore: (userInfo: object, token: string) => {
       dispatch(addUserInfo(userInfo, token));
+    },
+    initialUserInfoToStore: () => {
+      dispatch(deleteUserInfo());
     },
   };
 };
