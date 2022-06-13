@@ -1,11 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
-import background from '../../../src/img/diaryBackground.png';
+/* eslint-disable */
+import background from '../img/diaryBackground.png';
 import axios from 'axios';
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'; 
 import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import React, { useRef, useState } from 'react';
@@ -116,59 +112,57 @@ const RightWrapper = styled(wrapperStyle)`
   }
 `;
 
-const Diary = (props: any) => {
-  axios.defaults.withCredentials = true;
+const Diary = () => {
+  // const { boardInfoToStore } = props;
+  // // const file: string = useRef();
+  // // console.log(file.current.value);
 
-  const { boardInfoToStore } = props;
-  // const file: string = useRef();
-  // console.log(file.current.value);
+  // // const imageFile = e.target.files[0];
+  // type FormValues = {
+  //   title: string;
+  //   picture: string;
+  //   pictureMethod: number;
+  //   mood: number;
+  //   lock: string;
+  //   content: string;
+  //   date: string;
+  // };
 
-  // const imageFile = e.target.files[0];
-  type FormValues = {
-    title: string;
-    picture: string;
-    pictureMethod: number;
-    mood: number;
-    lock: string;
-    content: string;
-    date: string;
-  };
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   formState: { errors },
+  // } = useForm<FormValues>();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>();
+  // const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
+  // const [boardInfo, setBoardInfo] = useState<FormValues>({
+  //   title: '',
+  //   picture: '',
+  //   pictureMethod: 1,
+  //   mood: 0,
+  //   lock: 'UNLOCK',
+  //   content: '',
+  //   date: '',
+  // });
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
-  const [boardInfo, setBoardInfo] = useState<FormValues>({
-    title: '',
-    picture: '',
-    pictureMethod: 1,
-    mood: 0,
-    lock: 'UNLOCK',
-    content: '',
-    date: '',
-  });
+  // const PostingHandler = (e: any) => {
+  //   e.preventDefault();
+  //   console.log(boardInfo);
+  //   if (boardInfo) {
+  //     axios
+  //       .post(`http://localhost:5000/post`, boardInfo)
+  //       .then((res) => {
+  //         console.log(res.data);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //   }
+  // };
 
-  const PostingHandler = (e: any) => {
-    e.preventDefault();
-    console.log(boardInfo);
-    if (boardInfo) {
-      axios
-        .post(`http://localhost:5000/post`, boardInfo)
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  };
-
-  const goToStore = async (boardInfo: any) => {
-    await boardInfoToStore(boardInfo);
-  };
+  // const goToStore = async (boardInfo: any) => {
+  //   await boardInfoToStore(boardInfo);
+  // };
 
   return (
     <>
@@ -194,40 +188,46 @@ const Diary = (props: any) => {
             </form> */}
         </LeftWrapper>
         <RightWrapper>
-          <form className="form-wrapper" onSubmit={handleSubmit(onSubmit)}>
+          <form className="form-wrapper">
             <input
               type="text"
               className="diary"
               placeholder="제목을 입력해 주세요."
-              {...register('title')}
+              //{...register('title')}
             />
             <article className="select-wrapper">
               <input
                 type="date"
                 className="diary dates"
-                {...register('date')}
+                //{...register('date')}
               />
 
-              <select className="moods" {...register('mood')}>
+              <select
+                className="moods"
+                //{...register('mood')}
+              >
                 <option value="0">행복</option>
                 <option value="1">좋음</option>
                 <option value="2">보통</option>
                 <option value="3">우울</option>
                 <option value="4">화남</option>
               </select>
-              <button className="diary lock" {...register('lock')}>
+              <button
+                className="diary lock"
+                //</article>{...register('lock')}
+              >
                 잠금
               </button>
             </article>
             <textarea
               className="diary diary-content"
               placeholder="내용을 입력해 주세요."
-              {...register('content')}
+              // {...register('content')}
             />
             <article className="save-btns">
               <button className="diary save-btn">취소</button>
               <button
-                onClick={PostingHandler}
+                //onClick={PostingHandler}
                 type="submit"
                 className="diary save-btn"
               >
@@ -241,19 +241,19 @@ const Diary = (props: any) => {
   );
 };
 
-const mapStateToProps = (state: object) => {
-  console.log('a', state);
+// const mapStateToProps = (state: object) => {
+//   console.log('a', state);
 
-  return {
-    boardInfo: state,
-  };
-};
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    boardInfoToStore: (boardInfo: object, token: string) => {
-      dispatch(addBoardInfo(boardInfo, token));
-    },
-  };
-};
+//   return {
+//     boardInfo: state,
+//   };
+// };
+// const mapDispatchToProps = (dispatch: any) => {
+//   return {
+//     boardInfoToStore: (boardInfo: object, token: string) => {
+//       dispatch(addBoardInfo(boardInfo, token));
+//     },
+//   };
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Diary);
+export default Diary;

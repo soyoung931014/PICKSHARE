@@ -99,7 +99,7 @@ function Comment(props: any) {
     console.log('업뎃체크', id);
     try {
       await axios
-        .patch(`http://localhost:3001/comment/1`, {
+        .patch(`http://localhost:5000/comment/1`, {
           comment_id: id,
           text: updateText.text,
         })
@@ -116,7 +116,7 @@ function Comment(props: any) {
     console.log('삭제', id);
     try {
       await axios
-        .delete(`http://localhost:3001/comment/1`, {
+        .delete(`http://localhost:5000/comment/1`, {
           data: { comment_id: id },
         })
         .then((res) => {
