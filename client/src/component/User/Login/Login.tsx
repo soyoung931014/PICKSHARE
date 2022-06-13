@@ -41,7 +41,7 @@ const Book = styled.div`
 const Left = styled.div`
   display: flex;
   align-items: flex-end;
-  width: 32vw;
+  width: 30rem;
   height: 85vh;
   padding-left: 1em;
   background-color: white;
@@ -49,17 +49,26 @@ const Left = styled.div`
   border-radius: 30px 20px 20px 30px;
   box-shadow: 10px 10px 30px #3c4a5645;
   border-right: #b1b0b0 solid 2px;
+  @media screen and (max-width: 1190px) {
+    display: none;
+  }
 `;
 
 const Right = styled.div`
-  width: 32vw;
+  border-radius: 20px 30px 30px 20px;
+  width: 30rem;
   height: 85vh;
   background-color: white;
   padding-left: 1em;
-  //border: solid 2px black;
-  border-radius: 20px 30px 30px 20px;
+  border: solid 2px black;
   box-shadow: 30px 10px 10px #3c4a5645;
   border-left: #b1b0b0 solid 2px;
+  @media screen and (max-width: 1190px) {
+    width: 32rem;
+  }
+  @media screen and (max-width: 891px) {
+    width: 20rem;
+  }
 `;
 const Index = styled.div`
   display: flex;
@@ -110,7 +119,7 @@ const Img = styled.img`
   bottom: 10px;
 `;
 const LoginBox = styled.div`
-  //border: solid 2px red;
+  border: solid 2px red;
   height: 80vh;
   display: flex;
   flex-direction: column;
@@ -119,16 +128,20 @@ const LoginBox = styled.div`
   box-sizing: border-box;
 `;
 const Title = styled.div`
-  //border: solid 2px teal;
+  border: solid 2px teal;
   font-size: 2rem;
   font-weight: 900;
   margin-top: 2.5rem;
   background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+
+  @media screen and (max-width: 891px) {
+    font-size: 1.7rem;
+  }
 `;
 const Form = styled.form`
-  //border: dotted 2px red;
+  border: dotted 2px red;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -143,17 +156,26 @@ const InputBox = styled.div<{ button?: any }>`
   box-sizing: border-box;
 `;
 const Message = styled.div`
-  //border: solid 2px green;
+  border: solid 2px green;
+  width: 30vw;
+
   height: 1.7rem;
   padding-top: 3px;
   box-sizing: border-box;
   font-size: 15px;
-  text-align: left;
+  //text-align: left;
+  position: relative;
   color: #ff8686;
+  @media screen and (max-width: 1190px) {
+    font-size: 13px;
+  }
+  @media screen and (max-width: 891px) {
+    display: none;
+  }
 `;
 const Input = styled.input`
   height: 3rem;
-  width: 68%;
+  width: 18rem;
   border-radius: 30px;
   box-sizing: border-box;
   box-shadow: 0 3px 5px #3c4a5645;
@@ -162,7 +184,13 @@ const Input = styled.input`
   outline: none;
   padding: 0 1em;
   border: 0;
+  box-sizing: border-box;
   opacity: 0.6;
+  @media screen and (max-width: 744px) {
+    width: 12rem;
+    height: 2rem;
+    box-sizing: border-box;
+  }
 `;
 const Button = styled.button`
   //border: solid 2px green;
@@ -216,8 +244,20 @@ const Box = styled.div`
 const BoxMessage = styled.div`
   display: flex;
   margin-left: 5.3rem;
-  text-align: center;
+  //text-align: center;
   padding-right: 7rem;
+  @media screen and (max-width: 1190px) {
+    margin-left: 3rem;
+  }
+  @media screen and (max-width: 1042px) {
+    margin-left: 2rem;
+  }
+  @media screen and (max-width: 935px) {
+    margin-left: 1rem;
+  }
+  @media screen and (max-width: 891px) {
+    margin-left: 0.3rem;
+  }
 `;
 
 function Login(props: any) {
