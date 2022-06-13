@@ -74,7 +74,7 @@ function CommentSection({ user }: any) {
     try {
       await axios
         .post(
-          `http://localhost:3001/comment`,
+          `http://localhost:5000/comment`,
           {
             text: sendComment.text,
             board_id: 1,

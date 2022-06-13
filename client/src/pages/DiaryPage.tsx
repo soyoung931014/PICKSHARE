@@ -1,5 +1,5 @@
 /* eslint-disable */
-import background from '../img/diaryBackground.png';
+import background from '../img/feedBG.jpg';
 import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import React, { useRef, useState } from 'react';

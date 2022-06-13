@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-<<<<<<< HEAD
 const ModalBackdrop = styled.div`
   position: fixed;
   z-index: 999;
@@ -38,7 +37,7 @@ const List = styled.button`
 `;
 
 export default function Modal() {
-  const [follower, setFollower] = useState(false);
+  //const [follower, setFollower] = useState(false);
   // const openModalHandler = () => {
   //   setOpen(!open);
   // };
@@ -51,14 +50,5 @@ export default function Modal() {
         </ModalContainer>
       </ModalBackdrop>
     </>
-=======
-const ModalWrapper = styled.div``;
-
-export default function Modal() {
-  return (
-    <ModalWrapper>
-      <div> 모달 </div>
-    </ModalWrapper>
->>>>>>> b20382dd2b2538de9ae3a1e75926b13af4a0e778
   );
 }
