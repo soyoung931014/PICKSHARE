@@ -9,7 +9,7 @@ import { connect, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { BiHome } from 'react-icons/bi';
-import camera from '../../img/camera.jpg';
+
 import defaultprofileImg from '../../img/profileImg.png';
 import { deleteUserInfo } from '../../redux/actions';
 import { FaBars } from 'react-icons/fa';
@@ -32,30 +32,18 @@ const Wrapper = styled.section`
 const Logo = styled.section`
   //border: solid red 2px;
   margin-left: 1.7rem;
-  font-weight: bolder;
-  width: 30%;
+  font-weight: 900;
+  width: 70%;
   height: 2rem;
   background: linear-gradient(to right, #ee64c7, #8272eb, #d06be0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-size: 2rem;
+  font-size: 2.5rem;
   :hover {
     cursor: pointer;
   }
-  @media screen and (max-width: 977px) {
-    display: none;
-  }
 `;
 
-const CameraImg = styled.img`
-  display: none;
-  @media screen and (max-width: 977px) {
-    height: 4.4vh;
-    display: block;
-    justify-content: flex-start;
-    margin-left: 1.8rem;
-  }
-`;
 const MenuFabar = styled.a`
   //border: solid 2px green;
   display: none;
@@ -73,30 +61,38 @@ const MenuFabar = styled.a`
   }
 `;
 const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
-  //border: solid blue 2px;
+  // border: solid blue 2px;
   width: 100%;
   height: 10vh;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-right: 1.5rem;
+  //margin-right: 1.5rem;
   @media screen and (max-width: 977px) {
-    width: ${(props) => (props.InitialNav ? '40vw' : '50vw')};
-    height: ${(props) => (props.InitialNav ? '35vh' : '45vh')};
+    width: ${(props) => (props.InitialNav ? '11vw' : '25vw')};
+    height: ${(props) => (props.InitialNav ? '29vh' : '45vh')};
     flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
     background-color: #fffceb;
     border-radius: 5%;
     margin-top: ${(props) => (props.InitialNav ? '34vh' : '44.4vh')};
-    position: relative;
-    left: ${(props) => (props.InitialNav ? '69%' : '64%')};
-    top: 54%;
+    position: absolute;
+    top: -240px;
     padding-right: 5%;
     transform: ${({ Menu }) => {
-      return Menu ? 'translatex(7%)' : 'translateX(100%)';
+      return Menu ? 'translatex(25%)' : 'translateX(100%)';
     }};
-    transition: transform 1s ease-in-out;
+    //  transition: transform 1s ease-in-out;
+  }
+  @media screen and (max-width: 710px) {
+    width: ${(props) => (props.InitialNav ? '14vw' : '29vw')};
+  }
+  @media screen and (max-width: 607px) {
+    width: ${(props) => (props.InitialNav ? '14vw' : '25vw')};
+  }
+  @media screen and (max-width: 523px) {
+    width: ${(props) => (props.InitialNav ? '14vw' : '40vw')};
   }
 `;
 const Div = styled.div<{ Text?: any }>`
@@ -131,7 +127,6 @@ const Info = styled.div`
 `;
 
 const Nav = (props: any) => {
-  console.log('네브에 전해진 프롭스', props);
   const { isLogin, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
@@ -142,7 +137,7 @@ const Nav = (props: any) => {
   AWS.config.update({
     region: 'us-east-1',
     credentials: new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: 'us-east-1:156ae187-f9d1-49d9-86f7-ad7f49675cbd',
+      IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`,
     }),
   });
 
@@ -150,9 +145,6 @@ const Nav = (props: any) => {
     <>
       <Wrapper>
         <Logo onClick={() => navigate('/mainfeed')}>PICKSHARE</Logo>
-        <div>
-          <CameraImg onClick={() => navigate('/mainfeed')} src={camera} />
-        </div>
 
         {isLogin === true ? (
           <>
@@ -180,13 +172,12 @@ const Nav = (props: any) => {
                   </div>
                   <NavLink
                     to={`/feed/${userInfo.nickname}`}
-                    onClick={() => props.setRender(!props.render)}
                     style={{
                       textDecoration: 'none',
                       color: '#3d3c3c',
                     }}
                   >
-                    {userInfo.nickname}님의 피드
+                    피드
                   </NavLink>
                 </Info>
               </Div>
@@ -198,7 +189,7 @@ const Nav = (props: any) => {
                     color: '#3d3c3c',
                   }}
                 >
-                  mypage
+                  회원정보
                 </NavLink>
               </Div>
               <Div Text>
@@ -253,7 +244,7 @@ const Nav = (props: any) => {
           <FaBars
             style={{
               fontWeight: 'bolder',
-              fontSize: '3vh',
+              fontSize: '3.7vh',
               color: '#3d3c3c',
             }}
           />

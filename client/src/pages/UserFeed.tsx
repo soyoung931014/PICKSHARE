@@ -13,10 +13,10 @@ import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { useDispatch } from 'react-redux';
 // import { followAction, unfollowAction } from '../redux/actions';
 import { follow } from '../redux/reducers/follow/followReducer';
-import FollowingList from '../component/Feed/PersonalFeed/FollowingList';
 import Modal from '../component/Modal/Modal';
-import FollowerList from '../component/Feed/PersonalFeed/FollowerList';
 import { stringList } from 'aws-sdk/clients/datapipeline';
+import FollowingList from '../component/Feed/PersonalFeed/FollowingList';
+import FollowerList from '../component/Feed/PersonalFeed/FollowerList';
 
 const UserWapper = styled.div`
   width: 100vw;

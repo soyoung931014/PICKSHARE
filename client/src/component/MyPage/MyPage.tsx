@@ -5,20 +5,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
 import { addUserInfo, deleteUserInfo } from '../../redux/actions/index';
 // import userApi from '../../../api/user';
 import styled from 'styled-components';
-import background from '../../img/diaryBackground.png';
+import background from '../../img/feedBG.jpg';
 import homeIndex from '../../img/homeIndex.png';
 import edit from '../../img/edit.jpg';
 import nothing from '../../img/profileImg.png';
 import { useNavigate } from 'react-router-dom';
-import ErrorPage from '../../pages/ErrorLoadingPage';
 import ErrorLoadingPage from '../../pages/ErrorLoadingPage';
+import signupApi from '../../api/signup';
+import mypageApi from '../../api/mypage';
 
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
@@ -255,7 +256,7 @@ const InputProfile = styled.input`
 function MyPage(props: any) {
   const navigate = useNavigate();
 
-  const { userInfoToStore, user, deleteUserInfo } = props;
+  const { userInfoToStore, deleteUserInfo } = props;
   //console.log(userInfoToStore);
   const { isLogin, accessToken } = props.user;
 
@@ -309,21 +310,20 @@ function MyPage(props: any) {
     //  console.log(nickname);
     if (nicknameValidate === true && inputNickname.current.value !== '') {
       try {
-        await axios
-          .get(`http://localhost:5000/user/nicknamecheck/${nickname}`)
-          .then((res) => {
-            if (res.data === false) {
-              //   console.log(res.data, '중복 검사 통과');
-              //닉네임 사용여부를 boolean값으로 가져옴 false일경우 사용 가능 닉넴
-              setNicknameCheckMessage('사용할 수 있는 닉네임입니다.');
-              setNicknameCheck(nickname); // 나중에 수정완료 버튼을 누를 시  e.target.value과 nicknamecheck의 정보가 일치하는지를 확인
-              setNicknameState(true);
-            } else {
-              setNicknameCheckMessage('이미 사용중인 닉네임입니다');
-            }
-          });
+        await signupApi.nicknamecheck(nickname).then((res) => {
+          if (res.data === false) {
+            //   console.log(res.data, '중복 검사 통과');
+            //닉네임 사용여부를 boolean값으로 가져옴 false일경우 사용 가능 닉넴
+            setNicknameCheckMessage('사용할 수 있는 닉네임입니다.');
+            setNicknameCheck(nickname); // 나중에 수정완료 버튼을 누를 시  e.target.value과 nicknamecheck의 정보가 일치하는지를 확인
+            setNicknameState(true);
+          } else {
+            setNicknameCheckMessage('이미 사용중인 닉네임입니다');
+          }
+        });
       } catch (error) {
-        console.log('error');
+        alert('중복검사 실패했습니다.');
+        console.log(error);
       }
     } else {
       alert('닉네임 조건을 충족시켜주세요');
@@ -333,7 +333,7 @@ function MyPage(props: any) {
   // 수정완료
   const updateFinish = async (e: any) => {
     e.preventDefault();
-    const { email, nickname, statusMessage, userImage } = updateUserInfo;
+    const { nickname, statusMessage, userImage } = updateUserInfo;
     // console.log(email, nickname, statusMessage, nicknamecheck, '🙋‍♀️');
     if (inputNickname.current.value === '') {
       updateUserInfo.nickname = inputNickname.current.placeholder;
@@ -345,14 +345,8 @@ function MyPage(props: any) {
       return;
     } else {
       try {
-        await axios
-          .patch(
-            'http://localhost:5000/mypage/update',
-            { nickname, statusMessage, userImage },
-            {
-              headers: { authorization: `Bearer ${accessToken}` },
-            }
-          )
+        await mypageApi
+          .patch(nickname, statusMessage, userImage, accessToken)
           .then((res) => {
             const {
               id,
@@ -373,7 +367,8 @@ function MyPage(props: any) {
             setNicknameCheckMessage('');
           });
       } catch (error) {
-        console.log('error');
+        alert('회원정보 수정에 실패했습니다');
+        console.log(error);
       }
     }
   };
@@ -410,11 +405,8 @@ function MyPage(props: any) {
             ) {
               return;
             } else {
-              await axios
-                .delete('http://localhost:5000/mypage/withdrawl', {
-                  data: { password: passwordCheck },
-                  headers: { authorization: `Bearer ${accessToken}` },
-                })
+              await mypageApi
+                .userRemove(passwordCheck, accessToken)
                 .then((res) => {
                   if (res.data.statusCode === 200) {
                     void deleteUserInfo();
@@ -431,7 +423,8 @@ function MyPage(props: any) {
                 });
             }
           } catch (error) {
-            console.log('server error');
+            alert('회원 탈퇴에 실패했습니다. 다시 한번 시도해 주세요');
+            console.log(error);
           }
         }
       }
@@ -444,25 +437,21 @@ function MyPage(props: any) {
         return;
       } else {
         try {
-          await axios
-            .delete('http://localhost:5000/mypage/withdrawl/kakao', {
-              headers: { authorization: `Bearer ${accessToken}` },
-            })
-            .then((res) => {
-              if (res.data.statusCode === 200) {
-                void deleteUserInfo();
-                setLoading(!loading);
-                setTimeout(() => {
-                  alert('계정이 삭제되었습니다.');
-                  navigate('/mainfeed');
-                  return;
-                }, 2000);
-              }
-            });
+          await mypageApi.userRemoveKakao(accessToken).then((res) => {
+            if (res.data.statusCode === 200) {
+              void deleteUserInfo();
+              setLoading(!loading);
+              setTimeout(() => {
+                alert('계정이 삭제되었습니다.');
+                navigate('/mainfeed');
+                return;
+              }, 2000);
+            }
+          });
         } catch (error) {
           if (error) {
             console.log(error);
-            alert('회원 탈퇴에 실패했습니다.');
+            alert('회원 탈퇴에 실패했습니다. 다시 한번 시도해 주세요');
             return;
           }
         }
@@ -474,7 +463,7 @@ function MyPage(props: any) {
   AWS.config.update({
     region: 'us-east-1', // congito IdentityPoolId 리전을 문자열로 입력하기. 아래 확인 (Ex. "ap-northeast-2")
     credentials: new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: 'us-east-1:156ae187-f9d1-49d9-86f7-ad7f49675cbd', // cognito 인증 풀에서 받아온 키를 문자열로 입력하기. (Ex. "ap-northeast-2...")
+      IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`, // cognito 인증 풀에서 받아온 키를 문자열로 입력하기. (Ex. "ap-northeast-2...")
     }),
   });
 
