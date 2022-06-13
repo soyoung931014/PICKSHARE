@@ -32,13 +32,13 @@ const Wrapper = styled.section`
 const Logo = styled.section`
   //border: solid red 2px;
   margin-left: 1.7rem;
-  font-weight: bolder;
+  font-weight: 900;
   width: 30%;
   height: 2rem;
   background: linear-gradient(to right, #ee64c7, #8272eb, #d06be0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-size: 2rem;
+  font-size: 2.5rem;
   :hover {
     cursor: pointer;
   }
