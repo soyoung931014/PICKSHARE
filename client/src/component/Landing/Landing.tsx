@@ -5,6 +5,7 @@ import { TbPhoto } from 'react-icons/tb';
 import { FaPaintBrush } from 'react-icons/fa';
 import { IoIosPeople } from 'react-icons/io';
 import { useEffect } from 'react';
+import Footer from '../Footer/Footer';
 
 const Wrapper = styled.div`
   // border: solid red 3px;
@@ -12,10 +13,10 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
 `;
-const Section = styled.section`
+const Section = styled.section<{ Footer?: any }>`
   border-bottom: solid 0.8px #bbbbbb;
   width: 100%;
-  height: 80%;
+  height: ${(props) => (props.Footer ? '40%' : '80%')};
   display: flex;
   padding: 1rem;
   @media screen and (max-width: 840px) {
@@ -270,6 +271,9 @@ const Landing = () => {
               </Div>
             </Subsection3>
           </Subsection2>
+        </Section>
+        <Section Footer>
+          <Footer />
         </Section>
       </Wrapper>
     </>
