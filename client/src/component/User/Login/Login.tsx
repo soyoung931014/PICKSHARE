@@ -360,7 +360,7 @@ function Login(props: any) {
   const handleKakaoLogin = (e: any) => {
     e.preventDefault();
     //console.log(Kakao);
-    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=be17a9e882217a14ba581b03ea87c38f&redirect_uri=http://localhost:3000/loading&response_type=code&state=kakao`;
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CODE}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT}&response_type=code&state=kakao`;
     //navigate(window.location.href);
   };
 

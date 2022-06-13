@@ -10,6 +10,8 @@ import { addUserInfo } from '../redux/actions';
 import styled from 'styled-components';
 import background from '../img/feedBG.jpg';
 import camera from '../img/camera.jpg';
+import api from '../api';
+import loginApi from '../api/login';
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
@@ -68,20 +70,16 @@ function kakaoLoading(props: any) {
   const navigate = useNavigate();
   useEffect(() => {
     setTimeout(() => {
-      void axios
-        .get('http://localhost:5000/user/kakao', {
-          headers: { authCode: window.location.search },
-        })
-        .then((res) => {
-          console.log(res);
-          const { accessToken, data, nickname } = res.data;
-          void userInfoToStore(data, accessToken);
-          if (nickname === '') {
-            alert('닉네임을 설정해주세요');
-            return navigate('/mypage', { replace: true });
-          }
-          navigate('/mainfeed', { replace: true });
-        });
+      void loginApi.kakao().then((res) => {
+        console.log(res);
+        const { accessToken, data, nickname } = res.data;
+        void userInfoToStore(data, accessToken);
+        if (nickname === '') {
+          alert('닉네임을 설정해주세요');
+          return navigate('/mypage', { replace: true });
+        }
+        navigate('/mainfeed', { replace: true });
+      });
     }, 3000);
   }, []);
 
