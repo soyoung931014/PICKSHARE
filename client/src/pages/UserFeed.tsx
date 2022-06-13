@@ -286,7 +286,7 @@ export default function UserFeed() {
                 />
               ))}
         </Feed>
-        <Modal />
+        {/* <Modal /> */}
         <div>
           팔로잉
           {following.id === ''
