@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportModule, PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -51,7 +52,7 @@ export class TokenService extends PassportStrategy(Strategy) {
         if (!user) {
           throw new UnauthorizedException('유저 없음');
         }
-        console.log(user, '일반 로그인 유저');
+        // console.log(user, '일반 로그인 유저');
         return user;
       }
     } catch (error) {

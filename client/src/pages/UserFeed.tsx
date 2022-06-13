@@ -1,7 +1,7 @@
 /*eslint-disable*/
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Nav from '../component/Nav/Nav';
@@ -13,8 +13,9 @@ import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { useDispatch } from 'react-redux';
 // import { followAction, unfollowAction } from '../redux/actions';
 import { follow } from '../redux/reducers/follow/followReducer';
-import FollowingList from '../component/Feed/PersonalFeed/FollowingList';
 import Modal from '../component/Modal/Modal';
+import { stringList } from 'aws-sdk/clients/datapipeline';
+import FollowingList from '../component/Feed/PersonalFeed/FollowingList';
 import FollowerList from '../component/Feed/PersonalFeed/FollowerList';
 
 const UserWapper = styled.div`
@@ -98,6 +99,7 @@ const Feed = styled.div`
   gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
 `;
+
 export default function UserFeed() {
   const dispatch = useDispatch();
   const [userfeedlist, setUserFeedlist]: any[] = useState({
@@ -107,6 +109,7 @@ export default function UserFeed() {
     nickname: '',
     userImage: '',
     heartNum: 0,
+    commentNum: 0,
     locked: '',
   });
 
@@ -116,16 +119,16 @@ export default function UserFeed() {
     statusMessage: '',
   });
 
-  const [userRender, setUserRender] = useState(false);
+  const [render, setRender] = useState(false);
+
   const [follow, setFollow] = useState(false);
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
-  // const { isFollow } = useSelector((followReducer: follow) => followReducer);
   const [counts, setCounts] = useState(0);
   
   let path = window.location.pathname.split('/')[2];
-  // let followingList: any[] = [];
+
   const [following, setFollowing]: any[] = useState({
     id: '',
     followingNickname: '',
@@ -152,6 +155,7 @@ export default function UserFeed() {
     return await feedApi.postFollow( userlist.nickname, accessToken)
       .then(() => {
         setFollow(true);
+        setRender(!render);
       })
   }
 
@@ -162,12 +166,12 @@ export default function UserFeed() {
     return await feedApi.deleteFollow(userlist.nickname, accessToken)
       .then(() => {
         setFollow(false);
+        setRender(!render);
       })
   }
   
-  useEffect(() => {
-    // let path = window.location.pathname.split('/')[2];
-
+  useMemo(() => {
+      
     const userfeedinfo = async () => {
       return await feedApi.userInfo(path)
       .then(result => {
@@ -177,14 +181,6 @@ export default function UserFeed() {
 
     userfeedinfo();
 
-    const userPage = async () => {
-      return await feedApi.getUserFeed(path)
-      .then(result => {
-        setUserFeedlist(result.data)
-      })
-    };
-    userPage();
-
     if(isLogin === true){
       feedApi.searchFollow(path, accessToken)
       .then((result) => {
@@ -193,7 +189,7 @@ export default function UserFeed() {
         }
       });
     };
-
+    
     const getFollowingList = async () => {
       return await feedApi.getFollowingList(path)
       .then((result) => {
@@ -217,7 +213,20 @@ export default function UserFeed() {
     }
     countFeed();
 
-  }, [userRender, follow, path]);
+    console.log('패스',path)
+    
+  },[follow]);
+
+  useEffect(() => {
+    const userPage = async () => {
+      return await feedApi.getUserFeed(path)
+      .then(result => {
+        setUserFeedlist(result.data)
+      })
+    };
+    userPage();
+  },[render])
+  
   
   return (
     <UserWapper>
@@ -272,11 +281,12 @@ export default function UserFeed() {
                 <MainFeedList
                 {...el}
                 key={el.id}
-                userRender={userRender}
-                setUserRender={setUserRender}
+                render={render}
+                setRender={setRender}
                 />
               ))}
         </Feed>
+        <Modal />
         <div>
           팔로잉
           {following.id === ''
@@ -287,19 +297,30 @@ export default function UserFeed() {
               key={el.id}
               follow={follow}
               setFollow={setFollow}
+              // render={render}
+              // setRender={setRender}
             />
           ))}
         </div>
         <div>
           팔로워
           {follower.id === ''
-          ? `${follower}없습니다`
-          : follower.map((el: any) => {
+          ? (
+            <>
+            팔로워가 없습니다
+            </>
+          ) : (
+            follower.map((el: any) => (
             <FollowerList
               {...el}
               key={el.id}
+              follow={follow}
+              setFollow={setFollow}
+              // render={render}
+              // setRender={setRender}
             />
-          })
+          ))
+          )
           }
         </div>
       </Div>

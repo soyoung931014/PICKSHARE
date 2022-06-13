@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { feed } from '../redux/reducers/feedReducer/feedReducer';
 import { useDispatch } from 'react-redux';
 import { searchUserFeed } from '../redux/actions';
+import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -94,9 +95,9 @@ const Feed = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
 `;
 //https://studiomeal.com/archives/533
-
 export default function MainFeed() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [render, setRender] = useState(false);
   const [feedlist, setFeedlist]: any[] = useState({
@@ -105,7 +106,7 @@ export default function MainFeed() {
     date: '',
     nickname: '',
     userImage: '',
-    heartNum: 0,
+    heartNum: '0',
     lock: '',
   });
   const [searchInput, setSearchInput] = useState('');
@@ -116,6 +117,9 @@ export default function MainFeed() {
     setSearchInput(e.target.value);
     dispatch(searchUserFeed(searchInput));
   }, 300);
+  const moveToDiary = () => {
+    navigate('/diary')
+  }
 
   const sortFeedByRecent = () => {
     setOrderingH(false);
@@ -151,7 +155,6 @@ export default function MainFeed() {
       setFeedlist(result.data);
     });
   };
-
   useEffect(() => {
     if (orderingH === false) {
       getMainFeed();
@@ -160,6 +163,8 @@ export default function MainFeed() {
     }
   }, [render]);
 
+  console.log(feedlist, '피드리스트 ');
+  console.log(typeof feedlist, '피드리스트 타입');
   return (
     <Wrapper>
       <Nav />
@@ -183,7 +188,7 @@ export default function MainFeed() {
                 </SearchIcon>
               </SearchBar>
             </form>
-            <PlusButton> + </PlusButton>
+            <PlusButton onClick={moveToDiary}> + </PlusButton>
           </UpperRightDiv>
         </UpperDiv>
         <Feed>

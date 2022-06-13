@@ -1,5 +1,4 @@
 /*eslint-disable*/
-
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -42,10 +41,12 @@ export default function FollowingList(props: any) {
       await feedApi.userInfo(props.followingNickname)
       .then(result => {
         setUserlist(result.data.data);
+        return;
       });
     };
     findFollow();
-  }, [props.setFollow()]);
+  }, []);
+  //useMemo()
   return (
     <Wrapper>
       <UserImage src={userlist.userImage}/>
