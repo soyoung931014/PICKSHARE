@@ -100,7 +100,7 @@ const feedApi = {
     return api.get(
       `follow/follower?nickname=${nickname}`
     )
-  }
+  },
 };
 
 export default feedApi;
