@@ -14,7 +14,7 @@ import defaultprofileImg from '../../img/profileImg.png';
 import { deleteUserInfo } from '../../redux/actions';
 import { FaBars } from 'react-icons/fa';
 import { useState } from 'react';
-const AWS = require('aws-sdk/dist/aws-sdk-react-native');
+//const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
 const Wrapper = styled.section`
   // border: solid green 2px;
@@ -134,12 +134,12 @@ const Nav = (props: any) => {
 
   const [menu, setMenu] = useState(false);
 
-  AWS.config.update({
-    region: `${process.env.REACT_APP_AWS_REGION}`, // congito IdentityPoolId 리전을 문자열로 입력하기. 아래 확인 (Ex. "ap-northeast-2")
-    credentials: new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`, // cognito 인증 풀에서 받아온 키를 문자열로 입력하기. (Ex. "ap-northeast-2...")
-    }),
-  });
+  // AWS.config.update({
+  //   region: `${process.env.REACT_APP_AWS_REGION}`, // congito IdentityPoolId 리전을 문자열로 입력하기. 아래 확인 (Ex. "ap-northeast-2")
+  //   credentials: new AWS.CognitoIdentityCredentials({
+  //     IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`, // cognito 인증 풀에서 받아온 키를 문자열로 입력하기. (Ex. "ap-northeast-2...")
+  //   }),
+  // });
 
   return (
     <>

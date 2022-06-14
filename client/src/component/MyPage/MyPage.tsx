@@ -365,6 +365,7 @@ function MyPage(props: any) {
             setUpdateProfile(!updateProfile);
             setUpdateProfile(true);
             setNicknameCheckMessage('');
+            setWithdraw(!withdraw);
           });
       } catch (error) {
         alert('회원정보 수정에 실패했습니다');
