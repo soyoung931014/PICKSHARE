@@ -37,11 +37,14 @@ const Book = styled.div`
   padding-left: 1em;
   position: relative;
   left: 8rem;
+  @media screen and (max-width: 746px) {
+    justify-content: flex-start;
+  }
 `;
 const Left = styled.div`
   display: flex;
   align-items: flex-end;
-  width: 30rem;
+  width: 32rem;
   height: 85vh;
   padding-left: 1em;
   background-color: white;
@@ -56,11 +59,11 @@ const Left = styled.div`
 
 const Right = styled.div`
   border-radius: 20px 30px 30px 20px;
-  width: 30rem;
+  width: 32rem;
   height: 85vh;
   background-color: white;
   padding-left: 1em;
-  border: solid 2px black;
+  //border: solid 2px black;
   box-shadow: 30px 10px 10px #3c4a5645;
   border-left: #b1b0b0 solid 2px;
   @media screen and (max-width: 1190px) {
@@ -84,6 +87,9 @@ const TagHome = styled.img`
     transform: scale(1.05);
     cursor: pointer;
   }
+  @media screen and (max-width: 891px) {
+    width: 5rem;
+  }
   //border: solid 2px black;
 `;
 const TagSignin = styled.img`
@@ -93,6 +99,9 @@ const TagSignin = styled.img`
   &:hover {
     transform: scale(1.05);
     cursor: pointer;
+  }
+  @media screen and (max-width: 891px) {
+    width: 8rem;
   }
   //border: solid 2px black;
 `;
@@ -107,6 +116,9 @@ const TagSignup = styled.img`
   }
   position: relative;
   top: -10px;
+  @media screen and (max-width: 891px) {
+    width: 6rem;
+  }
 `;
 
 /// 세부사항
@@ -119,7 +131,7 @@ const Img = styled.img`
   bottom: 10px;
 `;
 const LoginBox = styled.div`
-  border: solid 2px red;
+  //border: solid 2px red;
   height: 80vh;
   display: flex;
   flex-direction: column;
@@ -128,7 +140,7 @@ const LoginBox = styled.div`
   box-sizing: border-box;
 `;
 const Title = styled.div`
-  border: solid 2px teal;
+  //border: solid 2px teal;
   font-size: 2rem;
   font-weight: 900;
   margin-top: 2.5rem;
@@ -139,9 +151,15 @@ const Title = styled.div`
   @media screen and (max-width: 891px) {
     font-size: 1.7rem;
   }
+  @media screen and (max-width: 575px) {
+    font-size: 1.4rem;
+  }
+  @media screen and (max-width: 440px) {
+    font-size: 1rem;
+  }
 `;
 const Form = styled.form`
-  border: dotted 2px red;
+  //border: dotted 2px red;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -156,7 +174,7 @@ const InputBox = styled.div<{ button?: any }>`
   box-sizing: border-box;
 `;
 const Message = styled.div`
-  border: solid 2px green;
+  // border: solid 2px green;
   width: 30vw;
 
   height: 1.7rem;
@@ -186,10 +204,13 @@ const Input = styled.input`
   border: 0;
   box-sizing: border-box;
   opacity: 0.6;
-  @media screen and (max-width: 744px) {
+  @media screen and (max-width: 737px) {
     width: 12rem;
-    height: 2rem;
-    box-sizing: border-box;
+    height: 3rem;
+  }
+  @media screen and (max-width: 640px) {
+    width: 9rem;
+    height: 3rem;
   }
 `;
 const Button = styled.button`
@@ -207,6 +228,12 @@ const Button = styled.button`
   font-size: large;
   font-weight: bold;
   color: white;
+  @media screen and (max-width: 737px) {
+    width: 12rem;
+  }
+  @media screen and (max-width: 640px) {
+    width: 9rem;
+  }
 `;
 const ButtonKakao = styled.button`
   //border: solid 2px green;
@@ -223,6 +250,12 @@ const ButtonKakao = styled.button`
   background-color: #fdf772;
   cursor: pointer;
   margin-top: 0.7rem;
+  @media screen and (max-width: 737px) {
+    width: 12rem;
+  }
+  @media screen and (max-width: 640px) {
+    width: 9rem;
+  }
 `;
 const Div = styled.div`
   height: 2rem;
@@ -233,31 +266,20 @@ const Div = styled.div`
   margin-top: 0.7rem;
   padding: 0.7rem 0rem;
   //border: solid 2px green;
+  @media screen and (max-width: 575px) {
+    font-size: 0.5rem;
+  }
 `;
 
 const Box = styled.div`
-  // border: red solid 2px;
+  //border: red solid 2px;
   display: flex;
   justify-content: center;
   text-align: center;
 `;
 const BoxMessage = styled.div`
   display: flex;
-  margin-left: 5.3rem;
-  //text-align: center;
-  padding-right: 7rem;
-  @media screen and (max-width: 1190px) {
-    margin-left: 3rem;
-  }
-  @media screen and (max-width: 1042px) {
-    margin-left: 2rem;
-  }
-  @media screen and (max-width: 935px) {
-    margin-left: 1rem;
-  }
-  @media screen and (max-width: 891px) {
-    margin-left: 0.3rem;
-  }
+  text-align: center;
 `;
 
 function Login(props: any) {

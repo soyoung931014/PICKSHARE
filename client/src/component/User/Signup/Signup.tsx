@@ -33,11 +33,14 @@ const Book = styled.div`
   padding-left: 1em;
   position: relative;
   left: 8rem;
+  @media screen and (max-width: 1272px) {
+    justify-content: flex-start;
+  }
 `;
 const Left = styled.div`
   display: flex;
   align-items: flex-end;
-  width: 32vw;
+  width: 32rem;
   height: 85vh;
   padding-left: 1em;
   background-color: white;
@@ -45,10 +48,13 @@ const Left = styled.div`
   border-radius: 30px 20px 20px 30px;
   box-shadow: 10px 10px 30px #3c4a5645;
   border-right: #b1b0b0 solid 2px;
+  @media screen and (max-width: 1272px) {
+    display: none;
+  }
 `;
 
 const Right = styled.div`
-  width: 32vw;
+  width: 32rem;
   height: 85vh;
   background-color: white;
   padding-left: 1em;
@@ -56,6 +62,9 @@ const Right = styled.div`
   border-radius: 20px 30px 30px 20px;
   box-shadow: 30px 10px 10px #3c4a5645;
   border-left: #b1b0b0 solid 2px;
+  @media screen and (max-width: 890px) {
+    width: 50%;
+  }
 `;
 const Index = styled.div`
   display: flex;
@@ -122,6 +131,12 @@ const Title = styled.div`
   background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  @media screen and (max-width: 820px) {
+    font-size: 1.5rem;
+  }
+  @media screen and (max-width: 820px) {
+    font-size: 1.2rem;
+  }
 `;
 const Form = styled.form`
   //border: dotted 3px blue;
@@ -149,7 +164,7 @@ const Message = styled.div`
 `;
 const Input = styled.input<{ Password?: any }>`
   height: 3rem;
-  width: ${(props) => (props.Password ? '72%' : '52%')};
+  width: ${(props) => (props.Password ? '17rem' : '12rem')};
   border-radius: 30px;
   box-sizing: border-box;
   box-shadow: 0 3px 5px #3c4a5645;
@@ -163,7 +178,7 @@ const Input = styled.input<{ Password?: any }>`
 
 const Button = styled.button`
   //border: solid 2px black;
-  width: 72%;
+  width: 17rem;
   height: 3rem;
   border-radius: 30px;
   box-sizing: border-box;
@@ -180,7 +195,7 @@ const Button = styled.button`
 `;
 
 const TwinCheckButton = styled.button`
-  width: 18%;
+  width: 4.2rem;
   height: 3rem;
   margin-left: 2%;
   border-radius: 5px;
@@ -193,10 +208,16 @@ const TwinCheckButton = styled.button`
   cursor: pointer;
   font-weight: bold;
   color: white;
+  @media screen and (max-width: 890px) {
+    font-size: 14px;
+  }
+  @media screen and (max-width: 820px) {
+    font-size: 10px;
+  }
 `;
 const ButtonKakao = styled.button`
   //border: solid 2px green;
-  width: 72%;
+  width: 17rem;
   height: 3rem;
   border-radius: 30px;
   box-sizing: border-box;

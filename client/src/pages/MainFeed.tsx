@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled.div`
   width: 100vw;
+  height: 200vh;
   background-image: url(${feedBG});
   background-size: cover;
   background-attachment: scroll;
@@ -118,8 +119,8 @@ export default function MainFeed() {
     dispatch(searchUserFeed(searchInput));
   }, 300);
   const moveToDiary = () => {
-    navigate('/diary')
-  }
+    navigate('/diary');
+  };
 
   const sortFeedByRecent = () => {
     setOrderingH(false);
