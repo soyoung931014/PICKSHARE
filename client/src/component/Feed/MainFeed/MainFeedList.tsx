@@ -8,6 +8,9 @@ import { useSelector } from 'react-redux';
 import { FaRegCommentDots } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import boardApi from '../../../api/board';
+import { board } from '../../../redux/reducers/boardReducer/boardReducer';
+import { addBoardInfo } from '../../../redux/actions';
 
 
 const Div = styled.div`
@@ -118,6 +121,7 @@ export default function MainFeedList({
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
+  const { boardInfo } = useSelector((boardReducer: board) => boardReducer)
   const [heart, setHeart] = useState(false);
 
   const postHeart = async () => {
@@ -146,6 +150,17 @@ export default function MainFeedList({
     navigate('/login');
   };
 
+  const moveToEditBoard = (e: any) => {
+    // console.log("e.target", e.target.src)
+    boardApi.findBoardByPic(e.target.src)
+    .then((result) => {
+      console.log(result.data[0]);
+      dispatch(addBoardInfo(result.data[0]))
+      console.log('리덕스 잘 됐니', boardInfo)
+      navigate('/diary');
+    })
+  }
+
   useMemo(() => {
     if (isLogin) {
       const getHeart = async () => {
@@ -162,7 +177,7 @@ export default function MainFeedList({
   return (
     <Div>
       <ImgDiv>
-        <Img src={contentImg} />
+        <Img src={contentImg} onClick={(e) => moveToEditBoard(e)}/>
       </ImgDiv>
       <ContentDiv>
         <ContentRightDiv>

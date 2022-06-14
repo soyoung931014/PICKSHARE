@@ -2,11 +2,19 @@
 import background from '../img/feedBG.jpg';
 import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { addBoardInfo } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 import bookmarkPink from '../img/bookmark-pink.png';
 import bookmarkYellow from '../img/bookmark-yellow.png';
+import Photo from '../component/Diary/Photo';
+import Drawing from '../component/Diary/Drawing';
+import { debounce } from 'debounce';
+import { GrLock, GrUnlock } from 'react-icons/gr';
+import { useSelector } from 'react-redux';
+import boardApi from '../api/board';
+import { board } from '../redux/reducers/boardReducer/boardReducer';
+import { edit } from '../redux/reducers/editReducer/editReducer';
 
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 /*
@@ -47,6 +55,9 @@ const wrapperStyle = styled.article`
 const BookMark = styled.div`
   display: flex;
   flex-direction: column;
+  &:hover {
+    cursor: pointer;
+  }
 `
 const LeftWrapper = styled(wrapperStyle)`
   border: red solid 1px;
@@ -90,6 +101,7 @@ const RightWrapper = styled(wrapperStyle)`
   input.diary,
   select.moods,
   textarea.diary,
+  div.lock,
   button.diary {
     width: 100%;
     height: 50px;
@@ -110,9 +122,8 @@ const RightWrapper = styled(wrapperStyle)`
     select.moods {
       width: 4rem;
     }
-    button.lock {
+    div.lock {
       width: 5rem;
-      padding: 0;
     }
   }
 
@@ -139,7 +150,7 @@ const RightWrapper = styled(wrapperStyle)`
   }
 `;
 
-type FormValues = {
+ export interface FormValues {
   title: string;
   picture: string;
   pictureMethod: number;
@@ -152,9 +163,14 @@ type FormValues = {
 const DiaryPage = () => {
   const navigate = useNavigate();
   const [pickWay, setPickWay] = useState(0); //책갈피 선택 0: 그림 / 1: 사진
-  // const [pickImg, setPickImg] = useState(null); //이미지파일 url  
-  
+  const [ lockBtn, setLockBtn ] = useState(false);
   const file: any = useRef();
+  const { boardInfo } = useSelector((boardReducer: any) => boardReducer.boardInfo)
+  console.log('제발',boardInfo)
+  console.log('제발제목', boardInfo.title)
+  const { accessToken } = useSelector((userReducer: any) => userReducer.userInfo)
+  const { isEditOn } = useSelector((editReducer: edit) => editReducer)
+  console.log(isEditOn)
   const [boardInput, setBoardInput] = useState<FormValues>({
     title: '',
     picture: '',
@@ -165,75 +181,15 @@ const DiaryPage = () => {
     date: '',
   });
   
-  AWS.config.update({
-    region: `${process.env.REACT_APP_AWS_REGION}`, // congito IdentityPoolId 리전을 문자열로 입력하기. 아래 확인 (Ex. "ap-northeast-2")
-    credentials: new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`, // cognito 인증 풀에서 받아온 키를 문자열로 입력하기. (Ex. "ap-northeast-2...")
-    }),
-  });
-
-  const pickImgHandle = async(e: React.ChangeEvent<HTMLInputElement>) => {
-    //const target = e.target as HTMLInputElement
-    const imgFile = e.target.files[0];
-    /* 개체가 null인 것 같습니다 에러 없애기 위해
-      1. e: any로 타입지정
-      2. tsconfig.json에서 "sstrictNullChecks":"false"설정
-      3. 유니온타입설정
-    */
-    if(!imgFile){
-      return setBoardInput({
-        ...boardInput,
-        [e.target.name]: '',
-      });
-    }
-    setBoardInput({
-      ...boardInput,
-      [e.target.name]: imgFile
-    })
-    const uploadImg = new AWS.S3.ManagedUpload({
-      params:{
-        Bucket: 'profileimage-pickshare',
-        Key: imgFile.name,
-        Body: imgFile,
-      },
-    });
-
-    const promise = uploadImg.promise();
-
-    await promise.then(
-      (data: { Location: any }) => {
-        setBoardInput({
-          ...boardInput,
-          [e.target.name]: data.Location
-        });
-      },
-      (err: any) => {
-        console.log(err)
-      }
-    );
+  const pickPicture = () => {
+    setPickWay(1);
+    setBoardInput({...boardInput, ["pictureMethod"]: 1, ["picture"]: ''});
   };
-  
 
-  // const PostingHandler = (e: any) => {
-  //   e.preventDefault();
-  //   console.log(boardInfo);
-  //   if (boardInfo) {
-  //     axios
-  //       .post(`http://localhost:5000/post`, boardInfo)
-  //       .then((res) => {
-  //         console.log(res.data);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   }
-  // };
-
-  // const goToStore = async (boardInfo: any) => {
-  //   await boardInfoToStore(boardInfo);
-  // };
-
-
+  const pickDrowing =() => {
+    setPickWay(0);
+    setBoardInput({...boardInput, ["pictureMethod"]: 0, ["picture"]: ''});
+  };
   const cancelButton = (): void => {
     setBoardInput({
       title: '',
@@ -247,47 +203,108 @@ const DiaryPage = () => {
     navigate('/mainfeed');
   }
 
+  const handleBoardInputValue = debounce(async (e:any) => {
+    const { name, value } = e.target;
+    setBoardInput({...boardInput, [name]: value})
+    console.log('보드 정보는?',boardInput)
+  });
+
+  const boardLockHandler = () => {
+    setLockBtn(!lockBtn);
+    if(lockBtn){
+      setBoardInput({...boardInput, ["lock"]: "LOCK"})
+    } else {
+      setBoardInput({...boardInput,["lock"]: "UNLOCK"})
+    }
+    console.log('보드?',boardInput)
+  };
+
+  const boardMoodHandler = (e:any) => {
+    console.log('무드', e.target.value);
+    setBoardInput({...boardInput, ["mood"]: e.target.value});
+    console.log("무드 바뀜?", boardInput)
+  }
+
+  const handleSaveBoard = () => {
+    const {title, picture, content, date} = boardInput;
+    if(
+      title === '' ||
+      picture === '' ||
+      content === '' ||
+      date === ''
+    ){
+      return alert('내용을 작성해주세요')
+    }
+    boardApi.createBoard(boardInput, accessToken)
+    .then((result) => {
+      console.log('잘 저장됐나요?',result)
+      alert('저장되었습니다');
+      navigate('/mainfeed')
+    })
+  }
+  useEffect(() => {
+    if(boardInfo.title !== ''){
+      setPickWay(boardInfo.pictureMethod);
+      setBoardInput({
+        title: boardInfo.title,
+        picture: boardInfo.picture,
+        pictureMethod: boardInfo.pictureMethod,
+        mood: boardInfo.mood,
+        lock: boardInfo.lock,
+        content: boardInfo.content,
+        date: boardInfo.date,
+      })
+      console.log('보드인포', boardInfo.title)
+      console.log('들어갔나?', boardInput)
+    }
+  }, [])
   return (
     <>
       <Container>
         <BookMark>
-          <img src={bookmarkPink} />
-          <img src={bookmarkYellow} />
+          <button onClick={pickPicture}>사진</button>
+          <button onClick={pickDrowing}>그림</button>
         </BookMark>
         <LeftWrapper>
-          <ImgDiv>
-            <label htmlFor="pick-file"></label>
-            <form>        
-              <input
-                type="file"
-                id="pickFile"
-                ref={file}
-                accept="image/*"
-                onChange={pickImgHandle}
-                name="picture"
+          {
+            pickWay === 1 
+            ? (
+              <ImgDiv>
+                <Photo boardInput={boardInput} setBoardInput={setBoardInput}/>
+              </ImgDiv>
+            ) : (
+              <Drawing 
+                boardInput={boardInput}
+                setBoardInput={setBoardInput}
+                // DrawingHandler={DrawingHandler}
+                // SaveDrawingHandler={SaveDrawingHandler}
+                // drawingImg={drawingImg}
               />
-              {boardInput.picture !== '' ? <Img src={boardInput.picture} alt= 'picture' /> : 'Pick the PickShare'}
-            </form>
-          </ImgDiv>
+            )
+          }
         </LeftWrapper>
         <RightWrapper>
-          <form className="form-wrapper">
+          <form id='writeDiary'>
             <input
               type="text"
+              name='title'
               className="diary"
               placeholder="제목을 입력해 주세요."
-              //{...register('title')}
+              onChange={handleBoardInputValue}
+              value={boardInfo.title}
             />
             <article className="select-wrapper">
               <input
                 type="date"
                 className="diary dates"
-                //{...register('date')}
+                name='date'
+                onChange={handleBoardInputValue}
+                value={boardInput.date}
               />
 
               <select
                 className="moods"
-                //{...register('mood')}
+                onClick={boardMoodHandler}
               >
                 <option value="0">행복</option>
                 <option value="1">좋음</option>
@@ -295,24 +312,29 @@ const DiaryPage = () => {
                 <option value="3">우울</option>
                 <option value="4">화남</option>
               </select>
-              <button
+              <div
                 className="diary lock"
-                //</article>{...register('lock')}
+                onClick={boardLockHandler}
               >
-                잠금
-              </button>
+                {boardInput.lock === "UNLOCK" 
+                  ? <GrLock />
+                  : <GrUnlock />
+                }
+              </div>
             </article>
             <textarea
+              name='content'
               className="diary diary-content"
               placeholder="내용을 입력해 주세요."
-              // {...register('content')}
+              onChange={handleBoardInputValue}
+              value={boardInput.content}
             />
             <article className="save-btns">
               <button className="diary save-btn" onClick={cancelButton}>취소</button>
               <button
-                //onClick={PostingHandler}
                 type="submit"
                 className="diary save-btn"
+                onClick={handleSaveBoard}
               >
                 저장
               </button>

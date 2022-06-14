@@ -5,17 +5,10 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Nav from '../component/Nav/Nav';
 import feedBG from '../img/feedBG.jpg';
-// import sampleImg from '../img/selfie4.jpg';
-// import sampleImg2 from '../img/instafeed3.jpg';
 import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { useDispatch } from 'react-redux';
-// import { followAction, unfollowAction } from '../redux/actions';
-import { follow } from '../redux/reducers/follow/followReducer';
 import Modal from '../component/Modal/Modal';
-import { stringList } from 'aws-sdk/clients/datapipeline';
-import FollowingList from '../component/Feed/PersonalFeed/FollowingList';
-import FollowerList from '../component/Feed/PersonalFeed/FollowerList';
 import { modalOnAction } from '../redux/actions';
 
 const UserWapper = styled.div`

@@ -6,7 +6,7 @@ import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import userReducer from './reducers/userReducer/userReducer';
-import boardReducer from './reducers/boardReducer';
+import boardReducer from './reducers/boardReducer/boardReducer';
 import modalReducer from './reducers/modalReducer/modalReducer';
 
 const rootReducer = combineReducers({

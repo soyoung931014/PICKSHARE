@@ -17,11 +17,20 @@ export class BoardService {
   ) {}
 
   // ALL READ (해당 유저의 게시물만 가져오기)
-  async getAllBoards(user: User): Promise<Board[]> {
-    const query = this.boardRepository.createQueryBuilder('board');
-    query.where('board.userId = :userId', { userId: user.id });
-    const boards = await query.getMany();
-    return boards;
+  // async getAllBoards(user: User): Promise<Board[]> {
+  //   const query = this.boardRepository.createQueryBuilder('board');
+  //   query.where('board.userId = :userId', { userId: user.id });
+  //   const boards = await query.getMany();
+  //   return boards;
+  // }
+
+  async findBoardByPic(picture: string): Promise<Board[]>{
+    const query = await this.boardRepository.find({
+      where: {
+        picture,
+      }
+    })
+    return query;
   }
 
   // READ(/:id)
