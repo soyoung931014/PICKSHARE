@@ -7,10 +7,12 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import userReducer from './reducers/userReducer/userReducer';
 import boardReducer from './reducers/boardReducer';
+import modalReducer from './reducers/modalReducer/modalReducer';
 
 const rootReducer = combineReducers({
   userInfo: userReducer,
   boardInfo: boardReducer,
+  modalInfo: modalReducer,
 });
 const persistConfig = {
   key: 'root',

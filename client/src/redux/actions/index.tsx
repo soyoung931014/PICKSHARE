@@ -63,7 +63,7 @@ export const finishUserFeed = () => {
   };
 };
 
-export const modalOnAcrion = {
+export const modalOnAction = {
   type: MODAL_ON,
 };
 
