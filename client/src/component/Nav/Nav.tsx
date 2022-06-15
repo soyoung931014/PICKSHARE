@@ -30,15 +30,16 @@ const Wrapper = styled.section`
 `;
 
 const Logo = styled.section`
-  //border: solid red 2px;
+  // border: solid red 2px;
   margin-left: 1.7rem;
   font-weight: 900;
   width: 70%;
-  height: 2rem;
+  height: 2.6rem;
   background: linear-gradient(to right, #ee64c7, #8272eb, #d06be0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 2.5rem;
+  margin-top: 5px;
   :hover {
     cursor: pointer;
   }
@@ -61,7 +62,7 @@ const MenuFabar = styled.a`
   }
 `;
 const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
-  // border: solid blue 2px;
+  //border: solid blue 2px;
   width: 100%;
   height: 10vh;
   display: flex;
@@ -78,7 +79,9 @@ const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
     border-radius: 5%;
     margin-top: ${(props) => (props.InitialNav ? '34vh' : '44.4vh')};
     position: absolute;
-    top: -240px;
+    z-index: 4;
+    right: 10px;
+    margin-top: 30rem;
     padding-right: 5%;
     transform: ${({ Menu }) => {
       return Menu ? 'translatex(25%)' : 'translateX(100%)';
@@ -89,9 +92,9 @@ const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
     width: ${(props) => (props.InitialNav ? '14vw' : '29vw')};
   }
   @media screen and (max-width: 607px) {
-    width: ${(props) => (props.InitialNav ? '14vw' : '25vw')};
+    width: ${(props) => (props.InitialNav ? '14vw' : '29vw')};
   }
-  @media screen and (max-width: 523px) {
+  @media screen and (max-width: 550px) {
     width: ${(props) => (props.InitialNav ? '14vw' : '40vw')};
   }
 `;
@@ -244,7 +247,7 @@ const Nav = (props: any) => {
           <FaBars
             style={{
               fontWeight: 'bolder',
-              fontSize: '3.7vh',
+              fontSize: '3.8vh',
               color: '#3d3c3c',
             }}
           />
