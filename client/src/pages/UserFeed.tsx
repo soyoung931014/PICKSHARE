@@ -1,22 +1,15 @@
 /*eslint-disable*/
-/* eslint-disable @typescript-eslint/no-loss-of-precision */
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Nav from '../component/Nav/Nav';
 import feedBG from '../img/feedBG.jpg';
-// import sampleImg from '../img/selfie4.jpg';
-// import sampleImg2 from '../img/instafeed3.jpg';
 import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { useDispatch } from 'react-redux';
-// import { followAction, unfollowAction } from '../redux/actions';
-import { follow } from '../redux/reducers/follow/followReducer';
 import Modal from '../component/Modal/Modal';
-import { stringList } from 'aws-sdk/clients/datapipeline';
-import FollowingList from '../component/Feed/PersonalFeed/FollowingList';
-import FollowerList from '../component/Feed/PersonalFeed/FollowerList';
+import { modalOnAction } from '../redux/actions';
 
 const UserWapper = styled.div`
   width: 100vw;
@@ -66,7 +59,7 @@ const UserFollow = styled.button`
   font-weight: 600;
   left: 21rem;
   top: 25.5rem;
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
 `;
@@ -88,11 +81,16 @@ const Content = styled.div`
   border: paleturquoise solid 1px;
   margin: 0.5rem;
   margin-left: 1rem;
+  width: 200px;
 `;
 const UserFollowInfo = styled.div`
+  border: red solid 1px;
   display: flex;
   justify-content: center;
   align-items: center;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 const Feed = styled.div`
   display: grid;
@@ -121,25 +119,30 @@ export default function UserFeed() {
 
   const [render, setRender] = useState(false);
 
-  const [follow, setFollow] = useState(false);
+  const [follow, setFollow] = useState(false); //팔로우
+  const { isModalOn } = useSelector(
+    (modalReducer: any) => modalReducer.modalInfo
+  );
+  console.log('이즈 모달 온', isModalOn);
+
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
   const [counts, setCounts] = useState(0);
-  
-  let path = window.location.pathname.split('/')[2];
+
+  const path = window.location.pathname.split('/')[2];
 
   const [following, setFollowing]: any[] = useState({
     id: '',
     followingNickname: '',
-    followerNickname: ''
-  })
+    followerNickname: '',
+  });
 
   const [follower, setFollower]: any[] = useState({
     id: '',
     user_id: '',
-    followerNickname: ''
-  })
+    followerNickname: '',
+  });
 
   const searchShareHandler = (value: {}) => {
     if (!value) {
@@ -152,82 +155,95 @@ export default function UserFeed() {
     if (isLogin === false) {
       alert('로그인이 필요한 서비스입니다');
     }
-    return await feedApi.postFollow( userlist.nickname, accessToken)
-      .then(() => {
-        setFollow(true);
-        setRender(!render);
-      })
-  }
+    return await feedApi.postFollow(userlist.nickname, accessToken).then(() => {
+      setFollow(true);
+      setRender(!render);
+    });
+  };
 
-  const handleUnFollow = async() => {
-    if(isLogin === false){
-      alert('로그인이 필요한 서비스입니다')
+  const handleUnFollow = async () => {
+    if (isLogin === false) {
+      alert('로그인이 필요한 서비스입니다');
     }
-    return await feedApi.deleteFollow(userlist.nickname, accessToken)
+    return await feedApi
+      .deleteFollow(userlist.nickname, accessToken)
       .then(() => {
         setFollow(false);
         setRender(!render);
-      })
-  }
-  
+      });
+  };
+
+  const handleModalOn = () => {
+    dispatch(modalOnAction);
+    console.log('모달 바뀌나', isModalOn);
+  };
+
   useMemo(() => {
-      
     const userfeedinfo = async () => {
-      return await feedApi.userInfo(path)
-      .then(result => {
-        setUserlist(result.data.data)
-      })
-    }
+      return await feedApi.userInfo(path).then((result) => {
+        setUserlist(result.data.data);
+      });
+    };
 
     userfeedinfo();
 
-    if(isLogin === true){
-      feedApi.searchFollow(path, accessToken)
-      .then((result) => {
-        if(result.data){
+    if (isLogin === true) {
+      feedApi.searchFollow(path, accessToken).then((result) => {
+        if (result.data) {
           setFollow(true);
         }
       });
-    };
-    
+    }
+
     const getFollowingList = async () => {
-      return await feedApi.getFollowingList(path)
-      .then((result) => {
-        setFollowing(result.data)
-      })
+      return await feedApi.getFollowingList(path).then((result) => {
+        setFollowing(result.data);
+      });
     };
-    
+
     getFollowingList();
 
     const getFollowerList = async () => {
-      return await feedApi.getFollowerList(path)
-      .then((result) => {
-        console.log('팔로워',result.data)
-        setFollower(result.data)
-      })
-    }
+      return await feedApi.getFollowerList(path).then((result) => {
+        console.log('팔로워', result.data);
+        setFollower(result.data);
+      });
+    };
     getFollowerList();
-    
+
     const countFeed = () => {
-      return setCounts(userfeedlist.length)
-    }
+      return setCounts(userfeedlist.length);
+    };
     countFeed();
 
-    console.log('패스',path)
-    
-  },[follow]);
+    console.log('패스', path);
+  }, [follow]);
 
   useEffect(() => {
-    const userPage = async () => {
-      return await feedApi.getUserFeed(path)
-      .then(result => {
-        setUserFeedlist(result.data)
+    //내 피드가져오기
+    const myFeed = async () => {
+      return await feedApi.getMyFeed(accessToken)
+      .then((result) => {
+        console.log('내피드',result.data)
+        setUserFeedlist(result.data);
+        console.log('내피드리스트',userfeedlist)
       })
+    }
+
+    //유저들의 피드
+    const userPage = async () => {
+      return await feedApi.getUserFeed(path).then((result) => {
+        setUserFeedlist(result.data);
+      });
     };
-    userPage();
-  },[render])
-  
-  
+    console.log('유저페이지 유저인포',userInfo)
+    if(userInfo.nickname === path){
+      myFeed();
+    } else{
+      userPage();
+    }
+  }, [render]);
+
   return (
     <UserWapper>
       <Nav />
@@ -264,11 +280,11 @@ export default function UserFeed() {
                 <UserFollowInfo>{counts}</UserFollowInfo>
               </div>
               <div>
-                <UserFollowInfo>팔로잉</UserFollowInfo>
+                <UserFollowInfo onClick={handleModalOn}>팔로잉</UserFollowInfo>
                 <UserFollowInfo>{following.length}</UserFollowInfo>
               </div>
               <div>
-                <UserFollowInfo>팔로워</UserFollowInfo>
+                <UserFollowInfo onClick={handleModalOn}>팔로워</UserFollowInfo>
                 <UserFollowInfo>{follower.length}</UserFollowInfo>
               </div>
             </UserDescribe>
@@ -279,50 +295,21 @@ export default function UserFeed() {
             ? `${userlist.nickname}님의 피드가 없습니다`
             : userfeedlist.map((el: any) => (
                 <MainFeedList
-                {...el}
-                key={el.id}
-                render={render}
-                setRender={setRender}
+                  {...el}
+                  key={el.id}
+                  render={render}
+                  setRender={setRender}
                 />
               ))}
         </Feed>
-        {/* <Modal /> */}
-        <div>
-          팔로잉
-          {following.id === ''
-          ? `${following}이 없습니다`
-          : following.map((el: any) => (
-            <FollowingList 
-              {...el}
-              key={el.id}
-              follow={follow}
-              setFollow={setFollow}
-              // render={render}
-              // setRender={setRender}
-            />
-          ))}
-        </div>
-        <div>
-          팔로워
-          {follower.id === ''
-          ? (
-            <>
-            팔로워가 없습니다
-            </>
-          ) : (
-            follower.map((el: any) => (
-            <FollowerList
-              {...el}
-              key={el.id}
-              follow={follow}
-              setFollow={setFollow}
-              // render={render}
-              // setRender={setRender}
-            />
-          ))
-          )
-          }
-        </div>
+        {isModalOn ? (
+          <Modal
+            follower={follower}
+            following={following}
+            follow={follow}
+            setFollow={setFollow}
+          />
+        ) : null}
       </Div>
     </UserWapper>
   );

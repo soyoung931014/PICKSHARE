@@ -31,8 +31,8 @@ export class Board extends BaseEntity {
   @Column()
   mood: Mood;
 
-  @Column()
-  lock: Lock;
+  @Column({default: true})
+  lock: Lock = 'UNLOCK';
 
   @Column()
   content: string;

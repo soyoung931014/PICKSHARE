@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 `;
 const CommentsListBox = styled.div`
   //border: dotted black 2px;
-  height: 50vh;
+  height: 65%;
 `;
 const CommentBox = styled.div`
   //border: dotted black 2px;
@@ -33,7 +33,7 @@ const CommentBox = styled.div`
 const Input = styled.input`
   border: solid #a396f8 2px;
   border-radius: 5px;
-  width: 80vw;
+  /* width: 80vw; */
   height: 1rem;
   font-size: 1rem;
   padding: 0.8rem;

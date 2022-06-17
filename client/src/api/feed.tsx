@@ -21,7 +21,13 @@ const feedApi = {
   getUserFeed: (nickname: string) => {
     return api.get(`/feed/mainfeed?nickname=${nickname}`);
   },
-
+  getMyFeed: (accessToken: string) => {
+    return api.get('/feed/myfeed',{
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    })
+  },
   postHeart: (info: any, board_id: number, accessToken: string) => {
     return api.post(
       '/heart',
@@ -52,9 +58,6 @@ const feedApi = {
       },
     });
   },
-  // searchByDate: () => {
-  // 	return api.get(``)
-  // }
   userInfo: (nickname: string) => {
     return api.get(`/user/userInfo?userNickname=${nickname}`);
   },
@@ -100,7 +103,7 @@ const feedApi = {
     return api.get(
       `follow/follower?nickname=${nickname}`
     )
-  }
+  },
 };
 
 export default feedApi;

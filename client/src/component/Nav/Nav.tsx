@@ -163,13 +163,6 @@ const Nav = (props: any) => {
               </Div>
               <Div>
                 <Info>
-                  <div>
-                    {userInfo.userImage === 'nothing' ? (
-                      <Img src={defaultprofileImg} />
-                    ) : (
-                      <Img src={userInfo.userImage} />
-                    )}
-                  </div>
                   <NavLink
                     to={`/feed/${userInfo.nickname}`}
                     style={{
@@ -177,6 +170,13 @@ const Nav = (props: any) => {
                       color: '#3d3c3c',
                     }}
                   >
+                    <div>
+                      {userInfo.userImage === 'nothing' ? (
+                        <Img src={defaultprofileImg} />
+                      ) : (
+                        <Img src={userInfo.userImage} />
+                      )}
+                    </div>
                     피드
                   </NavLink>
                 </Info>
