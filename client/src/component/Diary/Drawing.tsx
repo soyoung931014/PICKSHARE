@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { FormValues } from '../../pages/DiaryPage';
 
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
@@ -98,29 +99,19 @@ const CanvasWrap = styled.div`
   }
 `;
 
-type FormValues = {
-  title: string;
-  picture: string;
-  pictureMethod: number;
-  mood: number;
-  lock: string;
-  content: string;
-  date: string;
-};
-
 export interface drawingProps {
   boardInput: FormValues;
   setBoardInput: (boardInput: FormValues) => FormValues | void;
-  // DrawingHandler: (clickDrawing: boolean) => boolean | void;
-  // SaveDrawingHandler: (url: string) => string | void;
-  // drawingImg: string | null;
+  DrawingHandler: () => void;
+  SaveDrawingHandler: (url: string) => void;
+  drawingImg: string | null;
 }
 export default function Drawing({
   boardInput,
   setBoardInput,
-  // DrawingHandler,
-  // SaveDrawingHandler,
-  // drawingImg,
+  DrawingHandler,
+  SaveDrawingHandler,
+  drawingImg,
 }: drawingProps) {
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -146,7 +137,7 @@ export default function Drawing({
       ctx.drawImage(image, 0, 0);
     };
     //   image.onerror = () => {
-    //     previousImg = 'https://geutda-cors.herokuapp.com/' + drawingImg;
+    //     previousImg = 'https://pickshare.site/' + drawingImg;
     //     image.src = previousImg;
     //     image.onload = () => {
     //       ctx.drawImage(image, 0, 0);
@@ -233,46 +224,27 @@ export default function Drawing({
     }
   }
   // 그림 저장 함수
-  AWS.config.update({
-    region: `${process.env.REACT_APP_AWS_REGION}`, // congito IdentityPoolId 리전을 문자열로 입력하기. 아래 확인 (Ex. "ap-northeast-2")
-    credentials: new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`, // cognito 인증 풀에서 받아온 키를 문자열로 입력하기. (Ex. "ap-northeast-2...")
-    }),
-  });
+  // AWS.config.update({
+  //   region: `${process.env.REACT_APP_AWS_REGION}`, // congito IdentityPoolId 리전을 문자열로 입력하기. 아래 확인 (Ex. "ap-northeast-2")
+  //   credentials: new AWS.CognitoIdentityCredentials({
+  //     IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`, // cognito 인증 풀에서 받아온 키를 문자열로 입력하기. (Ex. "ap-northeast-2...")
+  //   }),
+  // });
+
+  // function dataURItoBlob(dataURI: string) {
+  //   var binary = atob(dataURI.split(',')[1]);
+  //   var array = [];
+  //   for(var i = 0; i < binary.length; i++) {
+  //       array.push(binary.charCodeAt(i));
+  //   }
+  //   return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+  // }
+
   const SaveImgHandler = async (e: any) => {
     //base64문자열로 받은 이미지
-    const drawing = canvasRef.current.toDataURL();
-    // if (!drawing) {
-    //   return setBoardInput({
-    //     ...boardInput,
-    //     ['picture']: '',
-    //   });
-    // }
-    setBoardInput({
-      ...boardInput,
-      ['picture']: drawing,
-    });
-    const uploadImg = new AWS.S3.ManagedUpload({
-      params: {
-        Bucket: 'profileimage-pickshare',
-        Key: __filename,
-        Body: drawing,
-      },
-    });
-    const promise = uploadImg.promise();
-
-    await promise.then(
-      (data: { Location: any }) => {
-        setBoardInput({
-          ...boardInput,
-          [e.target.name]: data.Location,
-        });
-      },
-      (err: any) => {
-        console.log(err);
-      }
-    );
-    console.log('잘 들어갔나', boardInput);
+    const image = canvasRef.current.toDataURL();
+    SaveDrawingHandler(image);
+    DrawingHandler();
   };
 
   return (

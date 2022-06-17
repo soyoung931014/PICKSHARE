@@ -28,6 +28,9 @@ export interface board {
     lock: Lock;
     content: string;
     date: string;
+    nickname: string;
+    id: number;
+    user_id: number;
   };
 }
 
@@ -40,6 +43,9 @@ const initialState: board = {
     lock: 'UNLOCK',
     content: '',
     date: '',
+    nickname: '',
+    id: 0,
+    user_id: 0,
   },
 };
 
@@ -61,7 +67,7 @@ const boardReducer = (
     case DELETE_BOARD_INFO:
       state = {
         ...prevState,
-        boardInfo: {},
+        boardInfo: action.boardInfo,
       };
       break;
     default:

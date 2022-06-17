@@ -220,12 +220,28 @@ export default function UserFeed() {
   }, [follow]);
 
   useEffect(() => {
+    //내 피드가져오기
+    const myFeed = async () => {
+      return await feedApi.getMyFeed(accessToken)
+      .then((result) => {
+        console.log('내피드',result.data)
+        setUserFeedlist(result.data);
+        console.log('내피드리스트',userfeedlist)
+      })
+    }
+
+    //유저들의 피드
     const userPage = async () => {
       return await feedApi.getUserFeed(path).then((result) => {
         setUserFeedlist(result.data);
       });
     };
-    userPage();
+    console.log('유저페이지 유저인포',userInfo)
+    if(userInfo.nickname === path){
+      myFeed();
+    } else{
+      userPage();
+    }
   }, [render]);
 
   return (

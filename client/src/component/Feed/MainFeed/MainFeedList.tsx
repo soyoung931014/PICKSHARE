@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import boardApi from '../../../api/board';
 import { board } from '../../../redux/reducers/boardReducer/boardReducer';
-import { addBoardInfo } from '../../../redux/actions';
+import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
 
 
 const Div = styled.div`
@@ -150,13 +150,16 @@ export default function MainFeedList({
     navigate('/login');
   };
 
-  const moveToEditBoard = (e: any) => {
-    // console.log("e.target", e.target.src)
-    boardApi.findBoardByPic(e.target.src)
+  const moveToViewBoard = (e: any) => {
+    // console.log("e.target", e.target.id)
+    dispatch(deleteBoardInfo());
+    // console.log('지워졌나?',boardInfo);
+    let id = Number(e.target.id)
+    boardApi.getBoardById(id)
     .then((result) => {
-      console.log(result.data[0]);
-      dispatch(addBoardInfo(result.data[0]))
-      console.log('리덕스 잘 됐니', boardInfo)
+      // console.log('아이디로 결과찾기', result.data);
+      dispatch(addBoardInfo(result.data));
+      // console.log('리덕스 잘 됐니', boardInfo);
       navigate('/diary');
     })
   }
@@ -173,11 +176,13 @@ export default function MainFeedList({
     }
   }, []);
 
-  useEffect(() => {}, [render]);
+  useEffect(() => {
+
+  }, [render]);
   return (
     <Div>
       <ImgDiv>
-        <Img src={contentImg} onClick={(e) => moveToEditBoard(e)}/>
+        <Img src={contentImg} id={`${id}`} onClick={(e) => moveToViewBoard(e)}/>
       </ImgDiv>
       <ContentDiv>
         <ContentRightDiv>
