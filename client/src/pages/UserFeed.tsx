@@ -108,7 +108,7 @@ export default function UserFeed() {
     userImage: '',
     heartNum: 0,
     commentNum: 0,
-    locked: '',
+    lock: '',
   });
 
   const [userlist, setUserlist]: any[] = useState({
@@ -224,7 +224,9 @@ export default function UserFeed() {
     const myFeed = async () => {
       return await feedApi.getMyFeed(accessToken)
       .then((result) => {
-        console.log('내피드',result.data)
+        console.log('데이터 전', result)
+        console.log('내피드', result.data)
+        console.log(typeof(result.data))
         setUserFeedlist(result.data);
         console.log('내피드리스트',userfeedlist)
       })

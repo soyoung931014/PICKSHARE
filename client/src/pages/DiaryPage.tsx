@@ -66,27 +66,19 @@ const BookMark = styled.div`
   img{
     width: 83px;
     height: 41px;
-    &:hover {
-      cursor: pointer;
-      transform: scale(1.2, 0) translate(-9px, 0px)
-    }
   }
   div.Tag{
     position: relative;
+    &:hover {
+      cursor: pointer;
+      transform: scale(1.3, 0) translate(-9px, 0px)
+    }
   }
-  div.TagName{
+  p.TagName{
     position: absolute;
     top: 35%;
     left: 50%;
   }
-  /* button.yellow{
-    background-image: url(${bookmarkYellow});
-    background-size: cover;
-  }
-
-  button.pink{
-    background-image: url(${bookmarkPink});
-  } */
 `
 const LeftWrapper = styled(wrapperStyle)`
   border: red solid 1px;
@@ -352,11 +344,12 @@ const DiaryPage = () => {
     }
     if(boardInfo.title !== '' || boardInfo.content !== ''){
       boardApi.editBoard(boardInfo.id, boardInput, accessToken)
-      .then((result) => {
+      .then(() => {
         //dispatch(addBoardInfo(result.data[0]))
-        console.log('리졸트',result)
-        console.log('리졸트데이터',result.data)
-        console.log('리졸트데이터데이터',result.data.data)
+        // console.log('리졸트',result)
+        // console.log('리졸트데이터',result.data)
+        // console.log('리졸트데이터데이터',result.data.data)
+        console.log('수정완료')
         dispatch(deleteBoardInfo());
       })
     } else{
@@ -425,26 +418,26 @@ const DiaryPage = () => {
           isEditOn ?
           (
             <BookMark>
-              <div className='Tag'>
+              <div className='Tag'onClick={pickPicture}>
                 <img src={bookmarkYellow} />
-                <div className='TagName' onClick={pickPicture}>사진</div>
+                <p className='TagName' >사진</p>
               </div>
-              <div className='Tag'>
+              <div className='Tag'onClick={pickDrowing}>
                 <img src={bookmarkPink} />
-                <div className='TagName'onClick={pickDrowing}>그림</div>
+                <p className='TagName'>그림</p>
               </div>
             </BookMark>
           ) : (
             userInfo.nickname === boardInfo.nickname ?
             (
               <BookMark>
-                <div className='Tag'>
-                  <img src={bookmarkYellow} onClick={editModeHandler}/>
-                  <div className='TagName'>수정</div>
+                <div className='Tag'onClick={editModeHandler}>
+                  <img src={bookmarkYellow} />
+                  <p className='TagName'>수정</p>
                 </div>
-                <div className='Tag'>
+                <div className='Tag'onClick={deleteWriting}>
                   <img src={bookmarkPink} />
-                  <div className='TagName'onClick={deleteWriting}>삭제</div>
+                  <p className='TagName'>삭제</p>
                 </div>
                 {/* <button onClick={editModeHandler} >수정</button> */}
               </BookMark>

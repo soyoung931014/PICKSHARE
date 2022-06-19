@@ -12,7 +12,6 @@ import boardApi from '../../../api/board';
 import { board } from '../../../redux/reducers/boardReducer/boardReducer';
 import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
 
-
 const Div = styled.div`
   border: red solid 1px;
   aspect-ratio: 262 / 302;
@@ -121,7 +120,7 @@ export default function MainFeedList({
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
-  const { boardInfo } = useSelector((boardReducer: board) => boardReducer)
+  const { boardInfo } = useSelector((boardReducer: board) => boardReducer);
   const [heart, setHeart] = useState(false);
 
   const postHeart = async () => {
@@ -154,15 +153,14 @@ export default function MainFeedList({
     // console.log("e.target", e.target.id)
     dispatch(deleteBoardInfo());
     // console.log('지워졌나?',boardInfo);
-    let id = Number(e.target.id)
-    boardApi.getBoardById(id)
-    .then((result) => {
+    const id = Number(e.target.id);
+    boardApi.getBoardById(id).then((result) => {
       // console.log('아이디로 결과찾기', result.data);
       dispatch(addBoardInfo(result.data));
       // console.log('리덕스 잘 됐니', boardInfo);
       navigate('/diary');
-    })
-  }
+    });
+  };
 
   useMemo(() => {
     if (isLogin) {
@@ -176,13 +174,15 @@ export default function MainFeedList({
     }
   }, []);
 
-  useEffect(() => {
-
-  }, [render]);
+  useEffect(() => {}, [render]);
   return (
     <Div>
       <ImgDiv>
-        <Img src={contentImg} id={`${id}`} onClick={(e) => moveToViewBoard(e)}/>
+        <Img
+          src={contentImg}
+          id={`${id}`}
+          onClick={(e) => moveToViewBoard(e)}
+        />
       </ImgDiv>
       <ContentDiv>
         <ContentRightDiv>
