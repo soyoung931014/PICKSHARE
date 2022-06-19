@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import axios from 'axios';
+
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -9,8 +9,6 @@ import { addUserInfo } from '../redux/actions';
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import styled from 'styled-components';
 import background from '../img/feedBG.jpg';
-import camera from '../img/camera.jpg';
-import api from '../api';
 import loginApi from '../api/login';
 const Wrapper = styled.div`
   width: 100vw;
@@ -88,7 +86,7 @@ function kakaoLoading(props: any) {
       <Wrapper>
         <Pickshare>Loading..</Pickshare>
         <LoadingBox>
-          <Img src={camera} />
+          <Img src={process.env.PUBLIC_URL + 'favicon.ico'} />
         </LoadingBox>
       </Wrapper>
     </>

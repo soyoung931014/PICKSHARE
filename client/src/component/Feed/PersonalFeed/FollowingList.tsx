@@ -4,8 +4,16 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import feedApi from '../../../api/feed';
 
-const Wrapper = styled.div``;
-const UserImage = styled.img``;
+const Wrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+`;
+const UserImage = styled.img`
+  width: 46px;
+  height: 46px;
+  border-radius: 100%;
+  overflow: hidden;
+`;
 const UserNick = styled.div``;
 const FollowButton = styled.button`
   background-color: white;

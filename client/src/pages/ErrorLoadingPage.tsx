@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import background from '../img/feedBG.jpg';
-import camera from '../img/camera.jpg';
+//import camera from '../../public/favicon.ico';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -62,7 +62,7 @@ function ErrorLoadingPage(props: any) {
           <>
             <Pickshare>{props.text}</Pickshare>
             <LoadingBox>
-              <Img src={camera} />
+              <Img src={process.env.PUBLIC_URL + 'favicon.ico'} />
             </LoadingBox>
           </>
         ) : (

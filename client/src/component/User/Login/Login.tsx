@@ -7,7 +7,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
 import { addUserInfo, deleteUserInfo } from '../../../redux/actions/index';
@@ -413,8 +412,9 @@ function Login(props: any) {
               <InputBox>
                 <Box>
                   <Input
-                    type="current-password"
+                    type="password"
                     ref={inputpassword}
+                    autoComplete="off"
                     name="password"
                     placeholder="비밀번호"
                     onChange={passwordValidation}

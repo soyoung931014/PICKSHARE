@@ -10,7 +10,11 @@ import { debounce } from 'debounce';
 import { useSelector } from 'react-redux';
 import { feed } from '../redux/reducers/feedReducer/feedReducer';
 import { useDispatch } from 'react-redux';
-import { searchUserFeed } from '../redux/actions';
+import {
+  deleteBoardInfo,
+  editOnAction,
+  searchUserFeed,
+} from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled.div`
@@ -113,12 +117,17 @@ export default function MainFeed() {
   const [searchInput, setSearchInput] = useState('');
   const [orderingH, setOrderingH] = useState(false);
   const { searchNickname } = useSelector((feedReducer: feed) => feedReducer);
+  const { isEditOn } = useSelector((editReducer: any) => editReducer);
 
   const handleSearchInput = debounce(async (e: any) => {
     setSearchInput(e.target.value);
     dispatch(searchUserFeed(searchInput));
   }, 300);
-  const moveToDiary = () => {
+
+  const writeNewDiary = () => {
+    //새로 만들기
+    dispatch(deleteBoardInfo());
+    dispatch(editOnAction);
     navigate('/diary');
   };
 
@@ -189,7 +198,7 @@ export default function MainFeed() {
                 </SearchIcon>
               </SearchBar>
             </form>
-            <PlusButton onClick={moveToDiary}> + </PlusButton>
+            <PlusButton onClick={writeNewDiary}> + </PlusButton>
           </UpperRightDiv>
         </UpperDiv>
         <Feed>

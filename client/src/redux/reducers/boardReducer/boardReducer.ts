@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { ADD_BOARD_INFO } from '../actions/actionTypes';
+import { ADD_BOARD_INFO, DELETE_BOARD_INFO } from '../../actions/actionTypes';
 
 type PictureMethod = 0 | 1;
 /* 
@@ -28,30 +28,52 @@ export interface board {
     lock: Lock;
     content: string;
     date: string;
-  }[];
+    nickname: string;
+    id: number;
+    user_id: number;
+  };
 }
 
 const initialState: board = {
-  boardInfo: [],
+  boardInfo: {
+    title: '',
+    picture: '',
+    pictureMethod: 0,
+    mood: 0,
+    lock: 'UNLOCK',
+    content: '',
+    date: '',
+    nickname: '',
+    id: 0,
+    user_id: 0,
+  },
 };
 
 const boardReducer = (
-  state = initialState,
+  prevState = initialState,
   action: {
     type: string;
-    payload: object;
-    accessToken: string;
+    boardInfo: object;
   }
 ) => {
+  let state;
   switch (action.type) {
     case ADD_BOARD_INFO:
-      return {
-        ...state,
-        boardInfo: { ...action.payload },
+      state = {
+        ...prevState,
+        boardInfo: action.boardInfo,
       };
+      break;
+    case DELETE_BOARD_INFO:
+      state = {
+        ...prevState,
+        boardInfo: action.boardInfo,
+      };
+      break;
     default:
-      return state;
+      state = { ...prevState };
   }
+  return state;
 };
 
 export default boardReducer;

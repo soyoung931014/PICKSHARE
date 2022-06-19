@@ -512,10 +512,11 @@ function Signup() {
                     <Box>
                       <Input
                         Password
+                        type="password"
                         placeholder="비밀번호"
                         ref={inputPassword}
                         name="password"
-                        type="new-password"
+                        autoComplete="off"
                         onChange={passwordValidation}
                       />
                     </Box>
@@ -524,11 +525,12 @@ function Signup() {
                     <Box>
                       <Input
                         Password
+                        type="password"
                         placeholder="비밀번호확인"
                         ref={inputPasswordCheck}
                         name="passwordcheck"
-                        type="new-password"
                         value={signupInfo.passwordcheck}
+                        autoComplete="off"
                         onChange={passwordCheck}
                       />
                     </Box>

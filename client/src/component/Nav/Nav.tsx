@@ -70,8 +70,8 @@ const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
   align-items: center;
   //margin-right: 1.5rem;
   @media screen and (max-width: 977px) {
-    width: ${(props) => (props.InitialNav ? '11vw' : '25vw')};
-    height: ${(props) => (props.InitialNav ? '29vh' : '45vh')};
+    width: ${(props) => (props.InitialNav ? '20vw' : '25vw')};
+    height: ${(props) => (props.InitialNav ? '35vh' : '45vh')};
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -89,13 +89,19 @@ const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
     //  transition: transform 1s ease-in-out;
   }
   @media screen and (max-width: 710px) {
-    width: ${(props) => (props.InitialNav ? '14vw' : '29vw')};
+    width: ${(props) => (props.InitialNav ? '24vw' : '29vw')};
   }
   @media screen and (max-width: 607px) {
-    width: ${(props) => (props.InitialNav ? '14vw' : '29vw')};
+    width: ${(props) => (props.InitialNav ? '25vw' : '29vw')};
   }
   @media screen and (max-width: 550px) {
-    width: ${(props) => (props.InitialNav ? '14vw' : '40vw')};
+    width: ${(props) => (props.InitialNav ? '27vw' : '40vw')};
+  }
+  @media screen and (max-width: 460px) {
+    width: ${(props) => (props.InitialNav ? '30vw' : '40vw')};
+  }
+  @media screen and (max-width: 408px) {
+    width: ${(props) => (props.InitialNav ? '38vw' : '40vw')};
   }
 `;
 const Div = styled.div<{ Text?: any }>`
@@ -124,10 +130,15 @@ const Img = styled.img`
   }
 `;
 const Info = styled.div`
+  // border: solid red 2px;
   display: flex;
   justify-content: center;
   align-items: center;
+  @media screen and (max-width: 750px) {
+    width: 5rem;
+  }
 `;
+const FeedDiv = styled.div``;
 
 const Nav = (props: any) => {
   const { isLogin, userInfo } = useSelector(
@@ -137,18 +148,10 @@ const Nav = (props: any) => {
 
   const [menu, setMenu] = useState(false);
 
-  // AWS.config.update({
-  //   region: `${process.env.REACT_APP_AWS_REGION}`, // congito IdentityPoolId 리전을 문자열로 입력하기. 아래 확인 (Ex. "ap-northeast-2")
-  //   credentials: new AWS.CognitoIdentityCredentials({
-  //     IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`, // cognito 인증 풀에서 받아온 키를 문자열로 입력하기. (Ex. "ap-northeast-2...")
-  //   }),
-  // });
-
   return (
     <>
       <Wrapper>
         <Logo onClick={() => navigate('/mainfeed')}>PICKSHARE</Logo>
-
         {isLogin === true ? (
           <>
             <NavList Menu={menu}>
@@ -166,13 +169,6 @@ const Nav = (props: any) => {
               </Div>
               <Div>
                 <Info>
-                  <div>
-                    {userInfo.userImage === 'nothing' ? (
-                      <Img src={defaultprofileImg} />
-                    ) : (
-                      <Img src={userInfo.userImage} />
-                    )}
-                  </div>
                   <NavLink
                     to={`/feed/${userInfo.nickname}`}
                     style={{
@@ -180,8 +176,15 @@ const Nav = (props: any) => {
                       color: '#3d3c3c',
                     }}
                   >
-                    피드
+                    <FeedDiv>
+                      {userInfo.userImage === 'nothing' ? (
+                        <Img src={defaultprofileImg} />
+                      ) : (
+                        <Img src={userInfo.userImage} />
+                      )}
+                    </FeedDiv>
                   </NavLink>
+                  <FeedDiv>피드</FeedDiv>
                 </Info>
               </Div>
               <Div Text>
