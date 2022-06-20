@@ -171,6 +171,7 @@ const Nav = (props: any) => {
                 <Info>
                   <NavLink
                     to={`/feed/${userInfo.nickname}`}
+                    onClick={() => props.setRender(!props.render)}
                     style={{
                       textDecoration: 'none',
                       color: '#3d3c3c',

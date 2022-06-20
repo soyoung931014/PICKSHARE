@@ -110,8 +110,7 @@ export class BoardService {
     await this.boardRepository.save(updateBoard);
     return await this.boardRepository.findOne({
       where: {
-        id,
-        'user_id': user.id,
+        id
       }
     });
   }

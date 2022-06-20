@@ -12,8 +12,8 @@ import {
   MODAL_OFF,
   MODAL_ON,
   SEARCH_USER_FEED,
-  FOLLOW_USER,
-  UNFOLLOW_USER,
+  DIARY_ON,
+  DIARY_OFF,
   EDIT_MODE_ON,
   EDIT_MODE_OFF,
 } from './actionTypes';
@@ -81,12 +81,12 @@ export const modalOffAction = {
   type: MODAL_OFF,
 };
 
-export const followAction = {
-  type: FOLLOW_USER,
+export const diaryOnAction = {
+  type: DIARY_ON,
 };
 
-export const unfollowAction = {
-  type: UNFOLLOW_USER,
+export const diaryOffAction = {
+  type: DIARY_OFF,
 };
 
 export const editOnAction = {
