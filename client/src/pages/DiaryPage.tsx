@@ -274,8 +274,6 @@ const DiaryPage = () => {
   const { isEditOn } = useSelector((editReducer: any) => editReducer.editInfo);
   const { isDiaryOn } = useSelector((diaryReducer: any) => diaryReducer.diaryInfo);
   const { isModalOn } = useSelector((modalReducer: any) => modalReducer.modalInfo);
-  const [ clickDrawing, setClickDrawing ] = useState(false);
-  const [ drawingImg, setDrawingImg ] = useState('');
   const [ userImg, setUserImg ] = useState('');
   const [boardInput, setBoardInput] = useState<FormValues>({
     title: '',
@@ -375,17 +373,10 @@ const DiaryPage = () => {
     })
   };
 
-  const DrawingHandler = () => {
-    setClickDrawing(!clickDrawing);
-  };
-  const SaveDrawingHandler = (url: string) => {
-    setDrawingImg(url);
-  };
   const deleteWriting = () => {
     boardApi.deleteBoard(boardInfo.id, accessToken)
     window.history.back();
   };
-
 
   const handleConfirm = (e:any) => {
     console.log('e는?',e)
