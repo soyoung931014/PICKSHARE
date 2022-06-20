@@ -36,8 +36,11 @@ const Book = styled.div`
   padding-left: 1em;
   position: relative;
   left: 8rem;
-  @media screen and (max-width: 746px) {
-    justify-content: flex-start;
+  @media screen and (max-width: 891px) {
+    width: 100vw;
+    position: none;
+    left: 0rem;
+    padding-left: 0em;
   }
 `;
 const Left = styled.div`
@@ -69,7 +72,10 @@ const Right = styled.div`
     width: 32rem;
   }
   @media screen and (max-width: 891px) {
-    width: 20rem;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0px;
+    padding-left: 0em;
   }
 `;
 const Index = styled.div`
@@ -87,7 +93,7 @@ const TagHome = styled.img`
     cursor: pointer;
   }
   @media screen and (max-width: 891px) {
-    width: 5rem;
+    display: none;
   }
   //border: solid 2px black;
 `;
@@ -100,8 +106,11 @@ const TagSignin = styled.img`
     cursor: pointer;
   }
   @media screen and (max-width: 891px) {
-    width: 8rem;
+    display: none;
   }
+  /* @media screen and (max-width: 891px) {
+    width: 8rem;
+  } */
   //border: solid 2px black;
 `;
 const TagSignup = styled.img`
@@ -116,7 +125,63 @@ const TagSignup = styled.img`
   position: relative;
   top: -10px;
   @media screen and (max-width: 891px) {
+    display: none;
+  }
+  /*  @media screen and (max-width: 891px) {
     width: 6rem;
+  } */
+`;
+const SubTags = styled.div`
+  /* border: solid red 2px; */
+  display: flex;
+  justify-content: center;
+  //align-items: center;
+  height: 3.2rem;
+  box-shadow: 15px 10px 15px #3c4a5645;
+
+  @media screen and (min-width: 892px) {
+    display: none;
+  }
+`;
+const Tab = styled.div`
+  width: 10vw;
+`;
+const SubTagHome = styled.div`
+  //border: solid green 2px;
+  width: 30vw;
+  height: 3.2rem;
+  padding-top: 15px;
+  font-size: 1.5rem;
+  text-align: center;
+  background-color: #f5ffbb;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+`;
+const SubTagSignin = styled.div`
+  width: 30vw;
+  height: 3.2rem;
+  padding-top: 15px;
+  font-size: 1.5rem;
+  text-align: center;
+  background-color: #eae1ff;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+`;
+const SubTagSignup = styled.div`
+  width: 30vw;
+  height: 3.2rem;
+  padding-top: 15px;
+  font-size: 1.5rem;
+  text-align: center;
+
+  background-color: #ffc7c7;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
   }
 `;
 
@@ -130,7 +195,7 @@ const Img = styled.img`
   bottom: 10px;
 `;
 const LoginBox = styled.div`
-  //border: solid 2px red;
+  // border: solid 2px red;
   height: 80vh;
   display: flex;
   flex-direction: column;
@@ -147,7 +212,7 @@ const Title = styled.div`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
-  @media screen and (max-width: 891px) {
+  /*  @media screen and (max-width: 891px) {
     font-size: 1.7rem;
   }
   @media screen and (max-width: 575px) {
@@ -155,16 +220,22 @@ const Title = styled.div`
   }
   @media screen and (max-width: 440px) {
     font-size: 1rem;
-  }
+  } */
 `;
 const Form = styled.form`
-  //border: dotted 2px red;
+  // border: dotted 2px red;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 30vw;
+  width: 35vw;
   height: 50vh;
   box-sizing: border-box;
+  @media screen and (max-width: 891px) {
+    width: 60vw;
+  }
+  @media screen and (max-width: 513px) {
+    width: 90vw;
+  }
 `;
 const InputBox = styled.div<{ button?: any }>`
   //border: solid 2px aqua;
@@ -174,7 +245,7 @@ const InputBox = styled.div<{ button?: any }>`
 `;
 const Message = styled.div`
   // border: solid 2px green;
-  width: 30vw;
+  width: 100vw;
 
   height: 1.7rem;
   padding-top: 3px;
@@ -183,12 +254,12 @@ const Message = styled.div`
   //text-align: left;
   position: relative;
   color: #ff8686;
-  @media screen and (max-width: 1190px) {
+  /* @media screen and (max-width: 1190px) {
     font-size: 13px;
-  }
-  @media screen and (max-width: 891px) {
+  } */
+  /* @media screen and (max-width: 891px) {
     display: none;
-  }
+  } */
 `;
 const Input = styled.input`
   height: 3rem;
@@ -203,14 +274,14 @@ const Input = styled.input`
   border: 0;
   box-sizing: border-box;
   opacity: 0.6;
-  @media screen and (max-width: 737px) {
+  /*  @media screen and (max-width: 737px) {
     width: 12rem;
     height: 3rem;
   }
   @media screen and (max-width: 640px) {
     width: 9rem;
     height: 3rem;
-  }
+  } */
 `;
 const Button = styled.button`
   //border: solid 2px green;
@@ -227,12 +298,12 @@ const Button = styled.button`
   font-size: large;
   font-weight: bold;
   color: white;
-  @media screen and (max-width: 737px) {
+  /*  @media screen and (max-width: 737px) {
     width: 12rem;
   }
   @media screen and (max-width: 640px) {
     width: 9rem;
-  }
+  } */
 `;
 const ButtonKakao = styled.button`
   //border: solid 2px green;
@@ -249,12 +320,12 @@ const ButtonKakao = styled.button`
   background-color: #fdf772;
   cursor: pointer;
   margin-top: 0.7rem;
-  @media screen and (max-width: 737px) {
+  /*  @media screen and (max-width: 737px) {
     width: 12rem;
   }
   @media screen and (max-width: 640px) {
     width: 9rem;
-  }
+  } */
 `;
 const Div = styled.div`
   height: 2rem;
@@ -265,9 +336,9 @@ const Div = styled.div`
   margin-top: 0.7rem;
   padding: 0.7rem 0rem;
   //border: solid 2px green;
-  @media screen and (max-width: 575px) {
+  /*  @media screen and (max-width: 575px) {
     font-size: 0.5rem;
-  }
+  } */
 `;
 
 const Box = styled.div`
@@ -392,6 +463,30 @@ function Login(props: any) {
           <Img src={pickshareLogo} />
         </Left>
         <Right>
+          <Tab></Tab>
+          <SubTags>
+            <SubTagHome
+              onClick={() => {
+                navigate('/mainfeed', { replace: true });
+              }}
+            >
+              home
+            </SubTagHome>
+            <SubTagSignin
+              onClick={() => {
+                navigate('/login', { replace: true });
+              }}
+            >
+              signin
+            </SubTagSignin>
+            <SubTagSignup
+              onClick={() => {
+                navigate('/signup', { replace: true });
+              }}
+            >
+              signup
+            </SubTagSignup>
+          </SubTags>
           <LoginBox>
             <Title>Log in to your account</Title>
             <Form>
