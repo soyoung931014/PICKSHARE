@@ -1,9 +1,8 @@
 /* eslint-disable */
 import background from '../img/feedBG.jpg';
 import styled from 'styled-components';
-import { useForm, SubmitHandler } from 'react-hook-form';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { addBoardInfo, deleteBoardInfo, editOnAction } from '../redux/actions';
+import { addBoardInfo, deleteBoardInfo, diaryOffAction, editOffAction, editOnAction } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 import bookmarkPink from '../img/bookmark-pink.png';
 import bookmarkYellow from '../img/bookmark-yellow.png';
@@ -14,11 +13,11 @@ import { GrLock, GrUnlock } from 'react-icons/gr';
 import { useSelector } from 'react-redux';
 import boardApi from '../api/board';
 import feedApi from '../api/feed';
-import { board } from '../redux/reducers/boardReducer/boardReducer';
-import { edit } from '../redux/reducers/editReducer/editReducer';
 import { useDispatch } from 'react-redux';
 import Comments from '../component/Comment/Comments';
-import { render } from '@testing-library/react';
+import { BsEmojiAngry, BsEmojiFrown, BsEmojiLaughing, BsEmojiNeutral, BsEmojiSmile } from 'react-icons/bs';
+import { AnyMap } from 'immer/dist/internal';
+import { CostExplorer } from 'aws-sdk';
 
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 /*
@@ -38,19 +37,25 @@ Container
 */
 
 const Container = styled.section`
-  height: 100vh;
+  height: 100%;
   background-image: url(${background});
   background-size: cover;
   background-attachment: scroll;
   display: flex;
   justify-content: center;
   align-items: center;
+  @media screen and (max-width: 900px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 // ---- 일기장 Wrapper CSS ----
-const wrapperStyle = styled.article`
+const wrapperStyle = styled.div`
+  border: purple 1px solid;
   height: 699px;
-  width: 577px;
+  width: 38rem;
   padding: 3.8rem 2rem;
   border-radius: 1.5rem;
   background-color: var(--color-white);
@@ -63,22 +68,25 @@ const BookMark = styled.div`
   position: relative;
   top: -230px;
 
-  img{
-    width: 83px;
-    height: 41px;
+  @media screen and (max-width: 900px) {
+    top: 0px;
+    left: -300px;
   }
-  div.Tag{
-    position: relative;
-    &:hover {
+`
+const Book = styled.button<{ Yellow?: any }>`
+  background-image: ${(props) => (
+    props.Yellow 
+    ? `url(${bookmarkYellow})` 
+    : `url(${bookmarkPink})`
+  )};
+  background-color: transparent;
+  background-size: cover;
+  width: 83px;
+  height: 41px;
+  &:hover {
       cursor: pointer;
-      transform: scale(1.3, 0) translate(-9px, 0px)
+      /* transform: scale(1.3, 0) translate(-9px, 0px) */
     }
-  }
-  p.TagName{
-    position: absolute;
-    top: 35%;
-    left: 50%;
-  }
 `
 const LeftWrapper = styled(wrapperStyle)`
   border: red solid 1px;
@@ -87,14 +95,6 @@ const LeftWrapper = styled(wrapperStyle)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* input.img-input {
-    width: 100%;
-    height: 500px;
-    background-color: grey;
-  } */
-  button.next {
-    margin: 1rem;
-  }
 `;
 const ImgDiv = styled.div`
   border: blue solid 1px;
@@ -136,7 +136,7 @@ const RightWrapper = styled(wrapperStyle)`
     padding: 1rem;
   }
   /* Wrapper (Date, Mood, Lock) */
-  article.select-wrapper {
+  div.select-wrapper {
     display: flex;
     flex-direction: row;
     gap: 1.2rem;
@@ -157,7 +157,7 @@ const RightWrapper = styled(wrapperStyle)`
   }
 
   /* Wrapper 저장  */
-  article.save-btns {
+  div.save-btns {
     display: flex;
     flex-direction: row;
     gap: 1.2rem;
@@ -265,13 +265,15 @@ const RightSide = styled.div`
 const DiaryPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [rendering, reRendering] = useState(false)
+  const [rendering, setRendering] = useState(false)
   const [pickWay, setPickWay] = useState(0); //책갈피 선택 0: 그림 / 1: 사진
   const [ lockBtn, setLockBtn ] = useState(false);
   const file: any = useRef();
   const { boardInfo } = useSelector((boardReducer: any) => boardReducer.boardInfo);
   const { userInfo, accessToken } = useSelector((userReducer: any) => userReducer.userInfo);
   const { isEditOn } = useSelector((editReducer: any) => editReducer.editInfo);
+  const { isDiaryOn } = useSelector((diaryReducer: any) => diaryReducer.diaryInfo);
+  const { isModalOn } = useSelector((modalReducer: any) => modalReducer.modalInfo);
   const [ clickDrawing, setClickDrawing ] = useState(false);
   const [ drawingImg, setDrawingImg ] = useState('');
   const [ userImg, setUserImg ] = useState('');
@@ -287,7 +289,6 @@ const DiaryPage = () => {
 
   const editModeHandler = () => {
     dispatch(editOnAction);
-    reRendering(!rendering)
   }
   
   const pickPicture = () => {
@@ -316,7 +317,6 @@ const DiaryPage = () => {
   const handleBoardInputValue = debounce(async (e:any) => {
     const { name, value } = e.target;
     setBoardInput({...boardInput, [name]: value})
-    console.log('보드 정보는?',boardInput)
   });
 
   const boardLockHandler = () => {
@@ -326,13 +326,10 @@ const DiaryPage = () => {
     } else {
       setBoardInput({...boardInput,["lock"]: "UNLOCK"})
     }
-    console.log('보드?',boardInput)
   };
 
   const boardMoodHandler = (e:any) => {
-    console.log('무드', e.target.value);
     setBoardInput({...boardInput, ["mood"]: e.target.value});
-    console.log("무드 바뀜?", boardInput)
   }
 
   const handleSaveBoard = () => {
@@ -344,25 +341,38 @@ const DiaryPage = () => {
       date === ''
     ){
       return alert('내용을 작성해주세요')
-    }
-    if(boardInfo.title !== '' || boardInfo.content !== ''){
-      boardApi.editBoard(boardInfo.id, boardInput, accessToken)
-      .then(() => {
-        //dispatch(addBoardInfo(result.data[0]))
-        // console.log('리졸트',result)
-        // console.log('리졸트데이터',result.data)
-        // console.log('리졸트데이터데이터',result.data.data)
-        console.log('수정완료')
-        dispatch(deleteBoardInfo());
-      })
-    } else{
+    }else {
+      dispatch(addBoardInfo(boardInput))
       boardApi.createBoard(boardInput, accessToken)
       .then((result) => {
-        console.log('잘 저장됐나요?',result)
-        alert('저장되었습니다');
-        navigate('/mainfeed')
+
+        dispatch(addBoardInfo(result.data))
+        console.log('다이어리온',isDiaryOn)
+        // navigate('/mainfeed')
+        dispatch(diaryOffAction)
+        console.log('다이어리온',isDiaryOn)
       })
     }
+  };
+
+  const handleEditBoard = () => {
+    const {title, picture, content, date} = boardInput;
+    if(
+      title === '' ||
+      picture === '' ||
+      content === '' ||
+      date === ''
+    ){
+      return alert('내용을 작성해주세요')
+    }
+    console.log('수정모드')
+
+    boardApi.editBoard(boardInfo.id, boardInput, accessToken)
+    .then((result) => {
+
+      dispatch(addBoardInfo(result.data))
+      dispatch(editOffAction)
+    })
   };
 
   const DrawingHandler = () => {
@@ -372,41 +382,61 @@ const DiaryPage = () => {
     setDrawingImg(url);
   };
   const deleteWriting = () => {
-    console.log('보드인풋',boardInput);
-    console.log('보드인포', boardInfo.id);
-
     boardApi.deleteBoard(boardInfo.id, accessToken)
     window.history.back();
+  };
+
+
+  const handleConfirm = (e:any) => {
+    console.log('e는?',e)
+    let text = e.target.name
+    let result: any = confirm(`게시글을 ${text} 하시겠습니끼?`);
+
+    if(text === '삭제') {
+      if(result){
+        alert(`${text}되었습니다.`)
+        return deleteWriting();
+      }{
+        alert('취소되었습니다.')
+      }
+    } else if(text === '저장') {
+      if(result){
+        alert(`${text}되었습니다.`)
+        return handleSaveBoard();
+      }{
+        alert('취소되었습니다.')
+      }
+    } else {
+      if(result){
+        alert(`${text}되었습니다.`)
+        return handleEditBoard();
+      }{
+        alert('취소되었습니다.')
+      }
+    }
   }
-  
-  useMemo(() => {
-    if(boardInfo.title !== ''){
+
+  useEffect(()=>{
+    if(boardInfo.title !== undefined || ''){
       setPickWay(boardInfo.pictureMethod);
       setBoardInput({
         title: boardInfo.title,
         picture: boardInfo.picture,
-        pictureMethod: boardInfo.picktureMethod,
+        pictureMethod: boardInfo.pictureMethod,
         mood: boardInfo.mood,
         lock: boardInfo.lock,
         content: boardInfo.content,
         date: boardInfo.date,
       })
 
+      console.log('리덕스 후', boardInfo.pictureMethod)
+
       feedApi.userInfo(boardInfo.nickname)
       .then((result) => {
         setUserImg(result.data.data.userImage);
-        console.log(userImg)
       })
     }
-
-    console.log('유저인포',userInfo)
-  }, [])
-
-  useEffect(()=>{
-    console.log('rerender', rendering)
-    console.log('수정모드', isEditOn)
-
-  },[rendering, isEditOn])
+  },[])
 
   return (
     <>
@@ -418,38 +448,25 @@ const DiaryPage = () => {
       <Container>
         {
           //새로 만들기
-          isEditOn ?
+          isEditOn || isDiaryOn ?
           (
             <BookMark>
-              <div className='Tag'onClick={pickPicture}>
-                <img src={bookmarkYellow} />
-                <p className='TagName' >사진</p>
-              </div>
-              <div className='Tag'onClick={pickDrowing}>
-                <img src={bookmarkPink} />
-                <p className='TagName'>그림</p>
-              </div>
+                <Book Yellow onClick={pickPicture}>사진</Book>
+                <Book onClick={pickDrowing}>그림</Book>
             </BookMark>
           ) : (
             userInfo.nickname === boardInfo.nickname ?
             (
               <BookMark>
-                <div className='Tag'onClick={editModeHandler}>
-                  <img src={bookmarkYellow} />
-                  <p className='TagName'>수정</p>
-                </div>
-                <div className='Tag'onClick={deleteWriting}>
-                  <img src={bookmarkPink} />
-                  <p className='TagName'>삭제</p>
-                </div>
-                {/* <button onClick={editModeHandler} >수정</button> */}
+                <Book Yellow onClick={editModeHandler} >수정</Book>
+                <Book name='삭제' onClick={(e) => handleConfirm(e)} >삭제</Book>
               </BookMark>
             ) : null
           ) 
         }
         <LeftWrapper>
           {
-            isEditOn ?
+            isEditOn || isDiaryOn ? //수정모드
             (
               pickWay === 1 
               ? (
@@ -460,9 +477,7 @@ const DiaryPage = () => {
                 <Drawing 
                   boardInput={boardInput}
                   setBoardInput={setBoardInput}
-                  DrawingHandler={DrawingHandler}
-                  SaveDrawingHandler={SaveDrawingHandler}
-                  drawingImg={drawingImg}
+                  setPickWay={setPickWay}
                 />
               )
             ) : (
@@ -488,11 +503,11 @@ const DiaryPage = () => {
                       }
                     <div>
                       {
-                        boardInput.mood === 0 ? '행복'
-                        : boardInput.mood === 1 ? '좋음'
-                        : boardInput.mood === 2 ? '보통'
-                        : boardInput.mood === 3 ? '우울'
-                        : '화남'
+                        boardInput.mood === 0 ? <BsEmojiLaughing />
+                        : boardInput.mood === 1 ? <BsEmojiSmile />
+                        : boardInput.mood === 2 ? <BsEmojiNeutral />
+                        : boardInput.mood === 3 ? <BsEmojiFrown />
+                        : <BsEmojiAngry />
                       }
                     </div>
                   </ImoInfo>
@@ -501,11 +516,10 @@ const DiaryPage = () => {
               </LeftSide>
             )
           }
-          <button className='next'>next</button>
         </LeftWrapper>
         <RightWrapper>
           {
-            isEditOn ?
+            isEditOn || isDiaryOn ?
             (
             <form id='writeDiary'>
               <input
@@ -516,7 +530,7 @@ const DiaryPage = () => {
                 onChange={handleBoardInputValue}
                 defaultValue={boardInfo.title}
               />
-              <article className="select-wrapper">
+              <div className="select-wrapper">
                 <input
                   type="date"
                   className="diary dates"
@@ -543,7 +557,7 @@ const DiaryPage = () => {
                     : <GrLock />
                   }
                 </div>
-              </article>
+              </div>
               <textarea
                 name='content'
                 className="diary diary-content"
@@ -551,16 +565,30 @@ const DiaryPage = () => {
                 onChange={handleBoardInputValue}
                 defaultValue={boardInput.content}
               />
-              <article className="save-btns">
+              <div className="save-btns">
                 <button className="diary save-btn" onClick={cancelButton}>취소</button>
-                <button
-                  type="submit"
-                  className="diary save-btn"
-                  onClick={handleSaveBoard}
-                >
-                  저장
-                </button>
-              </article>
+                {
+                  isDiaryOn ? (
+                    <button
+                    type="button"
+                    className="diary save-btn"
+                    name='저장'
+                    onClick={(e) => handleConfirm(e)}
+                  >
+                    저장
+                  </button>
+                  ) : isEditOn ? (
+                    <button
+                    type="button"
+                    className="diary save-btn"
+                    name='수정'
+                    onClick={(e) => handleConfirm(e)}
+                  >
+                    수정
+                  </button>
+                  ): null
+                }
+              </div>
             </form>
             ):(
               <RightSide>

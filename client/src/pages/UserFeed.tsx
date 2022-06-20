@@ -11,10 +11,11 @@ import { useDispatch } from 'react-redux';
 import Modal from '../component/Modal/Modal';
 import { deleteBoardInfo, editOnAction, modalOnAction } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../component/Footer/Footer';
 
 const UserWapper = styled.div`
-  width: 100vw;
-  height: 100% + 150px;
+  width: 100%;
+  height: 100%;
   background-image: url(${feedBG});
   background-size: cover;
   background-attachment: scroll;
@@ -22,9 +23,6 @@ const UserWapper = styled.div`
 const Div = styled.div`
   margin: 150px;
   min-width: 21rem;
-`
-const PBtn = styled.div`
-
 `;
 const User = styled.div`
   display: flex;
@@ -339,6 +337,7 @@ export default function UserFeed() {
           />
         ) : null}
       </Div>
+      <Footer />
     </UserWapper>
   );
 }

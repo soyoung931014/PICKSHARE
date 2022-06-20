@@ -10,7 +10,7 @@ import { debounce } from 'debounce';
 import { useSelector } from 'react-redux';
 import { feed } from '../redux/reducers/feedReducer/feedReducer';
 import { useDispatch } from 'react-redux';
-import { deleteBoardInfo, editOnAction, searchUserFeed } from '../redux/actions';
+import { deleteBoardInfo, diaryOnAction, editOnAction, searchUserFeed } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled.div`
@@ -125,7 +125,7 @@ export default function MainFeed() {
   const writeNewDiary = () => {
     //새로 만들기
     dispatch(deleteBoardInfo());
-    dispatch(editOnAction);
+    dispatch(diaryOnAction);
     navigate('/diary')
   };
 

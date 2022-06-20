@@ -28,8 +28,8 @@ export class Board extends BaseEntity {
   @Column()
   pictureMethod: PictureMethod;
 
-  @Column()
-  mood: Mood;
+  @Column({default: true})
+  mood: Mood = 0;
 
   @Column({default: true})
   lock: Lock = 'UNLOCK';

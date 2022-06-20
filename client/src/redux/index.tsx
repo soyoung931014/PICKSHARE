@@ -9,12 +9,14 @@ import userReducer from './reducers/userReducer/userReducer';
 import boardReducer from './reducers/boardReducer/boardReducer';
 import modalReducer from './reducers/modalReducer/modalReducer';
 import editReducer from './reducers/editReducer/editReducer';
+import diaryReducer from './reducers/diaryReducer/diaryReducer';
 
 const rootReducer = combineReducers({
   userInfo: userReducer,
   boardInfo: boardReducer,
   modalInfo: modalReducer,
   editInfo: editReducer,
+  diaryInfo: diaryReducer,
 });
 const persistConfig = {
   key: 'root',

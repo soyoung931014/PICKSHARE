@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { FormValues } from '../../pages/DiaryPage';
+import { v4 as uuidv4 } from 'uuid';
 
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
@@ -98,25 +99,28 @@ const CanvasWrap = styled.div`
     cursor: pointer;
   }
 `;
+const Img = styled.img`
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+`
 
 export interface drawingProps {
   boardInput: FormValues;
   setBoardInput: (boardInput: FormValues) => FormValues | void;
-  DrawingHandler: () => void;
-  SaveDrawingHandler: (url: string) => void;
-  drawingImg: string | null;
+  setPickWay: (number: number) => void;
 }
 export default function Drawing({
   boardInput,
   setBoardInput,
-  DrawingHandler,
-  SaveDrawingHandler,
-  drawingImg,
+  setPickWay
 }: drawingProps) {
   const canvasRef = useRef(null);
+  const inputFile: any = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
   const [isFillMode, setIsFillMode] = useState(false);
   const [lineWidth, setLineWidth] = useState(7.5);
+  const [drawingImg, setDrawingImg] = useState('');
   const previousImg = boardInput.picture;
 
   // 초기값 설정
@@ -136,14 +140,6 @@ export default function Drawing({
     image.onload = () => {
       ctx.drawImage(image, 0, 0);
     };
-    //   image.onerror = () => {
-    //     previousImg = 'https://pickshare.site/' + drawingImg;
-    //     image.src = previousImg;
-    //     image.onload = () => {
-    //       ctx.drawImage(image, 0, 0);
-    //     };
-    //   };
-    // first draw
     ctx.strokeStyle = '#2c2c2c';
     ctx.lineWidth = 7.5;
     ctx.fillStyle = '#fff';
@@ -224,12 +220,12 @@ export default function Drawing({
     }
   }
   // 그림 저장 함수
-  // AWS.config.update({
-  //   region: `${process.env.REACT_APP_AWS_REGION}`, // congito IdentityPoolId 리전을 문자열로 입력하기. 아래 확인 (Ex. "ap-northeast-2")
-  //   credentials: new AWS.CognitoIdentityCredentials({
-  //     IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`, // cognito 인증 풀에서 받아온 키를 문자열로 입력하기. (Ex. "ap-northeast-2...")
-  //   }),
-  // });
+  AWS.config.update({
+    region: `${process.env.REACT_APP_AWS_REGION}`, // congito IdentityPoolId 리전을 문자열로 입력하기. 아래 확인 (Ex. "ap-northeast-2")
+    credentials: new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`, // cognito 인증 풀에서 받아온 키를 문자열로 입력하기. (Ex. "ap-northeast-2...")
+    }),
+  });
 
   // function dataURItoBlob(dataURI: string) {
   //   var binary = atob(dataURI.split(',')[1]);
@@ -242,27 +238,127 @@ export default function Drawing({
 
   const SaveImgHandler = async (e: any) => {
     //base64문자열로 받은 이미지
-    const image = canvasRef.current.toDataURL();
-    SaveDrawingHandler(image);
-    DrawingHandler();
+    const image = canvasRef.current.toDataURL('image/png');
+    console.log(image);
+    const link = document.createElement('a');
+    link.href = image;
+    link.download = 'Print';
+    link.click();
+    alert('다운로드된 그림 파일을 추가해주세요')
+    setPickWay(1);
+    
+    // setDrawingImg(image)
+
+    // const newFileName = uuidv4();
+    // const imgfile= dataURLtoFile(drawingImg)
+
+    // // const imageFile = e.target.files[0]; // 업로드된 파일 객체
+    // // console.log(imageFile); 
+    // // if (!imageFile) {
+    // //   return console.log('이미지 없음');
+    // // }
+    // if (imgfile === undefined) {
+    //   return setBoardInput({
+    //     ...boardInput,
+    //     [e.target.name]: '',
+    //   });
+    // }
+    // setBoardInput({
+    //   ...boardInput,
+    //   [e.target.name]: imgfile,
+    // });
+
+    // const upload = new AWS.S3.ManagedUpload({
+    //   params: {
+    //     Bucket: 'profileimage-pickshare', // 업로드할 대상 버킷명 문자열로 작성.
+    //     Key: newFileName, //업로드할 파일명
+    //     Body: imgfile, // 업로드할 파일 객체
+    //   },
+    // });
+
+    // const promise = upload.promise();
+
+    // await promise.then(
+    //   function (data: { Location: any }) {
+    //     setBoardInput({
+    //       ...boardInput,
+    //       [e.target.name]: data.Location,
+    //     });
+    //   },
+    //   function (err: any) {
+    //     console.log(err, '사진등록 실패');
+    //   }
+    // );
+  };
+
+  function dataURLtoFile(dataurl: string) {
+    const blobBin = atob(dataurl.split(",")[1]); // base64 데이터 디코딩
+    const array = [];
+    for (let i = 0; i < blobBin.length; i += 1) {			
+    array.push(blobBin.charCodeAt(i)); //인코드된 문자들을 0번째부터 끝까지 해독하여 유니코드 값을 array 에 저장한다. 
+    }
+    
+    const u8arr = new Uint8Array(array); //8비트의 형식화 배열을 생성한다. 
+    const file = new Blob([u8arr], { type: "image/png" }); // Blob 생성
+    // const formdata = new FormData(); // formData 생성
+    // formdata.append("drawImg", file); // file data 추가
+    console.log(file);
+  };
+  
+  const imgHandler = async (e: any) => {
+    const newFileName = uuidv4();
+    // const imgfile= dataURLtoFile(drawingImg)
+
+    const imageFile = e.target.files[0]; // 업로드된 파일 객체
+    console.log(imageFile); 
+    if (!imageFile) {
+      return console.log('이미지 없음');
+    }
+    // if (imgfile === undefined) {
+    //   return setBoardInput({
+    //     ...boardInput,
+    //     [e.target.name]: '',
+    //   });
+    // }
+    // setBoardInput({
+    //   ...boardInput,
+    //   [e.target.name]: imgfile,
+    // });
+
+    const upload = new AWS.S3.ManagedUpload({
+      params: {
+        Bucket: 'profileimage-pickshare', // 업로드할 대상 버킷명 문자열로 작성.
+        Key: newFileName, //업로드할 파일명
+        Body: imageFile, // 업로드할 파일 객체
+      },
+    });
+
+    const promise = upload.promise();
+
+    await promise.then(
+      function (data: { Location: any }) {
+        setBoardInput({
+          ...boardInput,
+          [e.target.name]: data.Location,
+        });
+        console.log(boardInput)
+      },
+      function (err: any) {
+        console.log(err, '사진등록 실패');
+      }
+    );
   };
 
   return (
     <DiaryWrap id="page">
       <div className="drawing">
-        {/* <h3>Drawing Canvas</h3> */}
-        {/* <button className="close_btn" onClick={DrawingHandler}>
-          &times;
-        </button> */}
-        {/* Cavas 구현 */}
         <CanvasWrap>
           <canvas
             ref={canvasRef}
             onMouseDown={initDraw}
             onMouseUp={finishDraw}
             onMouseMove={draw}
-            onMouseLeave={finishDraw}
-          />
+            onMouseLeave={finishDraw} />
         </CanvasWrap>
         <div className="controls">
           <div className="controls_range">
@@ -272,8 +368,7 @@ export default function Drawing({
               max="15"
               value={lineWidth}
               step="0.1"
-              onChange={handleRangeChange}
-            />
+              onChange={handleRangeChange} />
             <div>{lineWidth}</div>
           </div>
           <div className="controls_btns">
@@ -295,67 +390,54 @@ export default function Drawing({
             <button onClick={SaveImgHandler} name='picture'>Save</button>
           </div>
         </div>
-        {/* 컬러 팔레트 */}
+          {/* 컬러 팔레트 */}
         <ul>
           <li
             style={{ backgroundColor: '#ffffff', border: '1px solid #ccc' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
           <li
             style={{ backgroundColor: '#fffafa' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
           <li
             style={{ backgroundColor: '#2c2c2c' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
           <li
             style={{ backgroundColor: '#FAEBD7' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
           <li
             style={{ backgroundColor: '#a52a2a' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
           <li
             style={{ backgroundColor: '#d26c6c' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
           <li
             style={{ backgroundColor: '#d2691e' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
           <li
             style={{ backgroundColor: '#ffbb00' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
           <li
             style={{ backgroundColor: '#8fbc8f' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
           <li
             style={{ backgroundColor: '#339933' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
           <li
             style={{ backgroundColor: '#b7e2fc' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
           <li
             style={{ backgroundColor: '#4682b4' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
           <li
             style={{ backgroundColor: '#f2f2fc' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
           <li
             style={{ backgroundColor: '#c37fcc' }}
-            onClick={handleColorClick}
-          />
+            onClick={handleColorClick} />
         </ul>
-        {/* <p>*배경을 채우면 기존에 그린 배경색과 섞여서 채워집니다</p> */}
+          {/* <p>*배경을 채우면 기존에 그린 배경색과 섞여서 채워집니다</p> */}
       </div>
     </DiaryWrap>
   );
 }
+
