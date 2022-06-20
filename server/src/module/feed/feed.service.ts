@@ -47,17 +47,13 @@ export class FeedService {
   }
 
   async getMyFeed(user: User): Promise<Board[]> {
-    // return this.boardRepository.find({
-    //   where: {
-    //     user_id: user.id,
-    //   },
-    // });
     const result =  await this.boardRepository.createQueryBuilder('board')
     .select([
       'board.id AS id',
       'board.picture AS contentImg',
       'board.date AS date',
       'board.createdAt AS createdAt',
+      'board.title AS title',
       'board.lock AS locked',
       'user.nickname AS nickname',
       'user.userImage As userImage',

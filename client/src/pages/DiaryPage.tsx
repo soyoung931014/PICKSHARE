@@ -49,8 +49,8 @@ const Container = styled.section`
 
 // ---- 일기장 Wrapper CSS ----
 const wrapperStyle = styled.article`
-  height: 670px;
-  width: 600px;
+  height: 699px;
+  width: 577px;
   padding: 3.8rem 2rem;
   border-radius: 1.5rem;
   background-color: var(--color-white);
@@ -92,6 +92,9 @@ const LeftWrapper = styled(wrapperStyle)`
     height: 500px;
     background-color: grey;
   } */
+  button.next {
+    margin: 1rem;
+  }
 `;
 const ImgDiv = styled.div`
   border: blue solid 1px;
@@ -498,6 +501,7 @@ const DiaryPage = () => {
               </LeftSide>
             )
           }
+          <button className='next'>next</button>
         </LeftWrapper>
         <RightWrapper>
           {
