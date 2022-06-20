@@ -14,7 +14,7 @@ import defaultprofileImg from '../../img/profileImg.png';
 import { deleteUserInfo } from '../../redux/actions';
 import { FaBars } from 'react-icons/fa';
 import { useState } from 'react';
-const AWS = require('aws-sdk/dist/aws-sdk-react-native');
+//const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
 const Wrapper = styled.section`
   // border: solid green 2px;
@@ -30,15 +30,16 @@ const Wrapper = styled.section`
 `;
 
 const Logo = styled.section`
-  //border: solid red 2px;
+  // border: solid red 2px;
   margin-left: 1.7rem;
   font-weight: 900;
   width: 70%;
-  height: 2rem;
+  height: 2.6rem;
   background: linear-gradient(to right, #ee64c7, #8272eb, #d06be0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 2.5rem;
+  margin-top: 5px;
   :hover {
     cursor: pointer;
   }
@@ -61,7 +62,7 @@ const MenuFabar = styled.a`
   }
 `;
 const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
-  // border: solid blue 2px;
+  //border: solid blue 2px;
   width: 100%;
   height: 10vh;
   display: flex;
@@ -69,8 +70,8 @@ const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
   align-items: center;
   //margin-right: 1.5rem;
   @media screen and (max-width: 977px) {
-    width: ${(props) => (props.InitialNav ? '11vw' : '25vw')};
-    height: ${(props) => (props.InitialNav ? '29vh' : '45vh')};
+    width: ${(props) => (props.InitialNav ? '20vw' : '25vw')};
+    height: ${(props) => (props.InitialNav ? '35vh' : '45vh')};
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -78,7 +79,9 @@ const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
     border-radius: 5%;
     margin-top: ${(props) => (props.InitialNav ? '34vh' : '44.4vh')};
     position: absolute;
-    top: -240px;
+    z-index: 4;
+    right: 10px;
+    margin-top: 30rem;
     padding-right: 5%;
     transform: ${({ Menu }) => {
       return Menu ? 'translatex(25%)' : 'translateX(100%)';
@@ -86,13 +89,19 @@ const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
     //  transition: transform 1s ease-in-out;
   }
   @media screen and (max-width: 710px) {
-    width: ${(props) => (props.InitialNav ? '14vw' : '29vw')};
+    width: ${(props) => (props.InitialNav ? '24vw' : '29vw')};
   }
   @media screen and (max-width: 607px) {
-    width: ${(props) => (props.InitialNav ? '14vw' : '25vw')};
+    width: ${(props) => (props.InitialNav ? '25vw' : '29vw')};
   }
-  @media screen and (max-width: 523px) {
-    width: ${(props) => (props.InitialNav ? '14vw' : '40vw')};
+  @media screen and (max-width: 550px) {
+    width: ${(props) => (props.InitialNav ? '27vw' : '40vw')};
+  }
+  @media screen and (max-width: 460px) {
+    width: ${(props) => (props.InitialNav ? '30vw' : '40vw')};
+  }
+  @media screen and (max-width: 408px) {
+    width: ${(props) => (props.InitialNav ? '38vw' : '40vw')};
   }
 `;
 const Div = styled.div<{ Text?: any }>`
@@ -121,10 +130,15 @@ const Img = styled.img`
   }
 `;
 const Info = styled.div`
+  // border: solid red 2px;
   display: flex;
   justify-content: center;
   align-items: center;
+  @media screen and (max-width: 750px) {
+    width: 5rem;
+  }
 `;
+const FeedDiv = styled.div``;
 
 const Nav = (props: any) => {
   const { isLogin, userInfo } = useSelector(
@@ -134,18 +148,10 @@ const Nav = (props: any) => {
 
   const [menu, setMenu] = useState(false);
 
-  AWS.config.update({
-    region: 'us-east-1',
-    credentials: new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`,
-    }),
-  });
-
   return (
     <>
       <Wrapper>
         <Logo onClick={() => navigate('/mainfeed')}>PICKSHARE</Logo>
-
         {isLogin === true ? (
           <>
             <NavList Menu={menu}>
@@ -171,15 +177,15 @@ const Nav = (props: any) => {
                       color: '#3d3c3c',
                     }}
                   >
-                    <div>
+                    <FeedDiv>
                       {userInfo.userImage === 'nothing' ? (
                         <Img src={defaultprofileImg} />
                       ) : (
                         <Img src={userInfo.userImage} />
                       )}
-                    </div>
-                    피드
+                    </FeedDiv>
                   </NavLink>
+                  <FeedDiv>피드</FeedDiv>
                 </Info>
               </Div>
               <Div Text>
@@ -245,7 +251,7 @@ const Nav = (props: any) => {
           <FaBars
             style={{
               fontWeight: 'bolder',
-              fontSize: '3.7vh',
+              fontSize: '3.8vh',
               color: '#3d3c3c',
             }}
           />

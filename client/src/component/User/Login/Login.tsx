@@ -7,7 +7,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
 import { addUserInfo, deleteUserInfo } from '../../../redux/actions/index';
@@ -37,11 +36,17 @@ const Book = styled.div`
   padding-left: 1em;
   position: relative;
   left: 8rem;
+  @media screen and (max-width: 891px) {
+    width: 100vw;
+    position: none;
+    left: 0rem;
+    padding-left: 0em;
+  }
 `;
 const Left = styled.div`
   display: flex;
   align-items: flex-end;
-  width: 32vw;
+  width: 32rem;
   height: 85vh;
   padding-left: 1em;
   background-color: white;
@@ -49,17 +54,29 @@ const Left = styled.div`
   border-radius: 30px 20px 20px 30px;
   box-shadow: 10px 10px 30px #3c4a5645;
   border-right: #b1b0b0 solid 2px;
+  @media screen and (max-width: 1190px) {
+    display: none;
+  }
 `;
 
 const Right = styled.div`
-  width: 32vw;
+  border-radius: 20px 30px 30px 20px;
+  width: 32rem;
   height: 85vh;
   background-color: white;
   padding-left: 1em;
   //border: solid 2px black;
-  border-radius: 20px 30px 30px 20px;
   box-shadow: 30px 10px 10px #3c4a5645;
   border-left: #b1b0b0 solid 2px;
+  @media screen and (max-width: 1190px) {
+    width: 32rem;
+  }
+  @media screen and (max-width: 891px) {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0px;
+    padding-left: 0em;
+  }
 `;
 const Index = styled.div`
   display: flex;
@@ -75,6 +92,9 @@ const TagHome = styled.img`
     transform: scale(1.05);
     cursor: pointer;
   }
+  @media screen and (max-width: 891px) {
+    display: none;
+  }
   //border: solid 2px black;
 `;
 const TagSignin = styled.img`
@@ -85,6 +105,12 @@ const TagSignin = styled.img`
     transform: scale(1.05);
     cursor: pointer;
   }
+  @media screen and (max-width: 891px) {
+    display: none;
+  }
+  /* @media screen and (max-width: 891px) {
+    width: 8rem;
+  } */
   //border: solid 2px black;
 `;
 const TagSignup = styled.img`
@@ -98,6 +124,65 @@ const TagSignup = styled.img`
   }
   position: relative;
   top: -10px;
+  @media screen and (max-width: 891px) {
+    display: none;
+  }
+  /*  @media screen and (max-width: 891px) {
+    width: 6rem;
+  } */
+`;
+const SubTags = styled.div`
+  /* border: solid red 2px; */
+  display: flex;
+  justify-content: center;
+  //align-items: center;
+  height: 3.2rem;
+  box-shadow: 15px 10px 15px #3c4a5645;
+
+  @media screen and (min-width: 892px) {
+    display: none;
+  }
+`;
+const Tab = styled.div`
+  width: 10vw;
+`;
+const SubTagHome = styled.div`
+  //border: solid green 2px;
+  width: 30vw;
+  height: 3.2rem;
+  padding-top: 15px;
+  font-size: 1.5rem;
+  text-align: center;
+  background-color: #f5ffbb;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+`;
+const SubTagSignin = styled.div`
+  width: 30vw;
+  height: 3.2rem;
+  padding-top: 15px;
+  font-size: 1.5rem;
+  text-align: center;
+  background-color: #eae1ff;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+`;
+const SubTagSignup = styled.div`
+  width: 30vw;
+  height: 3.2rem;
+  padding-top: 15px;
+  font-size: 1.5rem;
+  text-align: center;
+
+  background-color: #ffc7c7;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
 `;
 
 /// 세부사항
@@ -110,7 +195,7 @@ const Img = styled.img`
   bottom: 10px;
 `;
 const LoginBox = styled.div`
-  //border: solid 2px red;
+  // border: solid 2px red;
   height: 80vh;
   display: flex;
   flex-direction: column;
@@ -126,15 +211,31 @@ const Title = styled.div`
   background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+
+  /*  @media screen and (max-width: 891px) {
+    font-size: 1.7rem;
+  }
+  @media screen and (max-width: 575px) {
+    font-size: 1.4rem;
+  }
+  @media screen and (max-width: 440px) {
+    font-size: 1rem;
+  } */
 `;
 const Form = styled.form`
-  //border: dotted 2px red;
+  // border: dotted 2px red;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 30vw;
+  width: 35vw;
   height: 50vh;
   box-sizing: border-box;
+  @media screen and (max-width: 891px) {
+    width: 60vw;
+  }
+  @media screen and (max-width: 513px) {
+    width: 90vw;
+  }
 `;
 const InputBox = styled.div<{ button?: any }>`
   //border: solid 2px aqua;
@@ -143,17 +244,26 @@ const InputBox = styled.div<{ button?: any }>`
   box-sizing: border-box;
 `;
 const Message = styled.div`
-  //border: solid 2px green;
+  // border: solid 2px green;
+  width: 100vw;
+
   height: 1.7rem;
   padding-top: 3px;
   box-sizing: border-box;
   font-size: 15px;
-  text-align: left;
+  //text-align: left;
+  position: relative;
   color: #ff8686;
+  /* @media screen and (max-width: 1190px) {
+    font-size: 13px;
+  } */
+  /* @media screen and (max-width: 891px) {
+    display: none;
+  } */
 `;
 const Input = styled.input`
   height: 3rem;
-  width: 68%;
+  width: 18rem;
   border-radius: 30px;
   box-sizing: border-box;
   box-shadow: 0 3px 5px #3c4a5645;
@@ -162,7 +272,16 @@ const Input = styled.input`
   outline: none;
   padding: 0 1em;
   border: 0;
+  box-sizing: border-box;
   opacity: 0.6;
+  /*  @media screen and (max-width: 737px) {
+    width: 12rem;
+    height: 3rem;
+  }
+  @media screen and (max-width: 640px) {
+    width: 9rem;
+    height: 3rem;
+  } */
 `;
 const Button = styled.button`
   //border: solid 2px green;
@@ -179,6 +298,12 @@ const Button = styled.button`
   font-size: large;
   font-weight: bold;
   color: white;
+  /*  @media screen and (max-width: 737px) {
+    width: 12rem;
+  }
+  @media screen and (max-width: 640px) {
+    width: 9rem;
+  } */
 `;
 const ButtonKakao = styled.button`
   //border: solid 2px green;
@@ -195,6 +320,12 @@ const ButtonKakao = styled.button`
   background-color: #fdf772;
   cursor: pointer;
   margin-top: 0.7rem;
+  /*  @media screen and (max-width: 737px) {
+    width: 12rem;
+  }
+  @media screen and (max-width: 640px) {
+    width: 9rem;
+  } */
 `;
 const Div = styled.div`
   height: 2rem;
@@ -205,19 +336,20 @@ const Div = styled.div`
   margin-top: 0.7rem;
   padding: 0.7rem 0rem;
   //border: solid 2px green;
+  /*  @media screen and (max-width: 575px) {
+    font-size: 0.5rem;
+  } */
 `;
 
 const Box = styled.div`
-  // border: red solid 2px;
+  //border: red solid 2px;
   display: flex;
   justify-content: center;
   text-align: center;
 `;
 const BoxMessage = styled.div`
   display: flex;
-  margin-left: 5.3rem;
   text-align: center;
-  padding-right: 7rem;
 `;
 
 function Login(props: any) {
@@ -320,7 +452,7 @@ function Login(props: any) {
   const handleKakaoLogin = (e: any) => {
     e.preventDefault();
     //console.log(Kakao);
-    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=be17a9e882217a14ba581b03ea87c38f&redirect_uri=http://localhost:3000/loading&response_type=code&state=kakao`;
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CODE}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT}&response_type=code&state=kakao`;
     //navigate(window.location.href);
   };
 
@@ -331,6 +463,30 @@ function Login(props: any) {
           <Img src={pickshareLogo} />
         </Left>
         <Right>
+          <Tab></Tab>
+          <SubTags>
+            <SubTagHome
+              onClick={() => {
+                navigate('/mainfeed', { replace: true });
+              }}
+            >
+              home
+            </SubTagHome>
+            <SubTagSignin
+              onClick={() => {
+                navigate('/login', { replace: true });
+              }}
+            >
+              signin
+            </SubTagSignin>
+            <SubTagSignup
+              onClick={() => {
+                navigate('/signup', { replace: true });
+              }}
+            >
+              signup
+            </SubTagSignup>
+          </SubTags>
           <LoginBox>
             <Title>Log in to your account</Title>
             <Form>
@@ -351,8 +507,9 @@ function Login(props: any) {
               <InputBox>
                 <Box>
                   <Input
-                    type="current-password"
+                    type="password"
                     ref={inputpassword}
+                    autoComplete="off"
                     name="password"
                     placeholder="비밀번호"
                     onChange={passwordValidation}

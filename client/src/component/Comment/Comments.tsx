@@ -52,8 +52,8 @@ const Button = styled.button`
 `;
 
 // 🚀 위 컴포넌트에서 게시글 번호 받아오기
-function CommentSection({ user }: any) {
-  console.log(user);
+function CommentSection({ user, boardId }: any) {
+  console.log(user, boardId);
   const { isLogin, accessToken } = user;
   const { email } = user.userInfo;
   //console.log(isLogin);
@@ -64,34 +64,25 @@ function CommentSection({ user }: any) {
     text: '',
   });
   const [updatecomment, setUpdateComment] = useState(false);
+
   useEffect(() => {
-    void commentApi.findAllComment().then((res) => {
+    commentApi.findAllComment(boardId).then((res) => {
       setCommentdata(res.data.data);
     });
   }, [updatecomment]);
 
   const send = async () => {
+    const { text } = sendComment;
     try {
-      await axios
-        .post(
-          `http://localhost:5000/comment`,
-          {
-            text: sendComment.text,
-            board_id: 1,
-          },
-          {
-            headers: { authorization: `Bearer ${accessToken}` },
-          }
-        )
-        .then((res) => {
-          if (res.status === 201) {
-            setUpdateComment(!updatecomment);
-            inputComment.current.value = '';
-            console.log(res);
-          } else {
-            return;
-          }
-        });
+      await commentApi.PostComment(boardId, text, accessToken).then((res) => {
+        if (res.status === 201) {
+          setUpdateComment(!updatecomment);
+          inputComment.current.value = '';
+          console.log(res);
+        } else {
+          return;
+        }
+      });
     } catch (error) {
       return error;
     }
@@ -104,6 +95,7 @@ function CommentSection({ user }: any) {
         ) : (
           commentdata.map((el: any) => (
             <Comment
+              boardId={boardId}
               {...el}
               key={el.comment.id}
               userEmail={email}

@@ -10,11 +10,17 @@ import { debounce } from 'debounce';
 import { useSelector } from 'react-redux';
 import { feed } from '../redux/reducers/feedReducer/feedReducer';
 import { useDispatch } from 'react-redux';
-import { deleteBoardInfo, diaryOnAction, editOnAction, searchUserFeed } from '../redux/actions';
+import {
+  deleteBoardInfo,
+  diaryOnAction,
+  editOnAction,
+  searchUserFeed,
+} from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled.div`
   width: 100vw;
+  height: 200vh;
   background-image: url(${feedBG});
   background-size: cover;
   background-attachment: scroll;
@@ -126,7 +132,7 @@ export default function MainFeed() {
     //새로 만들기
     dispatch(deleteBoardInfo());
     dispatch(diaryOnAction);
-    navigate('/diary')
+    navigate('/diary');
   };
 
   const sortFeedByRecent = () => {
@@ -173,7 +179,9 @@ export default function MainFeed() {
       <Div>
         <UpperDiv>
           <ButtonDiv>
-            <Button onClick={sortFeedByRecent} className='left'>최신순 |</Button>
+            <Button onClick={sortFeedByRecent} className="left">
+              최신순 |
+            </Button>
             <Button onClick={sortFeedByHeart}>인기순</Button>
           </ButtonDiv>
           <UpperRightDiv>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-misused-promises */
@@ -9,8 +10,8 @@ import styled from 'styled-components';
 import { BiPencil } from 'react-icons/bi';
 import { CgTrash } from 'react-icons/cg';
 import { FaCheck } from 'react-icons/fa';
-import axios from 'axios';
-const AWS = require('aws-sdk/dist/aws-sdk-react-native');
+import commentApi from '../../api/comment';
+//const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 import defaultprofileImg from '../../img/profileImg.png';
 const Wrapper = styled.div`
   //border: solid red 2px;
@@ -81,33 +82,29 @@ const Check = styled.div`
 `;
 function Comment(props: any) {
   // console.log(props, 'props');
-  const { userEmail, setUpdateComment, updateComment } = props;
+  const { userEmail, setUpdateComment, updateComment, boardId } = props;
   const { email, nickname, userImage } = props.userInfo; //email
   const { id, text, updated_at } = props.comment; //id
   const date: any = updated_at.slice(0, 10);
   const [openUpdate, setOpenUpdate] = useState(false);
   const [updateText, setUpdateText] = useState({ text: text });
 
-  AWS.config.update({
-    region: 'us-east-1',
+  /* AWS.config.update({
+    region: `${process.env.REACT_APP_AWS_REGION}`, // congito IdentityPoolId 리전을 문자열로 입력하기. 아래 확인 (Ex. "ap-northeast-2")
     credentials: new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`,
+      IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`, // cognito 인증 풀에서 받아온 키를 문자열로 입력하기. (Ex. "ap-northeast-2...")
     }),
-  });
+  }); */
 
   const updatecheck = async () => {
     console.log('업뎃체크', id);
     try {
-      await axios
-        .patch(`http://localhost:5000/comment/1`, {
-          comment_id: id,
-          text: updateText.text,
-        })
-        .then((res) => {
-          console.log(res);
-          setOpenUpdate(!openUpdate);
-          setUpdateComment(!updateComment);
-        });
+      const { text } = updateText;
+      await commentApi.PatchComment(boardId, id, text).then((res) => {
+        console.log(res);
+        setOpenUpdate(!openUpdate);
+        setUpdateComment(!updateComment);
+      });
     } catch (error) {
       return error;
     }
@@ -115,14 +112,10 @@ function Comment(props: any) {
   const deleteComment = async () => {
     console.log('삭제', id);
     try {
-      await axios
-        .delete(`http://localhost:5000/comment/1`, {
-          data: { comment_id: id },
-        })
-        .then((res) => {
-          console.log(res);
-          setUpdateComment(!updateComment);
-        });
+      await commentApi.DeleteComment(boardId, id).then((res) => {
+        console.log(res);
+        setUpdateComment(!updateComment);
+      });
     } catch (error) {
       return error;
     }
