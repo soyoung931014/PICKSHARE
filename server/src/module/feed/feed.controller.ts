@@ -40,14 +40,14 @@ export class FeedController {
         return this.feedService.getMyFeed(user);
     }
 
-    @Get('/myfeed/date')
-    @UseGuards(AuthGuard())
-    searchMineByDate( 
-        @GetUser() user: User,
-        @Query('date') date: string
-    ): Promise<Board[]> {
-        return this.feedService.searchMineByDate(user, date);
-    }
+    // @Get('/myfeed/date')
+    // @UseGuards(AuthGuard())
+    // searchMineByDate( 
+    //     @GetUser() user: User,
+    //     @Query('date') date: string
+    // ): Promise<Board[]> {
+    //     return this.feedService.searchMineByDate(user, date);
+    // }
 
     @Get('/user/date')
     searchUsersByDate( 

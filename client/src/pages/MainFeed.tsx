@@ -10,7 +10,7 @@ import { debounce } from 'debounce';
 import { useSelector } from 'react-redux';
 import { feed } from '../redux/reducers/feedReducer/feedReducer';
 import { useDispatch } from 'react-redux';
-import { deleteBoardInfo, editOnAction, searchUserFeed } from '../redux/actions';
+import { deleteBoardInfo, diaryOnAction, editOnAction, searchUserFeed } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled.div`
@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 `;
 const Div = styled.div`
   margin: 150px;
-  border: blue dotted 3px;
+  /* border: blue dotted 3px; */
   min-width: 21rem;
 `;
 const UpperDiv = styled.div`
@@ -29,15 +29,18 @@ const UpperDiv = styled.div`
   justify-content: space-between;
 `;
 const ButtonDiv = styled.div`
-  border: green dotted 1px;
+  /* border: green dotted 1px; */
   display: flex;
 `;
 
 const Button = styled.button`
+  background-color: transparent;
   margin-right: 0.5rem;
   font-size: 1rem;
+  color: #615b5b;
   text-align: center;
   font-weight: 400;
+  outline: 0;
   &:hover {
     cursor: pointer;
   }
@@ -122,7 +125,7 @@ export default function MainFeed() {
   const writeNewDiary = () => {
     //새로 만들기
     dispatch(deleteBoardInfo());
-    dispatch(editOnAction);
+    dispatch(diaryOnAction);
     navigate('/diary')
   };
 
@@ -132,17 +135,13 @@ export default function MainFeed() {
   };
 
   const sortFeedByHeart = () => {
-    console.log('하트');
     setOrderingH(true);
     setRender(!render);
   };
 
   const getUserFeed = async (searchNickname: string) => {
-    console.log('유저검색인풋', searchInput);
     return await feedApi.getUserFeed(searchNickname).then((result) => {
       setFeedlist(result.data);
-      console.log('유저피드', searchNickname);
-      console.log('@@@@@@@');
     });
   };
 
@@ -168,15 +167,13 @@ export default function MainFeed() {
     }
   }, [render]);
 
-  console.log(feedlist, '피드리스트 ');
-  console.log(typeof feedlist, '피드리스트 타입');
   return (
     <Wrapper>
       <Nav />
       <Div>
         <UpperDiv>
           <ButtonDiv>
-            <Button onClick={sortFeedByRecent}>최신순</Button>
+            <Button onClick={sortFeedByRecent} className='left'>최신순 |</Button>
             <Button onClick={sortFeedByHeart}>인기순</Button>
           </ButtonDiv>
           <UpperRightDiv>

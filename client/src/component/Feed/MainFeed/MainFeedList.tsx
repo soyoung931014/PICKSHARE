@@ -11,15 +11,14 @@ import { useDispatch } from 'react-redux';
 import boardApi from '../../../api/board';
 import { board } from '../../../redux/reducers/boardReducer/boardReducer';
 import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
-
+import { urlToHttpOptions } from 'url';
 
 const Div = styled.div`
-  border: red solid 1px;
   aspect-ratio: 262 / 302;
   background-color: white;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
   display: grid;
-  grid-template-rows: 262fr 49fr;
+  grid-template-rows: 262fr 48fr;
   border-radius: 1rem;
 `;
 const ImgDiv = styled.div`
@@ -38,8 +37,9 @@ const ContentDiv = styled.div`
   grid-template-columns: 3fr 2fr;
 `;
 const ContentRightDiv = styled.div`
-  border: purple solid 6px;
   display: flex;
+  overflow: hidden;
+  place-items: center;
 `;
 const UserImg = styled.img`
   border-radius: 100%;
@@ -48,24 +48,23 @@ const UserImg = styled.img`
   height: 3rem;
 `;
 const UserDiv = styled.div`
-  border: blue dotted 3px;
-  /* margin: 0.2rem; */
-  /* display: grid; */
-  /* grid-template-rows: 2fr 1fr; */
+  margin: 0.2rem;
 `;
 const UserNickname = styled.div`
-  border: pink dotted 3px;
   font-size: 28px;
-  font-weight: 400;
+  font-weight: normal;
+  width: 100%;
   &:hover {
     cursor: pointer;
   }
 `;
+const Title = styled.div`
+  font-size: 20px;
+  font-weight: 500;
+`;
 const DateDiv = styled.div`
-  border: red dotted 3px;
 `;
 const ContentLeftDiv = styled.div`
-  border: salmon solid 3px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   text-align: center;
@@ -74,14 +73,10 @@ const ContentLeftDiv = styled.div`
 `;
 const HeartDiv = styled.div`
   display: flex;
-  /* grid-template-columns: 1fr 1fr; */
-  border: green solid 1px;
   column-gap: 3px;
   margin: 1rem;
 `;
 const Button = styled.button`
-  border: purple solid 1px;
-  /* margin-top: 0.2rem; */
   background-color: white;
   display: flex;
   justify-content: center;
@@ -102,6 +97,7 @@ type MainFeedListProps = {
   date: string | undefined;
   heartNum: number;
   commentNum: number;
+  title: string;
   render: boolean;
   setRender: (render: boolean) => boolean;
 };
@@ -113,6 +109,7 @@ export default function MainFeedList({
   date,
   heartNum,
   commentNum,
+  title,
   render,
   setRender,
 }: MainFeedListProps) {
@@ -121,14 +118,13 @@ export default function MainFeedList({
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
-  const { boardInfo } = useSelector((boardReducer: board) => boardReducer)
+  const { boardInfo } = useSelector((boardReducer: board) => boardReducer);
   const [heart, setHeart] = useState(false);
 
   const postHeart = async () => {
     return await feedApi.postHeart(userInfo, id, accessToken).then(() => {
       setHeart(true);
       setRender(!render);
-      console.log('하트넣기-리스트', render);
     });
   };
 
@@ -136,12 +132,10 @@ export default function MainFeedList({
     return await feedApi.deleteHeart(userInfo, id, accessToken).then(() => {
       setHeart(false);
       setRender(!render);
-      console.log('하트삭제-리스트', render);
     });
   };
 
   const moveToUsersFeed = (e: any) => {
-    console.log(e, '이벤트 타겟');
     navigate(`/feed/${e}`);
   };
 
@@ -151,18 +145,14 @@ export default function MainFeedList({
   };
 
   const moveToViewBoard = (e: any) => {
-    // console.log("e.target", e.target.id)
     dispatch(deleteBoardInfo());
-    // console.log('지워졌나?',boardInfo);
-    let id = Number(e.target.id)
-    boardApi.getBoardById(id)
-    .then((result) => {
-      // console.log('아이디로 결과찾기', result.data);
+    const id = Number(e.target.id);
+    boardApi.getBoardById(id).then((result) => {
+      console.log('result.data', result.data)
       dispatch(addBoardInfo(result.data));
-      // console.log('리덕스 잘 됐니', boardInfo);
       navigate('/diary');
-    })
-  }
+    });
+  };
 
   useMemo(() => {
     if (isLogin) {
@@ -176,24 +166,33 @@ export default function MainFeedList({
     }
   }, []);
 
-  useEffect(() => {
+  let urlSlice = window.location.pathname.split('/')[2];
 
-  }, [render]);
+  useEffect(() => {}, [render]);
   return (
     <Div>
       <ImgDiv>
-        <Img src={contentImg} id={`${id}`} onClick={(e) => moveToViewBoard(e)}/>
+        <Img
+          src={contentImg}
+          id={`${id}`}
+          onClick={(e) => moveToViewBoard(e)}
+        />
       </ImgDiv>
       <ContentDiv>
         <ContentRightDiv>
           <UserImg src={userImage} />
           <UserDiv>
+            {userInfo.nickname === urlSlice
+            ? 
+            <Title>{title}</Title>
+            :
             <UserNickname
               className="nickname"
               onClick={() => moveToUsersFeed(nickname)}
             >
               {nickname}
             </UserNickname>
+            }
             <DateDiv>{date}</DateDiv>
           </UserDiv>
         </ContentRightDiv>
