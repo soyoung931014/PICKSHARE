@@ -17,26 +17,28 @@ import { useNavigate } from 'react-router-dom';
 import commentApi from '../../api/comment';
 
 const Wrapper = styled.div`
-  border: solid black 2px;
+  //border: solid black 2px;
   padding: 1rem;
+  box-shadow: 10px 5px 8px #3c4a5645;
 `;
 const CommentsListBox = styled.div`
   //border: dotted black 2px;
   height: 65%;
 `;
 const CommentBox = styled.div`
-  //border: dotted black 2px;
+  //  border: dotted black 2px;
   height: 2.2rem;
-  margin-top: 13px;
+  margin-top: 4rem;
 `;
 
 const Input = styled.input`
   border: solid #a396f8 2px;
   border-radius: 5px;
-  /* width: 80vw; */
   height: 1rem;
   font-size: 1rem;
   padding: 0.8rem;
+  width: 27rem;
+  color: #3a3939;
 `;
 const Button = styled.button`
   font-size: 1rem;

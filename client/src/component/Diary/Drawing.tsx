@@ -5,9 +5,10 @@ import { FormValues } from '../../pages/DiaryPage';
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
 const DiaryWrap = styled.div`
-  border: red solid 2px;
-  width: 100%;
-  height: 100%;
+  border: #a396f8 solid 2px;
+  border-radius: 10px;
+  width: 90%;
+  height: 90%;
 
   h3 {
     text-align: center;
