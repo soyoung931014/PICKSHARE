@@ -8,13 +8,10 @@ import feedBG from '../img/feedBG.jpg';
 import { BiSearch } from 'react-icons/bi';
 import { debounce } from 'debounce';
 import { useSelector } from 'react-redux';
-import { feed } from '../redux/reducers/feedReducer/feedReducer';
 import { useDispatch } from 'react-redux';
 import {
   deleteBoardInfo,
   diaryOnAction,
-  editOnAction,
-  searchUserFeed,
 } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../component/Footer/Footer';
@@ -122,17 +119,11 @@ export default function MainFeed() {
   const [searchInput, setSearchInput] = useState('');
   const [searchOn, setSearchOn] = useState(false);
   const [orderingH, setOrderingH] = useState(false);
-  // const { searchNickname } = useSelector((feedReducer: feed) => feedReducer);
-  const { isEditOn } = useSelector((editReducer: any) => editReducer);
-  const { userInfo } = useSelector(
-    (userReducer: any) => userReducer.userInfo
-  );
+  const { userInfo } = useSelector((userReducer: any) => userReducer.userInfo);
 
   const handleSearchInput = debounce(async (e: any) => {
-    setSearchOn(true)
+    setSearchOn(true);
     setSearchInput(e.target.value);
-    console.log('searchOn', searchOn)
-    console.log('searchInput',searchInput);
   }, 300);
 
   const writeNewDiary = () => {
@@ -144,8 +135,7 @@ export default function MainFeed() {
 
   const selectFeed = () => {
     setRender(!render);
-    console.log('render',render)
-  }
+  };
   const sortFeedByRecent = () => {
     setOrderingH(false);
     setRender(!render);
@@ -153,7 +143,6 @@ export default function MainFeed() {
 
   const sortFeedByHeart = () => {
     setOrderingH(true);
-    console.log(searchOn)
     setRender(!render);
   };
 
@@ -163,14 +152,14 @@ export default function MainFeed() {
     });
   };
 
-  const getUserFeedH = async(searchNickname: string) => {
+  const getUserFeedH = async (searchNickname: string) => {
     return await feedApi.getUserFeed(searchNickname).then((result) => {
       result.data.sort((a: any, b: any) => {
         return b.heartNum - a.heartNum;
       });
       setFeedlist(result.data);
     });
-  }
+  };
 
   const getMainFeedH = async () => {
     return await feedApi.getMainFeed().then((result) => {
@@ -189,16 +178,16 @@ export default function MainFeed() {
   useEffect(() => {
     if (orderingH === false && searchOn === false) {
       getMainFeed();
-    } else if(orderingH === true && searchOn === false){
+    } else if (orderingH === true && searchOn === false) {
       getMainFeedH();
-    } else if(orderingH === false && searchOn === true){
-      getUserFeed(searchInput)
-    } else{
-      getUserFeedH(searchInput)
+    } else if (orderingH === false && searchOn === true) {
+      getUserFeed(searchInput);
+    } else {
+      getUserFeedH(searchInput);
     }
-    if(userInfo.nickname === 'nothing'){
+    if (userInfo.nickname === 'nothing') {
       alert('닉네임을 변경해주세요');
-      navigate('/mypage')
+      navigate('/mypage');
     }
   }, [render]);
 
@@ -222,7 +211,7 @@ export default function MainFeed() {
                   placeholder="유저 검색"
                   onChange={handleSearchInput}
                 />
-                <SearchIcon type='button' onClick={selectFeed}>
+                <SearchIcon type="button" onClick={selectFeed}>
                   <BiSearch size={'1.7rem'} />
                 </SearchIcon>
               </SearchBar>

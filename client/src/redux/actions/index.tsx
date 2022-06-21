@@ -59,20 +59,6 @@ export const deleteBoardInfo = () => {
   };
 };
 
-export const searchUserFeed = (data: string) => {
-  return {
-    type: SEARCH_USER_FEED,
-    payload: data,
-  };
-};
-
-export const finishUserFeed = () => {
-  return {
-    type: FINISH_USER_FEED,
-    payload: '',
-  };
-};
-
 export const modalOnAction = {
   type: MODAL_ON,
 };

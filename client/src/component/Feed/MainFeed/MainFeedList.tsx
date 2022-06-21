@@ -149,7 +149,6 @@ export default function MainFeedList({
     dispatch(deleteBoardInfo());
     const id = Number(e.target.id);
     boardApi.getBoardById(id).then((result) => {
-      console.log('result.data', result.data)
       dispatch(addBoardInfo(result.data));
       navigate('/diary');
     });

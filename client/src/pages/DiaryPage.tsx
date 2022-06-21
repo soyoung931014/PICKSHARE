@@ -330,7 +330,6 @@ const DiaryPage = () => {
   const handleBoardInputValue = debounce(async (e: any) => {
     const { name, value } = e.target;
     setBoardInput({ ...boardInput, [name]: value });
-    console.log('boardInput', boardInput)
   });
 
   const boardLockHandler = () => {
@@ -347,33 +346,20 @@ const DiaryPage = () => {
   };
 
   const changeLock = () => {
-    console.log('lock 바뀌었니?')
-    console.log('보드 인포-리덕스',boardInfo)
-    console.log('보드인풋-스테이트',boardInput)
-    // if (lockBtn) {
-    //   setBoardInput({ ...boardInput, ['lock']: 'LOCK' });
-
-    // } else {
-    //   setBoardInput({ ...boardInput, ['lock']: 'UNLOCK' });
-    // }
     setLockBtn(!lockBtn);
-    console.log('lockBtn바뀌었나?',lockBtn)
-    if(lockBtn) {
+
+    if (lockBtn) {
       setBoardInput({ ...boardInput, ['lock']: 'LOCK' });
-      boardApi.lockBoard(boardInfo.id, 'LOCK', accessToken)
-      .then((result) => {
-        console.log('result',result.data.lock)
-        dispatch(addBoardInfo(result.data))
-      })
+      boardApi.lockBoard(boardInfo.id, 'LOCK', accessToken).then((result) => {
+        dispatch(addBoardInfo(result.data));
+      });
     } else {
       setBoardInput({ ...boardInput, ['lock']: 'UNLOCK' });
-      boardApi.lockBoard(boardInfo.id, 'UNLOCK', accessToken)
-      .then((result) => {
-        console.log('result',result.data.lock)
-        dispatch(addBoardInfo(result.data))
-      })
+      boardApi.lockBoard(boardInfo.id, 'UNLOCK', accessToken).then((result) => {
+        dispatch(addBoardInfo(result.data));
+      });
     }
-  }
+  };
 
   const handleSaveBoard = () => {
     const { title, picture, content, date } = boardInput;
@@ -383,9 +369,7 @@ const DiaryPage = () => {
       dispatch(addBoardInfo(boardInput));
       boardApi.createBoard(boardInput, accessToken).then((result) => {
         dispatch(addBoardInfo(result.data));
-        console.log('다이어리온', isDiaryOn);
         dispatch(diaryOffAction);
-        console.log('다이어리온', isDiaryOn);
       });
     }
   };
@@ -395,12 +379,13 @@ const DiaryPage = () => {
     if (title === '' || picture === '' || content === '' || date === '') {
       return alert('내용을 작성해주세요');
     } else {
-      boardApi.editBoard(boardInfo.id, boardInput, accessToken).then((result) => {
-        dispatch(addBoardInfo(result.data));
-        dispatch(editOffAction);
-      });
+      boardApi
+        .editBoard(boardInfo.id, boardInput, accessToken)
+        .then((result) => {
+          dispatch(addBoardInfo(result.data));
+          dispatch(editOffAction);
+        });
     }
-
   };
 
   const deleteWriting = () => {
@@ -409,9 +394,8 @@ const DiaryPage = () => {
   };
 
   const handleConfirm = (e: any) => {
-    console.log('e는?', e);
-    let text = e.target.name;
-    let result: any = confirm(`게시글을 ${text} 하시겠습니끼?`);
+    const text = e.target.name;
+    const result: any = confirm(`게시글을 ${text} 하시겠습니끼?`);
 
     if (text === '삭제') {
       if (result) {
@@ -452,8 +436,6 @@ const DiaryPage = () => {
         content: boardInfo.content,
         date: boardInfo.date,
       });
-
-      console.log('리덕스 후', boardInfo.pictureMethod);
 
       feedApi.userInfo(boardInfo.nickname).then((result) => {
         setUserImg(result.data.data.userImage);
@@ -514,11 +496,11 @@ const DiaryPage = () => {
                 <ImoInfo>
                   {userInfo.nickname === boardInfo.nickname ? (
                     boardInput.lock === 'UNLOCK' ? (
-                      <div onClick = {changeLock}>
+                      <div onClick={changeLock}>
                         <GrUnlock />
                       </div>
                     ) : (
-                      <div onClick = {changeLock}>
+                      <div onClick={changeLock}>
                         <GrLock />
                       </div>
                     )

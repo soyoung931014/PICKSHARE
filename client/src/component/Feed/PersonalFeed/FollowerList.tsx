@@ -23,19 +23,12 @@ const FollowButton = styled.button`
   width: 94px;
   height: 37px;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
-`
-// type FollowerListProps = {
-//   follow
-// };
+`;
 
 export default function FollowerList(props: any) {
-  // console.log('props', props)
-  const { isLogin, accessToken } = useSelector(
-    (userReducer: any) => userReducer.userInfo
-  );
   const [userlist, setUserlist]: any[] = useState({
     nickname: '',
     userImage: '',
@@ -43,17 +36,15 @@ export default function FollowerList(props: any) {
 
   useEffect(() => {
     const findFollow = async () => {
-      await feedApi.userInfo(props.followerNickname)
-      .then(result => {
+      await feedApi.userInfo(props.followerNickname).then((result) => {
         setUserlist(result.data.data);
-        console.log('유저리스트',userlist);
       });
     };
     findFollow();
   }, []);
-  return ( 
+  return (
     <Wrapper>
-      <UserImage src={userlist.userImage}/>
+      <UserImage src={userlist.userImage} />
       <UserNick>{userlist.nickname}</UserNick>
     </Wrapper>
   );

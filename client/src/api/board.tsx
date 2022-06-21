@@ -9,10 +9,7 @@ const boardApi = {
       },
     });
   },
-  //사진으로 보드 정보 가져오기
-  // findBoardByPic: (pictureInfo: string) => {
-  //   return api.get(`/board?picture=${pictureInfo}`);
-  // },
+
   getBoardById: (board_id: number) => {
     return api.get(`/board/${board_id}`);
   },

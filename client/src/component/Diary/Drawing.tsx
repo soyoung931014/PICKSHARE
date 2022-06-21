@@ -181,7 +181,6 @@ export default function Drawing({
   function handleColorClick({ nativeEvent }: any) {
     const ctx = canvasRef.current.getContext('2d');
     if (!isFillMode) {
-      console.log('채우기모드', isFillMode);
       // fill모드 false일때 선 선색 변경
       ctx.strokeStyle = nativeEvent.target.style.backgroundColor;
     } else {
@@ -254,7 +253,6 @@ export default function Drawing({
   const SaveImgHandler = async (e: any) => {
     //base64문자열로 받은 이미지
     const image = canvasRef.current.toDataURL('image/png');
-    console.log(image);
     const link = document.createElement('a');
     // link.href = image;
     // link.download = 'Print';
@@ -283,8 +281,6 @@ export default function Drawing({
           ...boardInput,
           ["picture"]: data.Location,
         });
-        console.log('보드인풋',data.Location)
-        console.log(boardInput)
       },
       function (err: any) {
         console.log(err, '사진등록 실패');

@@ -21,33 +21,33 @@ const FollowButton = styled.button`
   width: 94px;
   height: 37px;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
-`
+`;
 
 export default function FollowingList(props: any) {
-  const { isLogin, accessToken, userInfo } = useSelector(
+  const { isLogin, accessToken } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
   const [userlist, setUserlist]: any[] = useState({
     nickname: '',
     userImage: '',
   });
-  const handleUnFollow = async() => {
-    if(isLogin === false){
-      alert('로그인이 필요한 서비스입니다')
+  const handleUnFollow = async () => {
+    if (isLogin === false) {
+      alert('로그인이 필요한 서비스입니다');
     }
-    return await feedApi.deleteFollow(userlist.nickname, accessToken)
+    return await feedApi
+      .deleteFollow(userlist.nickname, accessToken)
       .then(() => {
         props.setFollow(false);
-      })
-  }
+      });
+  };
 
   useEffect(() => {
     const findFollow = async () => {
-      await feedApi.userInfo(props.followingNickname)
-      .then(result => {
+      await feedApi.userInfo(props.followingNickname).then((result) => {
         setUserlist(result.data.data);
         return;
       });
@@ -57,9 +57,9 @@ export default function FollowingList(props: any) {
   //useMemo()
   return (
     <Wrapper>
-      <UserImage src={userlist.userImage}/>
+      <UserImage src={userlist.userImage} />
       <UserNick>{userlist.nickname}</UserNick>
-      <FollowButton onClick={handleUnFollow} >unfollow</FollowButton>
+      <FollowButton onClick={handleUnFollow}>unfollow</FollowButton>
     </Wrapper>
   );
 }
