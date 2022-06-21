@@ -1,7 +1,7 @@
 /* eslint-disable */
 import background from '../img/feedBG.jpg';
 import styled from 'styled-components';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   addBoardInfo,
   deleteBoardInfo,
@@ -28,8 +28,6 @@ import {
   BsEmojiNeutral,
   BsEmojiSmile,
 } from 'react-icons/bs';
-import { AnyMap } from 'immer/dist/internal';
-import { CostExplorer } from 'aws-sdk';
 
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 /*
@@ -325,6 +323,7 @@ const DiaryPage = () => {
       date: '',
     });
     dispatch(deleteBoardInfo());
+    dispatch(editOffAction);
     navigate('/mainfeed');
   };
 
@@ -346,6 +345,35 @@ const DiaryPage = () => {
   const boardMoodHandler = (e: any) => {
     setBoardInput({ ...boardInput, ['mood']: e.target.value });
   };
+
+  const changeLock = () => {
+    console.log('lock 바뀌었니?')
+    console.log('보드 인포-리덕스',boardInfo)
+    console.log('보드인풋-스테이트',boardInput)
+    // if (lockBtn) {
+    //   setBoardInput({ ...boardInput, ['lock']: 'LOCK' });
+
+    // } else {
+    //   setBoardInput({ ...boardInput, ['lock']: 'UNLOCK' });
+    // }
+    setLockBtn(!lockBtn);
+    console.log('lockBtn바뀌었나?',lockBtn)
+    if(lockBtn) {
+      setBoardInput({ ...boardInput, ['lock']: 'LOCK' });
+      boardApi.lockBoard(boardInfo.id, 'LOCK', accessToken)
+      .then((result) => {
+        console.log('result',result.data.lock)
+        dispatch(addBoardInfo(result.data))
+      })
+    } else {
+      setBoardInput({ ...boardInput, ['lock']: 'UNLOCK' });
+      boardApi.lockBoard(boardInfo.id, 'UNLOCK', accessToken)
+      .then((result) => {
+        console.log('result',result.data.lock)
+        dispatch(addBoardInfo(result.data))
+      })
+    }
+  }
 
   const handleSaveBoard = () => {
     const { title, picture, content, date } = boardInput;
@@ -431,7 +459,7 @@ const DiaryPage = () => {
         setUserImg(result.data.data.userImage);
       });
     }
-  }, []);
+  }, [rendering]);
 
   return (
     <>
@@ -486,11 +514,11 @@ const DiaryPage = () => {
                 <ImoInfo>
                   {userInfo.nickname === boardInfo.nickname ? (
                     boardInput.lock === 'UNLOCK' ? (
-                      <div>
+                      <div onClick = {changeLock}>
                         <GrUnlock />
                       </div>
                     ) : (
-                      <div>
+                      <div onClick = {changeLock}>
                         <GrLock />
                       </div>
                     )

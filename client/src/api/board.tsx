@@ -30,6 +30,19 @@ const boardApi = {
       },
     });
   },
+  lockBoard: (board_id: number, lock: string, accessToken: string) => {
+    return api.patch(
+      `/board/${board_id}/lock`,
+      {
+        lock: lock,
+      },
+      {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+  },
 };
 
 export default boardApi;
