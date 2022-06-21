@@ -312,7 +312,7 @@ const DiaryPage = () => {
 
   const pickDrowing = () => {
     setPickWay(0);
-    setBoardInput({ ...boardInput, ['pictureMethod']: 0, ['picture']: '' });
+    setBoardInput({ ...boardInput, ['pictureMethod']: 1, ['picture']: '' });
   };
   const cancelButton = (): void => {
     setBoardInput({
@@ -331,6 +331,7 @@ const DiaryPage = () => {
   const handleBoardInputValue = debounce(async (e: any) => {
     const { name, value } = e.target;
     setBoardInput({ ...boardInput, [name]: value });
+    console.log('boardInput', boardInput)
   });
 
   const boardLockHandler = () => {
@@ -355,7 +356,6 @@ const DiaryPage = () => {
       boardApi.createBoard(boardInput, accessToken).then((result) => {
         dispatch(addBoardInfo(result.data));
         console.log('다이어리온', isDiaryOn);
-        // navigate('/mainfeed')
         dispatch(diaryOffAction);
         console.log('다이어리온', isDiaryOn);
       });
@@ -366,13 +366,13 @@ const DiaryPage = () => {
     const { title, picture, content, date } = boardInput;
     if (title === '' || picture === '' || content === '' || date === '') {
       return alert('내용을 작성해주세요');
+    } else {
+      boardApi.editBoard(boardInfo.id, boardInput, accessToken).then((result) => {
+        dispatch(addBoardInfo(result.data));
+        dispatch(editOffAction);
+      });
     }
-    console.log('수정모드');
 
-    boardApi.editBoard(boardInfo.id, boardInput, accessToken).then((result) => {
-      dispatch(addBoardInfo(result.data));
-      dispatch(editOffAction);
-    });
   };
 
   const deleteWriting = () => {
@@ -472,6 +472,7 @@ const DiaryPage = () => {
                 boardInput={boardInput}
                 setBoardInput={setBoardInput}
                 setPickWay={setPickWay}
+                pickWay={pickWay}
               />
             )
           ) : (

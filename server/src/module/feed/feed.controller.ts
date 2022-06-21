@@ -49,18 +49,18 @@ export class FeedController {
     //     return this.feedService.searchMineByDate(user, date);
     // }
 
-    @Get('/user/date')
-    searchUsersByDate( 
-        @Query('nickname') nickname: string,
-        @Query('date') date: string
-    ): Promise<Board[]> {
-        return this.feedService.searchUsersByDate(nickname, date);
-    }
+    // @Get('/user/date')
+    // searchUsersByDate( 
+    //     @Query('nickname') nickname: string,
+    //     @Query('date') date: string
+    // ): Promise<Board[]> {
+    //     return this.feedService.searchUsersByDate(nickname, date);
+    // }
 
-    // @Get('/user/info')
-    // searchUserInfo(
+    // @Get('/search')
+    // searchFeed(
     //     @Query('nickname') nickname: string
-    // ): Promise<any> {
-    //     return this.feedService.searchUserInfo(nickname)
+    // ): Promise<Board[]> {
+    //     return this.feedService.searchFeed(nickname);
     // }
 }

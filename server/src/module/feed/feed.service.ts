@@ -84,8 +84,16 @@ export class FeedService {
   //   return searchedBoard.filter((el) => el.date === date);
   // }
 
-  async searchUsersByDate(nickname: string, date: string): Promise<Board[]> {
-    const searchedBoard = await this.getUserFeed(nickname);
-    return searchedBoard.filter((el) => el.date === date);
-  }
+  // async searchUsersByDate(nickname: string, date: string): Promise<Board[]> {
+  //   const searchedBoard = await this.getUserFeed(nickname);
+  //   return searchedBoard.filter((el) => el.date === date);
+  // }
+
+  // async searchFeed(nickname: string): Promise<Board[]> {
+  //   const data = (await this.getAllFeed()).find({
+  //     where: {
+  //       nickname
+  //     }
+  //   })
+  // }
 }
