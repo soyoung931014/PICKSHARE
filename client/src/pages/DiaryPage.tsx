@@ -63,7 +63,6 @@ const Container = styled.section`
 
 // ---- 일기장 Wrapper CSS ----
 const wrapperStyle = styled.div`
-  border: purple 1px solid;
   height: 699px;
   width: 38rem;
   padding: 3.8rem 2rem;
@@ -72,7 +71,6 @@ const wrapperStyle = styled.div`
 `;
 // ---- ----
 const BookMark = styled.div`
-  border: 1px solid black;
   display: grid;
   row-gap: 1rem;
   position: relative;
@@ -96,7 +94,6 @@ const Book = styled.button<{ Yellow?: any }>`
   }
 `;
 const LeftWrapper = styled(wrapperStyle)`
-  border: red solid 1px;
   box-shadow: 1px 4px 10px var(--color-shadow);
   display: flex;
   flex-direction: column;
@@ -104,7 +101,6 @@ const LeftWrapper = styled(wrapperStyle)`
   align-items: center;
 `;
 const ImgDiv = styled.div`
-  border: blue solid 1px;
   box-sizing: border-box;
   overflow: hidden;
   display: flex;
@@ -200,7 +196,6 @@ const LeftInfo = styled.div`
   grid-template-columns: 1fr 4fr 1fr;
   justify-content: center;
   align-items: center;
-  border: red 1px solid;
   row-gap: 1rem;
   column-gap: 0.3rem;
 `;
@@ -217,7 +212,6 @@ const WordInfo = styled.div`
     /* display: flex;
     justify-content: center; */
     text-align: center;
-    border: red 1px solid;
     border-radius: 1rem;
     padding: 0.5rem;
     box-shadow: 1px 1px 4px var(--color-shadow);
@@ -232,7 +226,6 @@ const ImoInfo = styled.div`
   div {
     display: flex;
     justify-content: center;
-    border: red 1px solid;
     border-radius: 1rem;
     padding: 0.5rem;
     box-shadow: 1px 1px 4px var(--color-shadow);
@@ -241,7 +234,6 @@ const ImoInfo = styled.div`
   }
 `;
 const RightSide = styled.div`
-  border: 1px red solid;
   width: 100%;
   height: 100%;
   display: grid;
