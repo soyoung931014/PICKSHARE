@@ -24,28 +24,17 @@ const ModalBackdrop = styled.div`
 const ModalContainer = styled.div`
   width: 20rem;
   height: 30rem;
-  /* border: solid 2px #abccff; */
-  border: solid 3px green;
   background-color: #ebf1f1;
-  /* display: flex; */
   opacity: 0.8;
   border-radius: 12%;
   padding: 2rem 0.5rem;
 `;
 const ListBtn = styled.div`
-  border: black solid 1px;
   display: grid;
   grid-template-columns: 5fr 5fr 1fr;
   font-size: 17px;
 `
 const List = styled.button`
-  /* display: flex; */
-  /* border: red solid 1px; */
-  /* margin: 2rem 0.5rem; */
-  /* &:hover {
-    cursor: pointer;
-  } */
-  //border-right: ${(props) => (props.className ? 'grey solid 1px' : null)};
 `;
 
 export interface modalProps {

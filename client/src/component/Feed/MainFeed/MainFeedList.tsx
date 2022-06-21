@@ -14,7 +14,6 @@ import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
 import { urlToHttpOptions } from 'url';
 
 const Div = styled.div`
-  border: red 1px solid;
   aspect-ratio: 262 / 302;
   background-color: white;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);

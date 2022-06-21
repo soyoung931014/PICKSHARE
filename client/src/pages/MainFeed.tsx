@@ -25,7 +25,6 @@ const Wrapper = styled.div`
 `;
 const Div = styled.div`
   margin: 150px;
-  /* border: blue dotted 3px; */
   min-width: 21rem;
 `;
 const UpperDiv = styled.div`
@@ -33,7 +32,6 @@ const UpperDiv = styled.div`
   justify-content: space-between;
 `;
 const ButtonDiv = styled.div`
-  /* border: green dotted 1px; */
   display: flex;
 `;
 
@@ -54,7 +52,6 @@ const UpperRightDiv = styled.div`
   margin: 0.5rem 0;
 `;
 const SearchBar = styled.div`
-  border: green solid 1px;
   border-radius: 30rem;
   display: flex;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);

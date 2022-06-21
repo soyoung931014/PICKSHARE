@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
 const DiaryWrap = styled.div`
-  border: red solid 2px;
   width: 100%;
   height: 100%;
 
