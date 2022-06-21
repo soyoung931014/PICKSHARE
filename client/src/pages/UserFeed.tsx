@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Nav from '../component/Nav/Nav';
 import feedBG from '../img/feedBG.jpg';
+import profileImg from '../img/profileImg.png'
 import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { useDispatch } from 'react-redux';
@@ -268,20 +269,28 @@ export default function UserFeed() {
         <User>
           <div>
             <UserDiv>
-              <UserImg src={userlist.userImage} />
-              {isLogin === true ? (
-                //내 피드이면 안보이기
-                userInfo.nickname === path ? null : follow === true ? (
-                  //로그인o 팔로우o
-                  <UserFollow onClick={handleUnFollow}>unfollow</UserFollow>
+              <>
+                {
+                  userlist.userImage === 'nothing' 
+                  ? <UserImg src={profileImg} />
+                  : <UserImg src={userlist.userImage} />
+                } 
+              </>
+              <>
+                {isLogin === true ? (
+                  //내 피드이면 안보이기
+                  userInfo.nickname === path ? null : follow === true ? (
+                    //로그인o 팔로우o
+                    <UserFollow onClick={handleUnFollow}>unfollow</UserFollow>
+                  ) : (
+                    //로그인o 팔로우x
+                    <UserFollow onClick={handleFollow}>follow</UserFollow>
+                  )
                 ) : (
-                  //로그인o 팔로우x
+                  //로그인x
                   <UserFollow onClick={handleFollow}>follow</UserFollow>
-                )
-              ) : (
-                //로그인x
-                <UserFollow onClick={handleFollow}>follow</UserFollow>
-              )}
+                )}
+              </>
             </UserDiv>
           </div>
           <UserInfo>
