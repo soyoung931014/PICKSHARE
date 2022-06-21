@@ -1,5 +1,4 @@
 /*eslint-disable*/
-
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -27,7 +26,7 @@ const Div = styled.div`
 const User = styled.div`
   display: flex;
   column-gap: 7rem;
-  
+
   @media screen and (max-width: 947px) {
     flex-direction: column;
     margin: 0 auto;
@@ -90,11 +89,17 @@ const Content = styled.div`
   margin: 0.5rem;
   margin-left: 1rem;
   width: 200px;
+  padding-top: 7px;
+  font-weight: 700;
+  color: #494949;
 `;
 const UserFollowInfo = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 4px;
+  font-weight: 700;
+  color: #494949;
   &:hover {
     cursor: pointer;
   }
@@ -121,6 +126,11 @@ const PlusButton = styled.div`
       cursor: pointer;
     }
   }
+`;
+const FooterDiv = styled.div`
+  padding-left: 25px;
+  padding-top: 10px;
+  border-top: solid gray 1px;
 `;
 
 export default function UserFeed() {
@@ -175,7 +185,7 @@ export default function UserFeed() {
     //새로 만들기
     dispatch(deleteBoardInfo());
     dispatch(editOnAction);
-    navigate('/diary')
+    navigate('/diary');
   };
   const handleFollow = async () => {
     if (isLogin === false) {
@@ -236,21 +246,18 @@ export default function UserFeed() {
     await getFollowerList();
 
     const countFeed = async () => {
-      console.log('게시글 수',userfeedlist)
       return await setCounts(userfeedlist.length);
     };
     await countFeed();
-
   }, [follow]);
 
   useEffect(() => {
     //내 피드가져오기
     const myFeed = async () => {
-      return await feedApi.getMyFeed(accessToken)
-      .then((result) => {
+      return await feedApi.getMyFeed(accessToken).then((result) => {
         setUserFeedlist(result.data);
-      })
-    }
+      });
+    };
 
     //유저들의 피드
     const userPage = async () => {
@@ -258,16 +265,16 @@ export default function UserFeed() {
         setUserFeedlist(result.data);
       });
     };
-    if(userInfo.nickname === path){
+    if (userInfo.nickname === path) {
       myFeed();
-    } else{
+    } else {
       userPage();
     }
   }, [render]);
 
   return (
     <UserWapper>
-      <Nav setRender={setRender} render={render}/>
+      <Nav setRender={setRender} render={render} />
       <Div>
         <User>
           <div>
@@ -275,9 +282,7 @@ export default function UserFeed() {
               <UserImg src={userlist.userImage} />
               {isLogin === true ? (
                 //내 피드이면 안보이기
-                userInfo.nickname === path 
-                ? null 
-                : follow === true ? (
+                userInfo.nickname === path ? null : follow === true ? (
                   //로그인o 팔로우o
                   <UserFollow onClick={handleUnFollow}>unfollow</UserFollow>
                 ) : (
@@ -337,7 +342,9 @@ export default function UserFeed() {
           />
         ) : null}
       </Div>
-      <Footer />
+      <FooterDiv>
+        <Footer />
+      </FooterDiv>
     </UserWapper>
   );
 }

@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { FormValues } from '../../pages/DiaryPage';
+import { v4 as uuidv4 } from 'uuid';
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
 const DiaryWrap = styled.div`
@@ -107,12 +108,14 @@ const Img = styled.img`
 export interface drawingProps {
   boardInput: FormValues;
   setBoardInput: (boardInput: FormValues) => FormValues | void;
-  setPickWay: (number: number) => void;
+  setPickWay: (pickWay: number) => number | void;
+  pickWay: number;
 }
 export default function Drawing({
   boardInput,
   setBoardInput,
   setPickWay,
+  pickWay,
 }: drawingProps) {
   const canvasRef = useRef(null);
   const inputFile: any = useRef();
@@ -179,7 +182,6 @@ export default function Drawing({
   function handleColorClick({ nativeEvent }: any) {
     const ctx = canvasRef.current.getContext('2d');
     if (!isFillMode) {
-      console.log('채우기모드', isFillMode);
       // fill모드 false일때 선 선색 변경
       ctx.strokeStyle = nativeEvent.target.style.backgroundColor;
     } else {
@@ -226,83 +228,66 @@ export default function Drawing({
     }),
   });
 
-  // function dataURItoBlob(dataURI: string) {
-  //   var binary = atob(dataURI.split(',')[1]);
-  //   var array = [];
-  //   for(var i = 0; i < binary.length; i++) {
-  //       array.push(binary.charCodeAt(i));
+  function dataURItoBlob(dataURI: string) {
+    var binary = atob(dataURI.split(',')[1]);
+    var array = [];
+    for (var i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], { type: 'image/png' });
+  }
+
+  // function dataURLtoFile(dataurl: string) {
+  //   const blobBin = atob(dataurl.split(',')[1]); // base64 데이터 디코딩
+  //   const array = [];
+  //   for (let i = 0; i < blobBin.length; i += 1) {
+  //     array.push(blobBin.charCodeAt(i)); //인코드된 문자들을 0번째부터 끝까지 해독하여 유니코드 값을 array 에 저장한다.
   //   }
-  //   return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+
+  //   const u8arr = new Uint8Array(array); //8비트의 형식화 배열을 생성한다.
+  //   const file = new Blob([u8arr], { type: 'image/png' }); // Blob 생성
+  //   // const formdata = new FormData(); // formData 생성
+  //   // formdata.append("drawImg", file); // file data 추가
+  //   console.log(file);
   // }
 
   const SaveImgHandler = async (e: any) => {
     //base64문자열로 받은 이미지
     const image = canvasRef.current.toDataURL('image/png');
-    console.log(image);
     const link = document.createElement('a');
-    link.href = image;
-    link.download = 'Print';
-    link.click();
-    alert('다운로드된 그림 파일을 추가해주세요');
+    // link.href = image;
+    // link.download = 'Print';
+    // link.click();
     setPickWay(1);
+    alert('그림이 추가되었습니다.');
 
     // setDrawingImg(image)
 
-    // const newFileName = uuidv4();
-    // const imgfile= dataURLtoFile(drawingImg)
+    const newFileName = uuidv4();
+    const imgfile = dataURItoBlob(image);
 
-    // // const imageFile = e.target.files[0]; // 업로드된 파일 객체
-    // // console.log(imageFile);
-    // // if (!imageFile) {
-    // //   return console.log('이미지 없음');
-    // // }
-    // if (imgfile === undefined) {
-    //   return setBoardInput({
-    //     ...boardInput,
-    //     [e.target.name]: '',
-    //   });
-    // }
-    // setBoardInput({
-    //   ...boardInput,
-    //   [e.target.name]: imgfile,
-    // });
+    const upload = new AWS.S3.ManagedUpload({
+      params: {
+        Bucket: 'profileimage-pickshare', // 업로드할 대상 버킷명 문자열로 작성.
+        Key: newFileName, //업로드할 파일명
+        Body: imgfile, // 업로드할 파일 객체
+      },
+    });
 
-    // const upload = new AWS.S3.ManagedUpload({
-    //   params: {
-    //     Bucket: 'profileimage-pickshare', // 업로드할 대상 버킷명 문자열로 작성.
-    //     Key: newFileName, //업로드할 파일명
-    //     Body: imgfile, // 업로드할 파일 객체
-    //   },
-    // });
+    const promise = upload.promise();
 
-    // const promise = upload.promise();
-
-    // await promise.then(
-    //   function (data: { Location: any }) {
-    //     setBoardInput({
-    //       ...boardInput,
-    //       [e.target.name]: data.Location,
-    //     });
-    //   },
-    //   function (err: any) {
-    //     console.log(err, '사진등록 실패');
-    //   }
-    // );
+    await promise.then(
+      function (data: { Location: any }) {
+        setBoardInput({
+          ...boardInput,
+          ['picture']: data.Location,
+        });
+      },
+      function (err: any) {
+        console.log(err, '사진등록 실패');
+      }
+    );
   };
-
-  function dataURLtoFile(dataurl: string) {
-    const blobBin = atob(dataurl.split(',')[1]); // base64 데이터 디코딩
-    const array = [];
-    for (let i = 0; i < blobBin.length; i += 1) {
-      array.push(blobBin.charCodeAt(i)); //인코드된 문자들을 0번째부터 끝까지 해독하여 유니코드 값을 array 에 저장한다.
-    }
-
-    const u8arr = new Uint8Array(array); //8비트의 형식화 배열을 생성한다.
-    const file = new Blob([u8arr], { type: 'image/png' }); // Blob 생성
-    // const formdata = new FormData(); // formData 생성
-    // formdata.append("drawImg", file); // file data 추가
-    console.log(file);
-  }
 
   return (
     <DiaryWrap id="page">

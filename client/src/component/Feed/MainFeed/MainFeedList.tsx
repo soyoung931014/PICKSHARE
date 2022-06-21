@@ -62,8 +62,7 @@ const Title = styled.div`
   font-size: 20px;
   font-weight: 500;
 `;
-const DateDiv = styled.div`
-`;
+const DateDiv = styled.div``;
 const ContentLeftDiv = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -148,7 +147,6 @@ export default function MainFeedList({
     dispatch(deleteBoardInfo());
     const id = Number(e.target.id);
     boardApi.getBoardById(id).then((result) => {
-      console.log('result.data', result.data)
       dispatch(addBoardInfo(result.data));
       navigate('/diary');
     });
@@ -169,6 +167,7 @@ export default function MainFeedList({
   let urlSlice = window.location.pathname.split('/')[2];
 
   useEffect(() => {}, [render]);
+
   return (
     <Div>
       <ImgDiv>
@@ -182,17 +181,16 @@ export default function MainFeedList({
         <ContentRightDiv>
           <UserImg src={userImage} />
           <UserDiv>
-            {userInfo.nickname === urlSlice
-            ? 
-            <Title>{title}</Title>
-            :
-            <UserNickname
-              className="nickname"
-              onClick={() => moveToUsersFeed(nickname)}
-            >
-              {nickname}
-            </UserNickname>
-            }
+            {userInfo.nickname === urlSlice ? (
+              <Title>{title}</Title>
+            ) : (
+              <UserNickname
+                className="nickname"
+                onClick={() => moveToUsersFeed(nickname)}
+              >
+                {nickname}
+              </UserNickname>
+            )}
             <DateDiv>{date}</DateDiv>
           </UserDiv>
         </ContentRightDiv>

@@ -6,12 +6,10 @@
 import {
   ADD_USER_INFO,
   DELETE_USER_INFO,
-  FINISH_USER_FEED,
   ADD_BOARD_INFO,
   DELETE_BOARD_INFO,
   MODAL_OFF,
   MODAL_ON,
-  SEARCH_USER_FEED,
   DIARY_ON,
   DIARY_OFF,
   EDIT_MODE_ON,
@@ -56,20 +54,6 @@ export const deleteBoardInfo = () => {
   return {
     type: DELETE_BOARD_INFO,
     boardInfo: {},
-  };
-};
-
-export const searchUserFeed = (data: string) => {
-  return {
-    type: SEARCH_USER_FEED,
-    payload: data,
-  };
-};
-
-export const finishUserFeed = () => {
-  return {
-    type: FINISH_USER_FEED,
-    payload: '',
   };
 };
 
