@@ -8,19 +8,17 @@ import feedBG from '../img/feedBG.jpg';
 import { BiSearch } from 'react-icons/bi';
 import { debounce } from 'debounce';
 import { useSelector } from 'react-redux';
-import { feed } from '../redux/reducers/feedReducer/feedReducer';
 import { useDispatch } from 'react-redux';
 import {
   deleteBoardInfo,
   diaryOnAction,
-  editOnAction,
-  searchUserFeed,
 } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../component/Footer/Footer';
 
 const Wrapper = styled.div`
   width: 100vw;
-  height: 200vh;
+  height: 100%;
   background-image: url(${feedBG});
   background-size: cover;
   background-attachment: scroll;
@@ -119,13 +117,13 @@ export default function MainFeed() {
     lock: '',
   });
   const [searchInput, setSearchInput] = useState('');
+  const [searchOn, setSearchOn] = useState(false);
   const [orderingH, setOrderingH] = useState(false);
-  const { searchNickname } = useSelector((feedReducer: feed) => feedReducer);
-  const { isEditOn } = useSelector((editReducer: any) => editReducer);
+  const { userInfo } = useSelector((userReducer: any) => userReducer.userInfo);
 
   const handleSearchInput = debounce(async (e: any) => {
+    setSearchOn(true);
     setSearchInput(e.target.value);
-    dispatch(searchUserFeed(searchInput));
   }, 300);
 
   const writeNewDiary = () => {
@@ -135,6 +133,9 @@ export default function MainFeed() {
     navigate('/diary');
   };
 
+  const selectFeed = () => {
+    setRender(!render);
+  };
   const sortFeedByRecent = () => {
     setOrderingH(false);
     setRender(!render);
@@ -147,6 +148,15 @@ export default function MainFeed() {
 
   const getUserFeed = async (searchNickname: string) => {
     return await feedApi.getUserFeed(searchNickname).then((result) => {
+      setFeedlist(result.data);
+    });
+  };
+
+  const getUserFeedH = async (searchNickname: string) => {
+    return await feedApi.getUserFeed(searchNickname).then((result) => {
+      result.data.sort((a: any, b: any) => {
+        return b.heartNum - a.heartNum;
+      });
       setFeedlist(result.data);
     });
   };
@@ -166,10 +176,18 @@ export default function MainFeed() {
     });
   };
   useEffect(() => {
-    if (orderingH === false) {
+    if (orderingH === false && searchOn === false) {
       getMainFeed();
-    } else {
+    } else if (orderingH === true && searchOn === false) {
       getMainFeedH();
+    } else if (orderingH === false && searchOn === true) {
+      getUserFeed(searchInput);
+    } else {
+      getUserFeedH(searchInput);
+    }
+    if (userInfo.nickname === 'nothing') {
+      alert('닉네임을 변경해주세요');
+      navigate('/mypage');
     }
   }, [render]);
 
@@ -193,7 +211,7 @@ export default function MainFeed() {
                   placeholder="유저 검색"
                   onChange={handleSearchInput}
                 />
-                <SearchIcon onClick={() => getUserFeed(searchNickname)}>
+                <SearchIcon type="button" onClick={selectFeed}>
                   <BiSearch size={'1.7rem'} />
                 </SearchIcon>
               </SearchBar>
@@ -214,6 +232,7 @@ export default function MainFeed() {
               ))}
         </Feed>
       </Div>
+      <Footer />
     </Wrapper>
   );
 }

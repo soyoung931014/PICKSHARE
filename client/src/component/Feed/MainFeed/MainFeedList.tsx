@@ -14,6 +14,7 @@ import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
 import { urlToHttpOptions } from 'url';
 
 const Div = styled.div`
+  border: red 1px solid;
   aspect-ratio: 262 / 302;
   background-color: white;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
@@ -148,7 +149,6 @@ export default function MainFeedList({
     dispatch(deleteBoardInfo());
     const id = Number(e.target.id);
     boardApi.getBoardById(id).then((result) => {
-      console.log('result.data', result.data)
       dispatch(addBoardInfo(result.data));
       navigate('/diary');
     });

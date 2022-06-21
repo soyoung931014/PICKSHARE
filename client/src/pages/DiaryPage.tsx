@@ -1,7 +1,7 @@
 /* eslint-disable */
 import background from '../img/feedBG.jpg';
 import styled from 'styled-components';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   addBoardInfo,
   deleteBoardInfo,
@@ -28,8 +28,6 @@ import {
   BsEmojiNeutral,
   BsEmojiSmile,
 } from 'react-icons/bs';
-import { AnyMap } from 'immer/dist/internal';
-import { CostExplorer } from 'aws-sdk';
 
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 /*
@@ -312,7 +310,7 @@ const DiaryPage = () => {
 
   const pickDrowing = () => {
     setPickWay(0);
-    setBoardInput({ ...boardInput, ['pictureMethod']: 0, ['picture']: '' });
+    setBoardInput({ ...boardInput, ['pictureMethod']: 1, ['picture']: '' });
   };
   const cancelButton = (): void => {
     setBoardInput({
@@ -325,6 +323,7 @@ const DiaryPage = () => {
       date: '',
     });
     dispatch(deleteBoardInfo());
+    dispatch(editOffAction);
     navigate('/mainfeed');
   };
 
@@ -346,6 +345,22 @@ const DiaryPage = () => {
     setBoardInput({ ...boardInput, ['mood']: e.target.value });
   };
 
+  const changeLock = () => {
+    setLockBtn(!lockBtn);
+
+    if (lockBtn) {
+      setBoardInput({ ...boardInput, ['lock']: 'LOCK' });
+      boardApi.lockBoard(boardInfo.id, 'LOCK', accessToken).then((result) => {
+        dispatch(addBoardInfo(result.data));
+      });
+    } else {
+      setBoardInput({ ...boardInput, ['lock']: 'UNLOCK' });
+      boardApi.lockBoard(boardInfo.id, 'UNLOCK', accessToken).then((result) => {
+        dispatch(addBoardInfo(result.data));
+      });
+    }
+  };
+
   const handleSaveBoard = () => {
     const { title, picture, content, date } = boardInput;
     if (title === '' || picture === '' || content === '' || date === '') {
@@ -354,10 +369,7 @@ const DiaryPage = () => {
       dispatch(addBoardInfo(boardInput));
       boardApi.createBoard(boardInput, accessToken).then((result) => {
         dispatch(addBoardInfo(result.data));
-        console.log('다이어리온', isDiaryOn);
-        // navigate('/mainfeed')
         dispatch(diaryOffAction);
-        console.log('다이어리온', isDiaryOn);
       });
     }
   };
@@ -366,13 +378,14 @@ const DiaryPage = () => {
     const { title, picture, content, date } = boardInput;
     if (title === '' || picture === '' || content === '' || date === '') {
       return alert('내용을 작성해주세요');
+    } else {
+      boardApi
+        .editBoard(boardInfo.id, boardInput, accessToken)
+        .then((result) => {
+          dispatch(addBoardInfo(result.data));
+          dispatch(editOffAction);
+        });
     }
-    console.log('수정모드');
-
-    boardApi.editBoard(boardInfo.id, boardInput, accessToken).then((result) => {
-      dispatch(addBoardInfo(result.data));
-      dispatch(editOffAction);
-    });
   };
 
   const deleteWriting = () => {
@@ -381,9 +394,8 @@ const DiaryPage = () => {
   };
 
   const handleConfirm = (e: any) => {
-    console.log('e는?', e);
-    let text = e.target.name;
-    let result: any = confirm(`게시글을 ${text} 하시겠습니끼?`);
+    const text = e.target.name;
+    const result: any = confirm(`게시글을 ${text} 하시겠습니끼?`);
 
     if (text === '삭제') {
       if (result) {
@@ -425,13 +437,11 @@ const DiaryPage = () => {
         date: boardInfo.date,
       });
 
-      console.log('리덕스 후', boardInfo.pictureMethod);
-
       feedApi.userInfo(boardInfo.nickname).then((result) => {
         setUserImg(result.data.data.userImage);
       });
     }
-  }, []);
+  }, [rendering]);
 
   return (
     <>
@@ -472,6 +482,7 @@ const DiaryPage = () => {
                 boardInput={boardInput}
                 setBoardInput={setBoardInput}
                 setPickWay={setPickWay}
+                pickWay={pickWay}
               />
             )
           ) : (
@@ -485,11 +496,11 @@ const DiaryPage = () => {
                 <ImoInfo>
                   {userInfo.nickname === boardInfo.nickname ? (
                     boardInput.lock === 'UNLOCK' ? (
-                      <div>
+                      <div onClick={changeLock}>
                         <GrUnlock />
                       </div>
                     ) : (
-                      <div>
+                      <div onClick={changeLock}>
                         <GrLock />
                       </div>
                     )

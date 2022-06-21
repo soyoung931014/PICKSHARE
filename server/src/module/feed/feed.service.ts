@@ -69,7 +69,6 @@ export class FeedService {
     .leftJoin(
       'board.comments', 'comment'
     )
-    // .where('board.Lock = :lock', {lock: 'UNLOCK'})
     .where('board.user = :user', {user: user.id})
     .groupBy('board.id')
     .orderBy('board.date', 'DESC')
@@ -78,14 +77,4 @@ export class FeedService {
   return result;
   }
 
-  // async searchMineByDate(user: User, date: string): Promise<Board[]> {
-  //   const searchedBoard = await this.getMyFeed(user);
-
-  //   return searchedBoard.filter((el) => el.date === date);
-  // }
-
-  async searchUsersByDate(nickname: string, date: string): Promise<Board[]> {
-    const searchedBoard = await this.getUserFeed(nickname);
-    return searchedBoard.filter((el) => el.date === date);
-  }
 }
