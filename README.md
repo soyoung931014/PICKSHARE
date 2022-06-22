@@ -36,9 +36,9 @@
 
 ## 🚀 팀원
 ---------
-| 팀원  | 포지션 |   
-|---|---|
-|[박소영](https://github.com/soyoung931014)|풀스택|
-|[양보영](https://github.com/boyoung589)|풀스택|
+| Role | Name | Position | Github ID | E-mail |
+| :----------- | :------------: | :------------: | :------------: | :------------: |
+| 팀장 | 박소영 | Fullstack | [soyoung931014](https://github.com/soyoung931014) | soyoung931014@gmail.com |
+| 팀원 | 양보영 | Fullstack | [boyoung589](https://github.com/boyoung589) | boyoung589@gmail.com |
 
 
