@@ -252,7 +252,10 @@ const InputProfile = styled.input`
   width: 10rem;
   height: 10rem; */
 `;
-
+const NicknameCheckMessage = styled.div`
+  margin-left: 90px;
+  padding-top: 10px;
+`;
 function MyPage(props: any) {
   const navigate = useNavigate();
 
@@ -613,7 +616,9 @@ function MyPage(props: any) {
                             중복검사
                           </CheckButton>
                         </Box>
-                        <div>{nicknamecheckMessage}</div>
+                        <NicknameCheckMessage>
+                          {nicknamecheckMessage}
+                        </NicknameCheckMessage>
                       </InputBox>
                       <InputBox button>
                         <Box>
@@ -672,7 +677,6 @@ function MyPage(props: any) {
                             MyPageButton
                             onClick={() => {
                               setWithdraw(!withdraw);
-                              //console.log(updateProfile);
                             }}
                           >
                             되돌아가기
