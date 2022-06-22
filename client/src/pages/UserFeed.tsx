@@ -316,9 +316,14 @@ export default function UserFeed() {
             </UserDescribe>
           </UserInfo>
         </User>
-        <PlusButton>
-          <button onClick={writeNewDiary}> + </button>
-        </PlusButton>
+        {
+          userInfo.nickname === path
+          ?(
+          <PlusButton>
+            <button onClick={writeNewDiary}> + </button>
+          </PlusButton>
+          ) : null
+        }
         <Feed>
           {userfeedlist.id === ''
             ? `${userlist.nickname}님의 피드가 없습니다`
