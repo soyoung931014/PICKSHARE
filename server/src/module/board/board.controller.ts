@@ -11,7 +11,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { userInfo } from 'os';
 import { GetUser } from '../token/get-user.decorator';
 import { User } from '../user/user.entity';
 import { Lock } from './board-state.union';
@@ -23,15 +22,10 @@ import { CreateBoardDto } from './dto/create-board.dto';
 export class BoardController {
   constructor(private boardService: BoardService) {}
 
-  // @Get()
-  // getAllBoards(@GetUser() user: User): Promise<Board[]> {
-  //   return this.boardService.getAllBoards(user);
-  // }
-  
   //사진으로 보드 정보 가져오기
   @Get()
   findBoardByPic(@Query('picture') picture: string): Promise<Board[]> {
-    return this.boardService.findBoardByPic(picture)
+    return this.boardService.findBoardByPic(picture);
   }
 
   // 특정 게시물 조회
@@ -74,7 +68,7 @@ export class BoardController {
   @Patch('/:id/edit')
   @UseGuards(AuthGuard())
   editBoard(
-    @Param('id', ParseIntPipe) id: number,//보드 아이디
+    @Param('id', ParseIntPipe) id: number, //보드 아이디
     @GetUser() user: User,
     @Body() createBoardDto: CreateBoardDto,
   ): Promise<Board> {

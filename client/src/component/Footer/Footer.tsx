@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -36,7 +35,6 @@ const Position = styled.div`
   font-weight: 600;
 `;
 const Logo = styled.div`
-  //margin-left: 1.7rem;
   font-weight: 900;
   width: 30%;
   height: 2rem;

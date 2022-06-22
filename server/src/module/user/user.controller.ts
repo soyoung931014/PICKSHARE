@@ -11,7 +11,6 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { LoginDto } from './dto/login-user.dto';
 import { SignUpDto } from './dto/singup-user.dto';
-import { User } from './user.entity';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -51,7 +50,6 @@ export class UserController {
   kakaoAuth(
     @Req() req: any,
   ): Promise<{ message: string; data?: object; statusCode?: number }> {
-    //console.log(req.headers.authcode);
     const authcode = req.headers.authcode.slice(6).split('&')[0];
     console.log(authcode);
     return this.userService.kakaoLogin(authcode);
@@ -65,7 +63,9 @@ export class UserController {
   }
 
   @Get('/userInfo')
-  getUserInfo(@Query('userNickname') userNickname: string): Promise<{data: object}> {
+  getUserInfo(
+    @Query('userNickname') userNickname: string,
+  ): Promise<{ data: object }> {
     return this.userService.getUserInfo(userNickname);
   }
 }

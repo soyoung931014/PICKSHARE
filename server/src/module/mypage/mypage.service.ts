@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from '../user/user.repository';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PasswordCheckDto } from './dto/passwordCheck.dto';
-import { KakaoUserDto } from './dto/kakaoUser.dto';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../user/user.entity';
 import { FollowRepository } from '../follow/follow.repository';
@@ -31,10 +30,7 @@ export class MypageService {
     const userInfo = await this.userRepository.findOne({ email: user.email });
     if (userInfo) {
       const updateUserInfo: object = { ...userInfo, ...updateUser };
-      // console.log(updateUserInfo);
       await this.userRepository.save(updateUserInfo);
-      // console.log(updateUserInfo);
-
       return {
         message: 'update success',
         statusCode: 200,
@@ -58,8 +54,7 @@ export class MypageService {
     const delBoard: any = await this.boardRepository.delete({ user_id: id });
     console.log(delBoard, 'deleteBoard');
     const userInfo = await this.userRepository.findOne({ email });
-    // console.log(userInfo);
-    //console.log(passwordDto)
+
     const passwordComparison = await bcrypt.compare(
       passwordDto.password,
       userInfo.password,

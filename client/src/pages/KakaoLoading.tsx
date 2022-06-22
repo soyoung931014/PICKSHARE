@@ -43,7 +43,6 @@ const Pickshare = styled.div`
 `;
 
 const Img = styled.img`
-  //border: solid 2px red;
   width: 11%;
   height: 3.7vh;
   animation: camera 1.6s infinite linear alternate;
@@ -69,7 +68,6 @@ function kakaoLoading(props: any) {
   useEffect(() => {
     setTimeout(() => {
       void loginApi.kakao().then((res) => {
-        console.log(res);
         const { accessToken, data, nickname } = res.data;
         void userInfoToStore(data, accessToken);
         if (nickname === '') {
