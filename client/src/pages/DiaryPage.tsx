@@ -174,37 +174,33 @@ const RightWrapper = styled(wrapperStyle)`
     
     input.dates {
       &:hover {
-      cursor: pointer;
-    }
+        cursor: pointer;
+      }
     }
     select.moods {
       width: 4rem;
-       &:hover {
-      cursor: pointer;
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
-    }
-    div.lock {
+  div.lock {
       width: 5rem;
      // border: solid 2px red;
       padding-left: -16px;
-    }
     &:hover {
       cursor: pointer;
     }
   }
-
   /* 내용 */
   textarea.diary-content {
     height: 380px;
   }
-
   /* Wrapper 저장  */
   div.save-btns {
     display: flex;
     flex-direction: row;
     gap: 1.2rem;
-
     /* 저장 버튼 */
     button.save-btn {
       padding: 0;
