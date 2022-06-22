@@ -19,13 +19,14 @@ import { useState } from 'react';
 const Wrapper = styled.section`
   // border: solid green 2px;
   width: 100%;
-  height: 10vh;
+  height: 8vh;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   background: white;
   border-bottom: solid 0.8px #bbbbbb;
-  margin-bottom: 1rem;
+  //padding-bottom: 1rem;
+  // margin-bottom: 1rem;
   box-shadow: 0 0px 10px #acafb345;
 `;
 

@@ -90,11 +90,17 @@ const Content = styled.div`
   margin: 0.5rem;
   margin-left: 1rem;
   width: 200px;
+  padding-top: 7px;
+  font-weight: 700;
+  color: #494949;
 `;
 const UserFollowInfo = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 4px;
+  font-weight: 700;
+  color: #494949;
   &:hover {
     cursor: pointer;
   }
@@ -121,6 +127,11 @@ const PlusButton = styled.div`
       cursor: pointer;
     }
   }
+`;
+const FooterDiv = styled.div`
+  padding-left: 25px;
+  padding-top: 10px;
+  border-top: solid gray 1px;
 `;
 
 export default function UserFeed() {
@@ -345,7 +356,9 @@ export default function UserFeed() {
           />
         ) : null}
       </Div>
-      <Footer />
+      <FooterDiv>
+        <Footer />
+      </FooterDiv>
     </UserWapper>
   );
 }
