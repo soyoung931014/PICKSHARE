@@ -10,7 +10,7 @@ import {
   editOnAction,
 } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
-import profileImg from '../img/profileImg.png'
+import profileImg from '../img/profileImg.png';
 import bookmarkPink from '../img/bookmark-pink.png';
 import bookmarkYellow from '../img/bookmark-yellow.png';
 import Photo from '../component/Diary/Photo';
@@ -186,7 +186,7 @@ const RightWrapper = styled(wrapperStyle)`
     }
     div.lock {
       width: 5rem;
-      border: solid 2px red;
+     // border: solid 2px red;
       padding-left: -16px;
     }
     &:hover {
@@ -617,11 +617,11 @@ const DiaryPage = () => {
           ) : (
             <LeftSide>
               <LeftInfo>
-                {
-                  userImg === 'nothing' 
-                  ? <UserImg src={profileImg} />
-                  : <UserImg src={userImg} />
-                }
+                {userImg === 'nothing' ? (
+                  <UserImg src={profileImg} />
+                ) : (
+                  <UserImg src={userImg} />
+                )}
                 <WordInfo>
                   <div>{boardInfo.nickname}</div>
                   <div>{boardInput.date}</div>
