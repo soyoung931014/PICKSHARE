@@ -17,7 +17,7 @@
 
 ## 🚀 wiki
 -------
-### [Wiki](https://github.com/soyoung931014/PICKSHARE/wiki/Home/_edit)
+### [Wiki](https://github.com/soyoung931014/PICKSHARE/wiki)
 
 
 ## 🚀 스택
