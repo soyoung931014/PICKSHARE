@@ -11,14 +11,14 @@ import { useDispatch } from 'react-redux';
 import boardApi from '../../../api/board';
 import { board } from '../../../redux/reducers/boardReducer/boardReducer';
 import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
-import { urlToHttpOptions } from 'url';
+import profileImg from '../../../img/profileImg.png'
 
 const Div = styled.div`
   aspect-ratio: 262 / 302;
   background-color: white;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
   display: grid;
-  grid-template-rows: 262fr 48fr;
+  grid-template-rows: 262fr 48fr; 
   border-radius: 1rem;
 `;
 const ImgDiv = styled.div`
@@ -179,7 +179,11 @@ export default function MainFeedList({
       </ImgDiv>
       <ContentDiv>
         <ContentRightDiv>
-          <UserImg src={userImage} />
+          {
+            userImage === 'nothing'
+            ? <UserImg src={profileImg} />
+            : <UserImg src={userImage} />
+          }
           <UserDiv>
             {userInfo.nickname === urlSlice ? (
               <Title>{title}</Title>

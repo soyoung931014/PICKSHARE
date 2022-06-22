@@ -22,7 +22,7 @@ export class Board extends BaseEntity {
   @Column()
   title: string;
 
-  @Column()
+  @Column({default: 'https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/profileImg.png'})
   picture: string;
 
   @Column()

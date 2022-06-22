@@ -10,6 +10,7 @@ import {
   editOnAction,
 } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
+import profileImg from '../img/profileImg.png'
 import bookmarkPink from '../img/bookmark-pink.png';
 import bookmarkYellow from '../img/bookmark-yellow.png';
 import Photo from '../component/Diary/Photo';
@@ -616,7 +617,11 @@ const DiaryPage = () => {
           ) : (
             <LeftSide>
               <LeftInfo>
-                <UserImg src={userImg} />
+                {
+                  userImg === 'nothing' 
+                  ? <UserImg src={profileImg} />
+                  : <UserImg src={userImg} />
+                }
                 <WordInfo>
                   <div>{boardInfo.nickname}</div>
                   <div>{boardInput.date}</div>
