@@ -1,8 +1,23 @@
 # PICKSHARE 👉 [배포](https://www.pickshareapp.com)
 
 ### 사진과 그림으로 일상을 공유하는 SNS 
-![스크린샷 2022-06-22 오후 10 00 18](https://user-images.githubusercontent.com/80194405/175035170-8c34bf02-5e36-4529-a371-bea86d0b3abb.jpg)
+![pickshare](https://user-images.githubusercontent.com/87610758/166643836-bf3c7397-f99c-46bd-bd02-1af8a6f234e1.png)
 
+
+
+## 🚀 About
+------
+픽쉐어는 여러 사람들과 함께 일상을 공유할 수 있는 다이어리 서비스입니다.
+
+사진 뿐만 아니라 직접 그린 그림을 저장하여 일상을 업로드 할 수 있습니다.
+
+사람들과 친구 관계를 맺고 댓글을 달며 소통할 수 있습니다.
+
+나만 간직하고픈 일상은 lock 버튼을 통해 보호할 수 있습니다.
+
+## 🚀 wiki
+-------
+### [Wiki](https://github.com/soyoung931014/PICKSHARE/wiki/Home/_edit)
 
 
 ## 🚀 스택
@@ -25,3 +40,5 @@
 |---|---|
 |[박소영](https://github.com/soyoung931014)|풀스택|
 |[양보영](https://github.com/boyoung589)|풀스택|
+
+
