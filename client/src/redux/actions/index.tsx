@@ -15,14 +15,6 @@ import {
   UNFOLLOW_USER,
 } from './actionTypes';
 
-//user
-// export const addUserInfo = (userInfo: object, token: string) => {
-//   return {
-//     type: ADD_USER_INFO,
-//     payload: userInfo,
-//     accessToken: token,
-//   };
-// };
 export const addUserInfo = (userInfo: object, token: string) => {
   return {
     type: ADD_USER_INFO,
