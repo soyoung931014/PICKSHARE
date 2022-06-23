@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import axios from 'axios';
+
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import { addUserInfo } from '../redux/actions';
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import styled from 'styled-components';
 import background from '../img/feedBG.jpg';
-import camera from '../img/camera.jpg';
+import loginApi from '../api/login';
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
@@ -43,7 +43,6 @@ const Pickshare = styled.div`
 `;
 
 const Img = styled.img`
-  //border: solid 2px red;
   width: 11%;
   height: 3.7vh;
   animation: camera 1.6s infinite linear alternate;
@@ -68,20 +67,15 @@ function kakaoLoading(props: any) {
   const navigate = useNavigate();
   useEffect(() => {
     setTimeout(() => {
-      void axios
-        .get('http://localhost:5000/user/kakao', {
-          headers: { authCode: window.location.search },
-        })
-        .then((res) => {
-          console.log(res);
-          const { accessToken, data, nickname } = res.data;
-          void userInfoToStore(data, accessToken);
-          if (nickname === '') {
-            alert('닉네임을 설정해주세요');
-            return navigate('/mypage', { replace: true });
-          }
-          navigate('/mainfeed', { replace: true });
-        });
+      void loginApi.kakao().then((res) => {
+        const { accessToken, data, nickname } = res.data;
+        void userInfoToStore(data, accessToken);
+        if (nickname === '') {
+          alert('닉네임을 설정해주세요');
+          return navigate('/mypage', { replace: true });
+        }
+        navigate('/mainfeed', { replace: true });
+      });
     }, 3000);
   }, []);
 
@@ -90,7 +84,7 @@ function kakaoLoading(props: any) {
       <Wrapper>
         <Pickshare>Loading..</Pickshare>
         <LoadingBox>
-          <Img src={camera} />
+          <Img src={process.env.PUBLIC_URL + 'favicon.ico'} />
         </LoadingBox>
       </Wrapper>
     </>

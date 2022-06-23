@@ -6,7 +6,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
 import { addUserInfo, deleteUserInfo } from '../../redux/actions/index';
@@ -30,7 +29,6 @@ const Wrapper = styled.div`
 `;
 
 const Book = styled.div`
-  //border: solid 2px red;
   height: 100vh;
   width: 90vw;
   display: flex;
@@ -41,7 +39,6 @@ const Book = styled.div`
   left: 8rem;
 `;
 const Left = styled.div`
-  //border: dotted 2px green;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -55,7 +52,6 @@ const Left = styled.div`
 `;
 
 const Right = styled.div`
-  //border: solid 2px black;
   width: 32vw;
   height: 85vh;
   background-color: white;
@@ -68,7 +64,6 @@ const Index = styled.div`
   display: flex;
   flex-direction: column;
   height: 80vh;
-  //border: solid 2px black;
 `;
 const TagHome = styled.img`
   width: 7rem;
@@ -78,7 +73,6 @@ const TagHome = styled.img`
     transform: scale(1.05);
     cursor: pointer;
   }
-  //border: solid 2px black;
 `;
 
 /// 세부사항
@@ -92,7 +86,6 @@ const Img = styled.img`
   border-radius: 100%;
 `;
 const UpdateProfileBox = styled.div`
-  //border: solid 2px red;
   height: 80vh;
   display: flex;
   flex-direction: column;
@@ -101,7 +94,6 @@ const UpdateProfileBox = styled.div`
   box-sizing: border-box;
 `;
 const Title = styled.div`
-  //border: solid 2px teal;
   font-size: 2rem;
   font-weight: 900;
   margin-top: 2.5rem;
@@ -110,7 +102,6 @@ const Title = styled.div`
   -webkit-text-fill-color: transparent;
 `;
 const Form = styled.form<{ Left?: any }>`
-  //border: dotted 2px red;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -120,13 +111,11 @@ const Form = styled.form<{ Left?: any }>`
   box-sizing: border-box;
 `;
 const InputBox = styled.div<{ button?: any }>`
-  //border: solid 2px aqua;
   height: 3.3rem;
   margin-top: ${(props) => (props.button ? '2rem' : '0')};
   box-sizing: border-box;
 `;
 const Message = styled.div<{ UpdateProfile?: any }>`
-  // border: solid 2px green;
   height: 1.7rem;
   padding-top: 3px;
   box-sizing: border-box;
@@ -153,7 +142,6 @@ const Input = styled.input<{ Check?: any }>`
   font-weight: bolder;
 `;
 const Button = styled.button<{ MyPageButton?: any; Return?: any }>`
-  //border: solid 2px green;
   width: ${(props) => (props.MyPageButton ? '20rem' : '12rem')};
   width: ${(props) => (props.Return ? '12rem' : null)};
   height: 3rem;
@@ -168,13 +156,11 @@ const Button = styled.button<{ MyPageButton?: any; Return?: any }>`
   font-size: large;
   font-weight: bold;
   color: white;
-  // margin-top: ${(props) => (props.MyPageButton ? '1rem' : '0')};
   margin: 0.1rem;
 `;
 
 const CheckButton = styled.button`
   background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
-  //width: 4rem;
   box-shadow: 0 5px 14px #3c4a5645;
   box-sizing: border-box;
   color: white;
@@ -185,24 +171,15 @@ const CheckButton = styled.button`
 `;
 
 const Div = styled.div`
-  //border: 2px dotted black;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   width: 20rem;
   height: 50%;
-  /* height: 2rem;
-  border-top: solid purple 1px;
-  opacity: 0.3;
-  font-size: 0.9rem;
-  margin-top: 0.7rem;
-  padding: 0.7rem 0rem; */
-  //border: solid 2px green;
 `;
 
 const Box = styled.div`
-  //border: red solid 2px;
   display: flex;
   justify-content: center;
   text-align: center;
@@ -214,7 +191,6 @@ const BoxMessage = styled.div`
   padding-right: 7rem;
 `;
 const Profile = styled.div`
-  //border: solid 2px #ffc7c7;
   width: 19vw;
   height: 28vh;
   border-radius: 100%;
@@ -224,7 +200,6 @@ const Profile = styled.div`
   margin-bottom: 2rem;
 `;
 const Edit = styled.img`
-  //border: solid green 2px;
   width: 6rem;
   height: 5rem;
   position: relative;
@@ -248,16 +223,15 @@ const StatusMessage = styled.div`
 // input file(프로필 변경태그, 이 부분 숨김)
 const InputProfile = styled.input`
   visibility: hidden;
-  /*  border: solid 2px red;
-  width: 10rem;
-  height: 10rem; */
 `;
-
+const NicknameCheckMessage = styled.div`
+  margin-left: 90px;
+  padding-top: 10px;
+`;
 function MyPage(props: any) {
   const navigate = useNavigate();
 
   const { userInfoToStore, deleteUserInfo } = props;
-  //console.log(userInfoToStore);
   const { isLogin, accessToken } = props.user;
 
   const { email, loginMethod, nickname, statusMessage, userImage } =
@@ -300,20 +274,15 @@ function MyPage(props: any) {
 
   // 이미지 편집
   const file: any = useRef();
-  /*  console.log(file.current.value); */
 
   //닉네임 중복검사
   const nicknameCheck = async (e: any) => {
-    // console.log(nicknameState); //중복 검사 여부
     e.preventDefault();
     const { nickname } = updateUserInfo;
-    //  console.log(nickname);
     if (nicknameValidate === true && inputNickname.current.value !== '') {
       try {
         await signupApi.nicknamecheck(nickname).then((res) => {
           if (res.data === false) {
-            //   console.log(res.data, '중복 검사 통과');
-            //닉네임 사용여부를 boolean값으로 가져옴 false일경우 사용 가능 닉넴
             setNicknameCheckMessage('사용할 수 있는 닉네임입니다.');
             setNicknameCheck(nickname); // 나중에 수정완료 버튼을 누를 시  e.target.value과 nicknamecheck의 정보가 일치하는지를 확인
             setNicknameState(true);
@@ -334,10 +303,8 @@ function MyPage(props: any) {
   const updateFinish = async (e: any) => {
     e.preventDefault();
     const { nickname, statusMessage, userImage } = updateUserInfo;
-    // console.log(email, nickname, statusMessage, nicknamecheck, '🙋‍♀️');
     if (inputNickname.current.value === '') {
       updateUserInfo.nickname = inputNickname.current.placeholder;
-      //console.log(nickname, 'nickname');
     }
     if (nickname !== nicknamecheck && inputNickname.current.value !== '') {
       console.log(nickname, nicknamecheck);
@@ -356,7 +323,6 @@ function MyPage(props: any) {
               statusMessage,
               userImage,
             } = res.data.data;
-            //console.log('hi');
             void userInfoToStore(
               { id, email, loginMethod, nickname, statusMessage, userImage },
               accessToken
@@ -365,6 +331,7 @@ function MyPage(props: any) {
             setUpdateProfile(!updateProfile);
             setUpdateProfile(true);
             setNicknameCheckMessage('');
+            setWithdraw(!withdraw);
           });
       } catch (error) {
         alert('회원정보 수정에 실패했습니다');
@@ -383,7 +350,6 @@ function MyPage(props: any) {
 
   const handlePassword = (e: any) => {
     setPasswordValue({ ...passwordValue, [e.target.name]: e.target.value });
-    // console.log(passwordValue);
   };
 
   //탈퇴하기 버튼
@@ -461,7 +427,7 @@ function MyPage(props: any) {
 
   //* aws-프로필 이미지 연결 *//
   AWS.config.update({
-    region: 'us-east-1', // congito IdentityPoolId 리전을 문자열로 입력하기. 아래 확인 (Ex. "ap-northeast-2")
+    region: `${process.env.REACT_APP_AWS_REGION}`, // congito IdentityPoolId 리전을 문자열로 입력하기. 아래 확인 (Ex. "ap-northeast-2")
     credentials: new AWS.CognitoIdentityCredentials({
       IdentityPoolId: `${process.env.REACT_APP_AWS_IMG_ID}`, // cognito 인증 풀에서 받아온 키를 문자열로 입력하기. (Ex. "ap-northeast-2...")
     }),
@@ -504,7 +470,6 @@ function MyPage(props: any) {
   //console.log(userImage); // 디비에 저장된 정보
   //임시 저장소 (디비에 저장된 정보와 비교해서 프로필 이미지 수정할때 보여줄것임)
   const preUserImage: string = updateUserInfo.userImage;
-  //console.log(preUserImage);
   return (
     <>
       {isLogin === false && loading ? (
@@ -612,7 +577,9 @@ function MyPage(props: any) {
                             중복검사
                           </CheckButton>
                         </Box>
-                        <div>{nicknamecheckMessage}</div>
+                        <NicknameCheckMessage>
+                          {nicknamecheckMessage}
+                        </NicknameCheckMessage>
                       </InputBox>
                       <InputBox button>
                         <Box>
@@ -671,7 +638,6 @@ function MyPage(props: any) {
                             MyPageButton
                             onClick={() => {
                               setWithdraw(!withdraw);
-                              //console.log(updateProfile);
                             }}
                           >
                             되돌아가기

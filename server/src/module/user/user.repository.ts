@@ -45,7 +45,6 @@ export class UserRepository extends Repository<User> {
     data: object;
     statusCode: number;
   }> {
-    // console.log(email, 'hi');
     const user = this.create({
       email: email,
       password: 'null',

@@ -21,9 +21,7 @@ export class MypageController {
     @Req() req: any,
     @Body() updateUser: UpdateUserDto,
   ): Promise<object> {
-    //console.log(req, 'req');
     const { user } = req;
-    //console.log(user);
     return this.mypage.updateUserInfo(updateUser, user);
   }
 
@@ -42,8 +40,6 @@ export class MypageController {
   //카카오 회원탈퇴
   @Delete('/withdrawl/kakao')
   kakaoDeleteUser(@Req() req: any): Promise<object> {
-    const { user } = req;
-    //console.log(user);
     return this.mypage.removeKakaoUserInfo(req.user);
   }
 }

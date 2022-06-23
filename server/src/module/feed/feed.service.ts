@@ -47,21 +47,34 @@ export class FeedService {
   }
 
   async getMyFeed(user: User): Promise<Board[]> {
-    return this.boardRepository.find({
-      where: {
-        user_id: user.id,
-      },
-    });
+    const result =  await this.boardRepository.createQueryBuilder('board')
+    .select([
+      'board.id AS id',
+      'board.picture AS contentImg',
+      'board.date AS date',
+      'board.createdAt AS createdAt',
+      'board.title AS title',
+      'board.lock AS locked',
+      'user.nickname AS nickname',
+      'user.userImage As userImage',
+      'COUNT(heart.user_id) AS heartNum',
+      'COUNT(comment.board_id) AS commentNum',
+    ])
+    .innerJoin(
+      'board.user', 'user'
+      )
+    .leftJoin(
+      'board.hearts', 'heart'
+    )
+    .leftJoin(
+      'board.comments', 'comment'
+    )
+    .where('board.user = :user', {user: user.id})
+    .groupBy('board.id')
+    .orderBy('board.date', 'DESC')
+    .getRawMany()
+
+  return result;
   }
 
-  async searchMineByDate(user: User, date: string): Promise<Board[]> {
-    const searchedBoard = await this.getMyFeed(user);
-
-    return searchedBoard.filter((el) => el.date === date);
-  }
-
-  async searchUsersByDate(nickname: string, date: string): Promise<Board[]> {
-    const searchedBoard = await this.getUserFeed(nickname);
-    return searchedBoard.filter((el) => el.date === date);
-  }
 }

@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { BsSuitHeart } from 'react-icons/bs';
 import { BsSuitHeartFill } from 'react-icons/bs';
@@ -7,16 +7,18 @@ import feedApi from '../../../api/feed';
 import { useSelector } from 'react-redux';
 import { FaRegCommentDots } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import sampleImg from '../../../img/selfie4.jpg';
-import sampleImg2 from '../../../img/instafeed3.jpg';
+import { useDispatch } from 'react-redux';
+import boardApi from '../../../api/board';
+import { board } from '../../../redux/reducers/boardReducer/boardReducer';
+import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
+import profileImg from '../../../img/profileImg.png'
 
 const Div = styled.div`
-  border: red solid 1px;
   aspect-ratio: 262 / 302;
   background-color: white;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
   display: grid;
-  grid-template-rows: 262fr 49fr;
+  grid-template-rows: 262fr 48fr; 
   border-radius: 1rem;
 `;
 const ImgDiv = styled.div`
@@ -35,8 +37,9 @@ const ContentDiv = styled.div`
   grid-template-columns: 3fr 2fr;
 `;
 const ContentRightDiv = styled.div`
-  border: purple solid 6px;
   display: flex;
+  overflow: hidden;
+  place-items: center;
 `;
 const UserImg = styled.img`
   border-radius: 100%;
@@ -45,24 +48,22 @@ const UserImg = styled.img`
   height: 3rem;
 `;
 const UserDiv = styled.div`
-  border: blue dotted 3px;
-  /* margin: 0.2rem; */
-  /* display: grid; */
-  /* grid-template-rows: 2fr 1fr; */
+  margin: 0.2rem;
 `;
 const UserNickname = styled.div`
-  border: pink dotted 3px;
   font-size: 28px;
-  font-weight: 400;
+  font-weight: normal;
+  width: 100%;
   &:hover {
     cursor: pointer;
   }
 `;
-const DateDiv = styled.div`
-  border: red dotted 3px;
+const Title = styled.div`
+  font-size: 20px;
+  font-weight: 500;
 `;
+const DateDiv = styled.div``;
 const ContentLeftDiv = styled.div`
-  border: salmon solid 3px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   text-align: center;
@@ -71,119 +72,159 @@ const ContentLeftDiv = styled.div`
 `;
 const HeartDiv = styled.div`
   display: flex;
-  /* grid-template-columns: 1fr 1fr; */
-  border: green solid 1px;
   column-gap: 3px;
   margin: 1rem;
 `;
-const HeartButton = styled.button`
-  border: purple solid 1px;
-  margin-top: 0.2rem;
+const Button = styled.button`
   background-color: white;
-  font-size: 20px;
-  font-weight: bold;
+  display: flex;
+  justify-content: center;
   &:hover {
     cursor: pointer;
   }
 `;
-const Comment = styled.div`
-  border: yellow solid 1px;
-  margin: 0.5rem 0;
+const Num = styled.div`
+  font-size: 25px;
+  margin-left: 2px;
 `;
 
-export default function MainFeedList(props: any) {
+type MainFeedListProps = {
+  id: number;
+  contentImg: string | undefined;
+  userImage: string | undefined;
+  nickname: string | undefined;
+  date: string | undefined;
+  heartNum: number;
+  commentNum: number;
+  title: string;
+  render: boolean;
+  setRender: (render: boolean) => boolean;
+};
+export default function MainFeedList({
+  id,
+  contentImg,
+  userImage,
+  nickname,
+  date,
+  heartNum,
+  commentNum,
+  title,
+  render,
+  setRender,
+}: MainFeedListProps) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
+  const { boardInfo } = useSelector((boardReducer: board) => boardReducer);
   const [heart, setHeart] = useState(false);
 
   const postHeart = async () => {
-    return await feedApi.postHeart(userInfo, props.id, accessToken)
-      .then(() => {
-        setHeart(true);
-      // const path = window.location.pathname.split("/")[1]
-      // if(path === 'feed'){
-      //   props.setUserRender(!props.userRender)
-      // } else if(path === 'mainfeed'){
-      //   props.setRender(!props.render);
-      // }
-      });
+    return await feedApi.postHeart(userInfo, id, accessToken).then(() => {
+      setHeart(true);
+      setRender(!render);
+    });
   };
 
   const deleteHeart = async () => {
-    return await feedApi
-      .deleteHeart(userInfo, props.id, accessToken)
-      .then(() => {
-        setHeart(false);
-        // const path = window.location.pathname.split("/")[1]
-        // if(path === 'feed'){
-        //   props.setUserRender(!props.userRender)
-        // } else if(path === 'mainfeed'){
-        //   props.setRender(!props.render);
-        // }
-      });
+    return await feedApi.deleteHeart(userInfo, id, accessToken).then(() => {
+      setHeart(false);
+      setRender(!render);
+    });
   };
 
   const moveToUsersFeed = (e: any) => {
-    console.log(e, '이벤트 타겟');
     navigate(`/feed/${e}`);
   };
-
-  useEffect(() => {
-
-  }, [heart, props]);
 
   const clickWithOutLoggedin = () => {
     alert('로그인이 필요한 서비스 입니다');
     navigate('/login');
   };
 
+  const moveToViewBoard = (e: any) => {
+    dispatch(deleteBoardInfo());
+    const id = Number(e.target.id);
+    boardApi.getBoardById(id).then((result) => {
+      dispatch(addBoardInfo(result.data));
+      navigate('/diary');
+    });
+  };
+
+  useMemo(() => {
+    if (isLogin) {
+      const getHeart = async () => {
+        //하트 기록이 있는지 서치, 하트가 있으면, 하트 트루, 없 false
+        await feedApi.getHeart(id, accessToken).then((result) => {
+          result.data === 1 ? setHeart(true) : setHeart(false);
+        });
+      };
+      getHeart();
+    }
+  }, []);
+
+  let urlSlice = window.location.pathname.split('/')[2];
+
+  useEffect(() => {}, [render]);
+
   return (
     <Div>
       <ImgDiv>
-        <Img src={props.contentImg} />
+        <Img
+          src={contentImg}
+          id={`${id}`}
+          onClick={(e) => moveToViewBoard(e)}
+        />
       </ImgDiv>
       <ContentDiv>
         <ContentRightDiv>
-          <UserImg src={props.userImage} />
+          {
+            userImage === 'nothing'
+            ? <UserImg src={profileImg} />
+            : <UserImg src={userImage} />
+          }
           <UserDiv>
-            <UserNickname
-              className="nickname"
-              onClick={() => moveToUsersFeed(props.nickname)}
-            >
-              {props.nickname}
-            </UserNickname>
-            <DateDiv>{props.date}</DateDiv>
+            {userInfo.nickname === urlSlice ? (
+              <Title>{title}</Title>
+            ) : (
+              <UserNickname
+                className="nickname"
+                onClick={() => moveToUsersFeed(nickname)}
+              >
+                {nickname}
+              </UserNickname>
+            )}
+            <DateDiv>{date}</DateDiv>
           </UserDiv>
         </ContentRightDiv>
         <ContentLeftDiv>
           {isLogin === false ? (
             <HeartDiv>
-              <HeartButton onClick={clickWithOutLoggedin}>
+              <Button onClick={clickWithOutLoggedin}>
                 <BsSuitHeart style={{ strokeWidth: 1 }} size="25" />
-              </HeartButton>
-              <div>{props.heartNum}</div>
+              </Button>
+              <Num>{heartNum}</Num>
             </HeartDiv>
           ) : heart === false ? (
-            <HeartButton onClick={postHeart}>
+            <Button onClick={postHeart}>
               <BsSuitHeart style={{ strokeWidth: 1 }} size="25" />
-              {props.heartNum}
-            </HeartButton>
+              <Num>{heartNum}</Num>
+            </Button>
           ) : (
-            <HeartButton onClick={deleteHeart}>
+            <Button onClick={deleteHeart}>
               <BsSuitHeartFill
                 style={{ strokeWidth: 1 }}
                 size="25"
                 color="red"
               />
-              {props.heartNum}
-            </HeartButton>
+              <Num>{heartNum}</Num>
+            </Button>
           )}
-          <Comment>
-            <FaRegCommentDots />
-            <>2</>
-          </Comment>
+          <Button>
+            <FaRegCommentDots style={{ strokeWidth: 1 }} size="27" />
+            <Num>{commentNum}</Num>
+          </Button>
         </ContentLeftDiv>
       </ContentDiv>
     </Div>

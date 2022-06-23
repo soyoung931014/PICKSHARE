@@ -6,13 +6,14 @@
 import {
   ADD_USER_INFO,
   DELETE_USER_INFO,
-  FINISH_USER_FEED,
-  FOLLOW_USER,
   ADD_BOARD_INFO,
+  DELETE_BOARD_INFO,
   MODAL_OFF,
   MODAL_ON,
-  SEARCH_USER_FEED,
-  UNFOLLOW_USER,
+  DIARY_ON,
+  DIARY_OFF,
+  EDIT_MODE_ON,
+  EDIT_MODE_OFF,
 } from './actionTypes';
 
 export const addUserInfo = (userInfo: object, token: string) => {
@@ -34,28 +35,21 @@ export const deleteUserInfo = () => {
 };
 
 // board
-export const addBoardInfo = (boardInfo: object, token: string) => {
+export const addBoardInfo = (boardInfo: object) => {
   return {
     type: ADD_BOARD_INFO,
-    payload: boardInfo,
-    accessToken: token,
-  };
-};
-export const searchUserFeed = (data: string) => {
-  return {
-    type: SEARCH_USER_FEED,
-    payload: data,
+    boardInfo: boardInfo,
   };
 };
 
-export const finishUserFeed = () => {
+export const deleteBoardInfo = () => {
   return {
-    type: FINISH_USER_FEED,
-    payload: '',
+    type: DELETE_BOARD_INFO,
+    boardInfo: {},
   };
 };
 
-export const modalOnAcrion = {
+export const modalOnAction = {
   type: MODAL_ON,
 };
 
@@ -63,10 +57,18 @@ export const modalOffAction = {
   type: MODAL_OFF,
 };
 
-export const followAction = {
-  type: FOLLOW_USER,
+export const diaryOnAction = {
+  type: DIARY_ON,
 };
 
-export const unfollowAction = {
-  type: UNFOLLOW_USER,
+export const diaryOffAction = {
+  type: DIARY_OFF,
+};
+
+export const editOnAction = {
+  type: EDIT_MODE_ON,
+};
+
+export const editOffAction = {
+  type: EDIT_MODE_OFF,
 };

@@ -110,6 +110,7 @@ export class UserService {
           },
         },
       );
+
       //토큰 정보 보기
       const userInfoKakao = await axios.get(
         'https://kapi.kakao.com/v2/user/me',
@@ -119,9 +120,7 @@ export class UserService {
           },
         },
       );
-      /* console.log(tokenRequest, '토큰리퀘스트');
-      console.log(tokenRequest.data.access_token, 'token');
-      console.log(userInfoKakao, '토큰 정보'); */
+
       const { access_token } = tokenRequest.data;
       const { email } = userInfoKakao.data.kakao_account;
 
@@ -131,7 +130,6 @@ export class UserService {
       if (!userInfo) {
         const user = await this.userRepository.kakaoCreateUser(email);
         const { data, message, statusCode } = user;
-        // console.log(data, message, statusCode);
         const accessToken = this.token.sign({
           access_token,
           ...data,

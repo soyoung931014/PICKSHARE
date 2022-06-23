@@ -5,8 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -24,7 +23,6 @@ const Wrapper = styled.div`
   background-image: url(${background});
 `;
 const Book = styled.div`
-  //border: solid 2px red;
   height: 100vh;
   width: 90vw;
   display: flex;
@@ -33,35 +31,50 @@ const Book = styled.div`
   padding-left: 1em;
   position: relative;
   left: 8rem;
+  @media screen and (max-width: 891px) {
+    width: 100vw;
+    position: none;
+    left: 0rem;
+    padding-left: 0em;
+  }
 `;
 const Left = styled.div`
   display: flex;
   align-items: flex-end;
-  width: 32vw;
+  width: 32rem;
   height: 85vh;
   padding-left: 1em;
   background-color: white;
-  //border: dotted 2px green;
   border-radius: 30px 20px 20px 30px;
   box-shadow: 10px 10px 30px #3c4a5645;
   border-right: #b1b0b0 solid 2px;
+  @media screen and (max-width: 1272px) {
+    display: none;
+  }
 `;
 
 const Right = styled.div`
-  width: 32vw;
+  width: 32rem;
   height: 85vh;
   background-color: white;
   padding-left: 1em;
-  //border: solid 2px black;
   border-radius: 20px 30px 30px 20px;
   box-shadow: 30px 10px 10px #3c4a5645;
   border-left: #b1b0b0 solid 2px;
+  @media screen and (max-width: 1190px) {
+    width: 32rem;
+  }
+  @media screen and (max-width: 891px) {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0px;
+    padding-left: 0em;
+  }
 `;
 const Index = styled.div`
   display: flex;
   flex-direction: column;
   height: 80vh;
-  //border: solid 2px black;
 `;
 const TagHome = styled.img`
   width: 7rem;
@@ -71,7 +84,9 @@ const TagHome = styled.img`
     transform: scale(1.05);
     cursor: pointer;
   }
-  //border: solid 2px black;
+  @media screen and (max-width: 891px) {
+    display: none;
+  }
 `;
 const TagSignin = styled.img`
   width: 11rem;
@@ -81,10 +96,11 @@ const TagSignin = styled.img`
     transform: scale(1.05);
     cursor: pointer;
   }
-  //border: solid 2px black;
+  @media screen and (max-width: 891px) {
+    display: none;
+  }
 `;
 const TagSignup = styled.img`
-  //border: solid 2px black;
   width: 8rem;
   height: 5rem;
   cursor: pointer;
@@ -94,6 +110,59 @@ const TagSignup = styled.img`
   }
   position: relative;
   top: -10px;
+  @media screen and (max-width: 891px) {
+    display: none;
+  }
+`;
+const SubTags = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 3.2rem;
+  box-shadow: 15px 10px 15px #3c4a5645;
+
+  @media screen and (min-width: 892px) {
+    display: none;
+  }
+`;
+const Tab = styled.div`
+  width: 10vw;
+`;
+const SubTagHome = styled.div`
+  width: 30vw;
+  height: 3.2rem;
+  padding-top: 15px;
+  font-size: 1.5rem;
+  text-align: center;
+  background-color: #f5ffbb;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+`;
+const SubTagSignin = styled.div`
+  width: 30vw;
+  height: 3.2rem;
+  padding-top: 15px;
+  font-size: 1.5rem;
+  text-align: center;
+  background-color: #eae1ff;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+`;
+const SubTagSignup = styled.div`
+  width: 30vw;
+  height: 3.2rem;
+  padding-top: 15px;
+  font-size: 1.5rem;
+  text-align: center;
+
+  background-color: #ffc7c7;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
 `;
 
 /// 세부사항
@@ -106,7 +175,6 @@ const Img = styled.img`
   bottom: 10px;
 `;
 const LoginBox = styled.div`
-  //border: solid 2px red;
   height: 80vh;
   display: flex;
   flex-direction: column;
@@ -115,41 +183,53 @@ const LoginBox = styled.div`
   box-sizing: border-box;
 `;
 const Title = styled.div`
-  //border: solid 2px teal;
   font-size: 2rem;
   font-weight: 900;
   margin-top: 2.5rem;
   background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  @media screen and (max-width: 359px) {
+    font-size: 2rem;
+  }
+  @media screen and (max-width: 323px) {
+    font-size: 1.7rem;
+  }
 `;
 const Form = styled.form`
-  //border: dotted 3px blue;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 30vw;
+  width: 45vw;
   height: 50vh;
   box-sizing: border-box;
+  @media screen and (max-width: 891px) {
+    width: 60vw;
+  }
+  @media screen and (max-width: 513px) {
+    width: 100vw;
+  }
 `;
 const InputBox = styled.div<{ button?: any }>`
-  // border: solid 2px aqua;
   height: 3.4rem;
   margin-top: ${(props) => (props.button ? '0' : '0')};
   box-sizing: border-box;
 `;
-const Message = styled.div`
-  //border: solid 2px green;
+const Message = styled.div<{ PasswordCheck?: any }>`
+  width: 100vw;
   height: 1.7rem;
   padding-top: 3px;
   box-sizing: border-box;
   font-size: 15px;
-  text-align: left;
+  text-align: flex-start;
   color: #ff8686;
+  @media screen and (max-width: 1194px) {
+    font-size: ${(props) => (props.PasswordCheck ? '14px' : '15px')};
+  }
 `;
 const Input = styled.input<{ Password?: any }>`
   height: 3rem;
-  width: ${(props) => (props.Password ? '72%' : '52%')};
+  width: ${(props) => (props.Password ? '17rem' : '12rem')};
   border-radius: 30px;
   box-sizing: border-box;
   box-shadow: 0 3px 5px #3c4a5645;
@@ -162,8 +242,7 @@ const Input = styled.input<{ Password?: any }>`
 `;
 
 const Button = styled.button`
-  //border: solid 2px black;
-  width: 72%;
+  width: 17rem;
   height: 3rem;
   border-radius: 30px;
   box-sizing: border-box;
@@ -180,7 +259,7 @@ const Button = styled.button`
 `;
 
 const TwinCheckButton = styled.button`
-  width: 18%;
+  width: 4.2rem;
   height: 3rem;
   margin-left: 2%;
   border-radius: 5px;
@@ -195,8 +274,7 @@ const TwinCheckButton = styled.button`
   color: white;
 `;
 const ButtonKakao = styled.button`
-  //border: solid 2px green;
-  width: 72%;
+  width: 17rem;
   height: 3rem;
   border-radius: 30px;
   box-sizing: border-box;
@@ -212,7 +290,6 @@ const ButtonKakao = styled.button`
 `;
 
 const Box = styled.div`
-  //border: red solid 2px;
   margin: 3px 0;
   display: flex;
   justify-content: center;
@@ -221,12 +298,75 @@ const Box = styled.div`
 const BoxMessage = styled.div`
   display: flex;
   margin-left: 5.3rem;
-  text-align: center;
   padding-right: 7rem;
+  width: 50vw;
+  margin-left: 12rem;
+  padding-left: 100px;
+
+  @media screen and (max-width: 1750px) {
+    margin-left: 10rem;
+  }
+
+  @media screen and (max-width: 1670px) {
+    margin-left: 8.4rem;
+  }
+  @media screen and (max-width: 1545px) {
+    margin-left: 7rem;
+  }
+  @media screen and (max-width: 1400px) {
+    margin-left: 6rem;
+  }
+  @media screen and (max-width: 1330px) {
+    margin-left: 5rem;
+  }
+  @media screen and (max-width: 1240px) {
+    margin-left: 3.5rem;
+  }
+  @media screen and (max-width: 1160px) {
+    margin-left: 3rem;
+  }
+  @media screen and (max-width: 1091px) {
+    margin-left: 2rem;
+  }
+  @media screen and (max-width: 959px) {
+    margin-left: 0.5rem;
+    width: 80vw;
+  }
+  @media screen and (max-width: 924px) {
+    margin-left: 0;
+    width: 80vw;
+  }
+  @media screen and (max-width: 891px) {
+    margin-left: 2rem;
+  }
+  @media screen and (max-width: 800px) {
+    margin-left: 1rem;
+    width: 70vw;
+  }
+
+  @media screen and (max-width: 710px) {
+    margin-left: 0rem;
+    padding-left: 90px;
+  }
+  @media screen and (max-width: 620px) {
+    padding-left: 60px;
+  }
+  @media screen and (max-width: 530px) {
+    padding-left: 30px;
+  }
+  @media screen and (max-width: 515px) {
+    padding-left: 8rem;
+    width: 100vw;
+  }
+  @media screen and (max-width: 449px) {
+    padding-left: 6rem;
+  }
+  @media screen and (max-width: 380px) {
+    padding-left: 3rem;
+  }
 `;
 
 function Signup() {
-  const { Kakao } = window as any;
   const navigate = useNavigate();
 
   const inputEmail: any = useRef();
@@ -258,15 +398,12 @@ function Signup() {
   //비밀번호 중복검사 필터
   const passwordRegExp = /^[a-zA-z0-9]{4,12}$/;
 
-  //useEffect(() => {}, [emailcheck]);
-
   const handleChangeState = (e: any) => {
     setSignupInfo({ ...signupInfo, [e.target.name]: e.target.value });
   };
 
   const handleEmailValidation = (e: any) => {
     handleChangeState(e);
-    // console.log(signupInfo);
     if (emailRegExp.test(e.target.value) === false) {
       setEmailCheckMessage('알맞은 형식의 이메일을 입력해주세요.');
     } else {
@@ -280,7 +417,6 @@ function Signup() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     e.preventDefault();
     const { email } = signupInfo;
-    // console.log(email);
     if (email === '') {
       setEmailCheckMessage('이메일을 적어주세요');
       inputEmail.current.focus();
@@ -294,12 +430,8 @@ function Signup() {
             console.log(res.data);
             setEmailCheckMessage('사용할 수 있는 이메일입니다.');
             setEmailCheck(email);
-            /* console.log(emailcheck);
-              console.log(signupInfo); */
           } else {
             setEmailCheckMessage('이미 사용중인 이메일입니다.');
-            /* console.log(emailcheck);
-              console.log(signupInfo); */
           }
         });
       } catch (error) {
@@ -360,9 +492,7 @@ function Signup() {
     const { passwordcheck } = signupInfo;
 
     if (passwordRegExp.test(e.target.value) === false) {
-      setPasswordMessage(
-        '비밀번호는 영문 대소문자와 숫자 4-12자리로 입력해야합니다.'
-      );
+      setPasswordMessage('영문 대소문자와 숫자 4-12자리로 입력해야합니다.');
     } else if (passwordcheck !== '' && passwordcheck !== e.target.value) {
       setPasswordMessage('비밀번호가 일치하지 않습니다.');
     } else if (passwordcheck === e.target.value) {
@@ -437,8 +567,7 @@ function Signup() {
 
   const handleKakaoSignup = (e: any) => {
     e.preventDefault();
-    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=be17a9e882217a14ba581b03ea87c38f&redirect_uri=http://localhost:3000/loading&response_type=code&state=kakao`;
-    //navigate(window.location.href);
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CODE}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT}&response_type=code&state=kakao`;
   };
   return (
     <>
@@ -451,6 +580,30 @@ function Signup() {
               <Img src={pickshareLogo} />
             </Left>
             <Right>
+              <Tab></Tab>
+              <SubTags>
+                <SubTagHome
+                  onClick={() => {
+                    navigate('/mainfeed', { replace: true });
+                  }}
+                >
+                  home
+                </SubTagHome>
+                <SubTagSignin
+                  onClick={() => {
+                    navigate('/login', { replace: true });
+                  }}
+                >
+                  signin
+                </SubTagSignin>
+                <SubTagSignup
+                  onClick={() => {
+                    navigate('/signup', { replace: true });
+                  }}
+                >
+                  signup
+                </SubTagSignup>
+              </SubTags>
               <LoginBox>
                 <Title>Create a new Account</Title>
                 <Form>
@@ -491,10 +644,11 @@ function Signup() {
                     <Box>
                       <Input
                         Password
+                        type="password"
                         placeholder="비밀번호"
                         ref={inputPassword}
                         name="password"
-                        type="new-password"
+                        autoComplete="off"
                         onChange={passwordValidation}
                       />
                     </Box>
@@ -503,17 +657,18 @@ function Signup() {
                     <Box>
                       <Input
                         Password
+                        type="password"
                         placeholder="비밀번호확인"
                         ref={inputPasswordCheck}
                         name="passwordcheck"
-                        type="new-password"
                         value={signupInfo.passwordcheck}
+                        autoComplete="off"
                         onChange={passwordCheck}
                       />
                     </Box>
                   </InputBox>
                   <BoxMessage>
-                    <Message>{passwordMessage}</Message>
+                    <Message PasswordCheck>{passwordMessage}</Message>
                   </BoxMessage>
                   <InputBox button>
                     <Box>

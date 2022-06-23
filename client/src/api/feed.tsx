@@ -5,8 +5,15 @@ const feedApi = {
   getMainFeed: () => {
     return api.get('/feed');
   },
-  getHeart: (board_id: number) => {
-    return api.get(`/heart?board_id=${board_id}`);
+  getHeart: (board_id: number, accessToken: string) => {
+    return api.get(
+      `/heart?board_id=${board_id}`,
+      {
+        headers: {
+          authorization: `Bearer ${accessToken}`
+        }
+      }
+      );
   },
   getComment: () => {
     return api.get('/comment');
@@ -14,7 +21,13 @@ const feedApi = {
   getUserFeed: (nickname: string) => {
     return api.get(`/feed/mainfeed?nickname=${nickname}`);
   },
-
+  getMyFeed: (accessToken: string) => {
+    return api.get('/feed/myfeed',{
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    })
+  },
   postHeart: (info: any, board_id: number, accessToken: string) => {
     return api.post(
       '/heart',
@@ -45,17 +58,13 @@ const feedApi = {
       },
     });
   },
-  // searchByDate: () => {
-  // 	return api.get(``)
-  // }
   userInfo: (nickname: string) => {
     return api.get(`/user/userInfo?userNickname=${nickname}`);
   },
-  postFollow: (info: any, nickname: string, accessToken: string) => {
+  postFollow: ( nickname: string, accessToken: string ) => {
     return api.post(
-      '/follow/following',
+      '/follow/',
       {
-        info,
         'followingNickname': nickname,
       },
       {
@@ -65,6 +74,16 @@ const feedApi = {
       }
     );
   },
+  deleteFollow: (nickname: string, accessToken: string ) => {
+    return api.delete(
+      `/follow?followingNickname=${nickname}`,
+      {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
+  },
   searchFollow: (nickname: string, accessToken: string) => {
     return api.get(
       `/follow/follow?userNickname=${nickname}`,
@@ -73,6 +92,16 @@ const feedApi = {
           authorization: `Bearer ${accessToken}`,
         },
       }
+    )
+  },
+  getFollowingList: (nickname: string) => {
+    return api.get(
+       `/follow/following?nickname=${nickname}`
+    )
+  },
+  getFollowerList: (nickname: string) => {
+    return api.get(
+      `follow/follower?nickname=${nickname}`
     )
   },
 };
