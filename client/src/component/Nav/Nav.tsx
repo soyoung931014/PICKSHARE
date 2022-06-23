@@ -14,10 +14,8 @@ import defaultprofileImg from '../../img/profileImg.png';
 import { deleteUserInfo } from '../../redux/actions';
 import { FaBars } from 'react-icons/fa';
 import { useState } from 'react';
-//const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
 const Wrapper = styled.section`
-  // border: solid green 2px;
   width: 100%;
   height: 8vh;
   display: flex;
@@ -25,13 +23,10 @@ const Wrapper = styled.section`
   align-items: center;
   background: white;
   border-bottom: solid 0.8px #bbbbbb;
-  //padding-bottom: 1rem;
-  // margin-bottom: 1rem;
   box-shadow: 0 0px 10px #acafb345;
 `;
 
 const Logo = styled.section`
-  // border: solid red 2px;
   margin-left: 1.7rem;
   font-weight: 900;
   width: 70%;
@@ -47,7 +42,6 @@ const Logo = styled.section`
 `;
 
 const MenuFabar = styled.a`
-  //border: solid 2px green;
   display: none;
   @media screen and (max-width: 977px) {
     display: block;
@@ -63,13 +57,11 @@ const MenuFabar = styled.a`
   }
 `;
 const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
-  //border: solid blue 2px;
   width: 100%;
   height: 10vh;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  //margin-right: 1.5rem;
   @media screen and (max-width: 977px) {
     width: ${(props) => (props.InitialNav ? '20vw' : '25vw')};
     height: ${(props) => (props.InitialNav ? '35vh' : '45vh')};
@@ -87,7 +79,6 @@ const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
     transform: ${({ Menu }) => {
       return Menu ? 'translatex(25%)' : 'translateX(100%)';
     }};
-    //  transition: transform 1s ease-in-out;
   }
   @media screen and (max-width: 710px) {
     width: ${(props) => (props.InitialNav ? '24vw' : '29vw')};
@@ -106,7 +97,6 @@ const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
   }
 `;
 const Div = styled.div<{ Text?: any }>`
-  //border: solid blue 2px;
   margin: 0.7rem;
   font-size: 1rem;
   font-weight: bolder;
@@ -131,7 +121,6 @@ const Img = styled.img`
   }
 `;
 const Info = styled.div`
-  // border: solid red 2px;
   display: flex;
   justify-content: center;
   align-items: center;

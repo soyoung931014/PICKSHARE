@@ -8,7 +8,6 @@ import { useEffect } from 'react';
 import Footer from '../Footer/Footer';
 
 const Wrapper = styled.div`
-  // border: solid red 3px;
   padding: 10px;
   width: 100%;
   height: 100vh;
@@ -36,7 +35,6 @@ const Img = styled.img`
   }
 `;
 const Subsection = styled.section`
-  // border: dotted 2px red;
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -69,7 +67,6 @@ const Line0 = styled.div`
   }
 `;
 const Line1 = styled.div`
-  // border: solid red 2px;
   font-weight: 700;
   font-size: 3rem;
   margin-bottom: 0.4rem;
@@ -136,7 +133,6 @@ const Icon3 = styled(IoIosPeople)`
   height: 7rem;
 `;
 const Subsection3 = styled.div`
-  //border: solid black 2px;
   width: 100%;
   height: 100%;
   display: flex;
@@ -147,16 +143,13 @@ const Subsection3 = styled.div`
   }
 `;
 const Subsection2 = styled.div`
-  //border: solid 2px red;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  //background-color: #eaeef0;
 `;
 const SubTitle = styled.div`
-  // border: solid red 2px;
   margin-top: 3rem;
   font-size: 2.5rem;
   font-weight: 800;
@@ -166,7 +159,6 @@ const SubTitle = styled.div`
   }
 `;
 const ServiceWrapper = styled.div`
-  // border: solid 2px red;
   margin-top: 10px;
   width: 15rem;
   display: flex;
@@ -193,7 +185,6 @@ const ServiceContent = styled.div`
 `;
 
 const Div = styled.div`
-  //border: solid red 2px;
   display: flex;
   flex-direction: column;
   justify-content: center;

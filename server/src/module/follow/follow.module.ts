@@ -3,17 +3,16 @@ import { FollowService } from './follow.service';
 import { FollowController } from './follow.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FollowRepository } from './follow.repository';
-import { UserModule } from '../user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { UserRepository } from '../user/user.repository';
 
 @Module({
-  imports:[
+  imports: [
     TypeOrmModule.forFeature([FollowRepository]),
     TypeOrmModule.forFeature([UserRepository]),
-    PassportModule.register({ defaultStrategy: 'jwt' })
+    PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   providers: [FollowService],
-  controllers: [FollowController]
+  controllers: [FollowController],
 })
 export class FollowModule {}
