@@ -51,7 +51,6 @@ const Button = styled.button`
 
 // 🚀 위 컴포넌트에서 게시글 번호 받아오기
 function CommentSection({ user, boardId }: any) {
-  console.log(user, boardId);
   const { isLogin, accessToken } = user;
   const { email } = user.userInfo;
   const inputComment: any = useRef();
@@ -75,7 +74,6 @@ function CommentSection({ user, boardId }: any) {
         if (res.status === 201) {
           setUpdateComment(!updatecomment);
           inputComment.current.value = '';
-          console.log(res);
         } else {
           return;
         }
