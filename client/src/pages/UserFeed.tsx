@@ -163,7 +163,6 @@ export default function UserFeed() {
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
-  const [counts, setCounts] = useState(0);
   const path = window.location.pathname.split('/')[2];
   const [following, setFollowing]: any[] = useState({
     id: '',
@@ -246,10 +245,6 @@ export default function UserFeed() {
     };
     await getFollowerList();
 
-    const countFeed = async () => {
-      return await setCounts(userfeedlist.length);
-    };
-    await countFeed();
   }, [follow]);
 
   useEffect(() => {
@@ -314,7 +309,7 @@ export default function UserFeed() {
             <UserDescribe>
               <div>
                 <UserFollowInfo>게시물</UserFollowInfo>
-                <UserFollowInfo>{counts}</UserFollowInfo>
+                <UserFollowInfo>{userfeedlist.length}</UserFollowInfo>
               </div>
               <div>
                 <UserFollowInfo onClick={handleModalOn}>팔로잉</UserFollowInfo>
