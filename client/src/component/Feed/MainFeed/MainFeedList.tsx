@@ -14,6 +14,7 @@ import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
 import profileImg from '../../../img/profileImg.png'
 
 const Div = styled.div`
+  width: 20rem;
   aspect-ratio: 262 / 302;
   background-color: white;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
