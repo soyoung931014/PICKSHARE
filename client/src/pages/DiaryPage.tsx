@@ -33,24 +33,8 @@ import {
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 import Nav from '../component/Nav/Nav';
 import Footer from '../component/Footer/Footer';
-/*
-Container
-  Left
-    Drawing
-      Board
-      Palette
-    Photo
-  Right
-    Title
-    Date
-    Mood
-    Lock
-    Content
-    Button
-*/
 
 const Container = styled.section`
-  // border: solid 2px green;
   height: 100%;
   background-image: url(${background});
   background-size: cover;
@@ -85,8 +69,6 @@ const BookMark = styled.div`
   top: -230px;
 
   @media screen and (max-width: 1374px) {
-    /*  top: 0px;
-    left: -300px; */
     display: none;
   }
 `;
@@ -107,7 +89,6 @@ const Book = styled.button<{ Yellow?: any }>`
   }
 `;
 const LeftWrapper = styled(wrapperStyle)`
-  //border: red solid 1px;
   box-shadow: 1px 4px 10px var(--color-shadow);
   display: flex;
   flex-direction: column;
@@ -131,7 +112,6 @@ const ImgDiv = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* //::backdropmargin: 1rem; */
   width: 90%;
   height: 90%;
 `;
@@ -146,7 +126,6 @@ const RightWrapper = styled(wrapperStyle)`
   border-right: #b1b0b0 solid 3px;
   form.form-wrapper {
     height: 100%;
-    //  border: solid red 2px;
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
@@ -186,7 +165,6 @@ const RightWrapper = styled(wrapperStyle)`
   }
   div.lock {
       width: 5rem;
-     // border: solid 2px red;
       padding-left: -16px;
     &:hover {
       cursor: pointer;
@@ -222,21 +200,18 @@ const LeftSide = styled.div`
   img {
     // 프로필 이미지
     box-sizing: border-box;
-    //margin-left: 2rem;
-    //aspect-ratio: 262 / 252.46;
+
     width: 90%;
     height: 100%;
     padding-top: 2px;
     position: relative;
     top: -5px;
-    //border: solid red 2px;
   }
   img.board {
     // 파일있는 이미지
     box-sizing: border-box;
     margin-left: 2rem;
     margin-top: 3px;
-    //aspect-ratio: 262 / 252.46;
     width: 90%;
     height: 100%;
     border-radius: 10px;
@@ -249,35 +224,28 @@ const LeftInfo = styled.div`
   padding-right: 25px;
   padding-left: 25px;
   margin-top: 10px;
-
   justify-content: center;
   align-items: center;
-  //border: red 1px solid;
   row-gap: 1rem;
   column-gap: 0.3rem;
-  //box-shadow: 0px 5px 10px #3c4a5645;
 `;
 const UserImg = styled.img`
   width: 70px;
   height: 75px;
   border-radius: 100%;
-  // border: solid 2px #ffb8bc;
 `;
 const WordInfo = styled.div`
   display: grid;
   grid-template-rows: 1fr 1fr;
   row-gap: 1rem;
   div {
-    /* display: flex;
-    justify-content: center; */
     text-align: center;
-    //border: red 1px solid;
+
     border-radius: 1rem;
     padding: 0.5rem;
     box-shadow: 1px 1px 4px var(--color-shadow);
     background-color: #fbedfa;
     font-size: 20px;
-    // box-shadow: 0px 5px 10px #3c4a5645;
     font-weight: 500;
     color: #494848;
   }
@@ -290,7 +258,6 @@ const ImoInfo = styled.div`
   div {
     display: flex;
     justify-content: center;
-    //border: red 1px solid;
     border-radius: 1rem;
     padding: 0.5rem;
     box-shadow: 1px 1px 4px var(--color-shadow);
@@ -299,7 +266,6 @@ const ImoInfo = styled.div`
   }
 `;
 const RightSide = styled.div`
-  // border: 1px red solid;
   width: 100%;
   height: 100%;
   display: grid;
@@ -313,7 +279,6 @@ const RightSide = styled.div`
     padding-left: 5px;
   }
   div.write_content {
-    /* / padding: 0.7rem; */
     box-shadow: 0px 5px 8px #3c4a5645;
     padding-top: 1.2rem;
     font-weight: 500;
@@ -330,7 +295,6 @@ const SubBookMark = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  //border: solid blue 2px;
   width: 90%;
   height: 3rem;
   @media screen and (min-width: 1374px) {
@@ -343,7 +307,6 @@ const SubBookMarkContent = styled.div<{ Picture?: any }>`
   font-size: 1.5rem;
   height: 2.6rem;
   border-radius: 10px;
-  //border: solid red 2px;
   text-align: center;
   background-color: ${(props) => (props.Picture ? '#FFB7BC' : '#fdf5bd')};
   &:hover {
@@ -543,11 +506,6 @@ const DiaryPage = () => {
 
   return (
     <>
-      {
-        // 일단 클릭시 보여지는 페이지-> 클릭 가능: 메인피드리스트
-        // 유저아이디 같으면 수정버튼보여야함
-        // 수정버튼 누르면 수정페이지로
-      }
       <Nav />
       <Container>
         {

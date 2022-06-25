@@ -25,8 +25,7 @@ export class TokenService extends PassportStrategy(Strategy) {
   // 토큰 검증
   async validate(payload) {
     const { email, access_token, loginMethod } = payload;
-    /* console.log(payload, 'fdfdfd');
-    console.log(access_token); */
+
     try {
       if (loginMethod === 2) {
         const findKakaoEmail = await axios.get(
@@ -52,7 +51,6 @@ export class TokenService extends PassportStrategy(Strategy) {
         if (!user) {
           throw new UnauthorizedException('유저 없음');
         }
-        // console.log(user, '일반 로그인 유저');
         return user;
       }
     } catch (error) {
@@ -61,14 +59,11 @@ export class TokenService extends PassportStrategy(Strategy) {
       }
       console.log(error.response.status);
     }
-    // return 값은 @UseGuards(AuthGuard())를 이용한 모든 요청의 Request Object에 들어간다.
   }
 
-  // 토큰 안에 들어있는 유저 정보를 편집해서(비밀번호 빼고) 클라이언트에 보내주는 함수
   async userInfo(
     req,
   ): Promise<{ message: string; data: object; statusCode: number }> {
-    //console.log(req.user, '유저');
     const {
       id,
       email,

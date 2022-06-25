@@ -10,7 +10,6 @@ import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
 import { addUserInfo, deleteUserInfo } from '../../../redux/actions/index';
-//import api from '../../../api/user';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import background from '../../../img/feedBG.jpg';
@@ -27,7 +26,6 @@ const Wrapper = styled.div`
 `;
 
 const Book = styled.div`
-  //border: solid 2px red;
   height: 100vh;
   width: 90vw;
   display: flex;
@@ -50,7 +48,6 @@ const Left = styled.div`
   height: 85vh;
   padding-left: 1em;
   background-color: white;
-  //border: dotted 2px green;
   border-radius: 30px 20px 20px 30px;
   box-shadow: 10px 10px 30px #3c4a5645;
   border-right: #b1b0b0 solid 2px;
@@ -65,7 +62,6 @@ const Right = styled.div`
   height: 85vh;
   background-color: white;
   padding-left: 1em;
-  //border: solid 2px black;
   box-shadow: 30px 10px 10px #3c4a5645;
   border-left: #b1b0b0 solid 2px;
   @media screen and (max-width: 1190px) {
@@ -82,7 +78,6 @@ const Index = styled.div`
   display: flex;
   flex-direction: column;
   height: 80vh;
-  //border: solid 2px black;
 `;
 const TagHome = styled.img`
   width: 7rem;
@@ -95,7 +90,6 @@ const TagHome = styled.img`
   @media screen and (max-width: 891px) {
     display: none;
   }
-  //border: solid 2px black;
 `;
 const TagSignin = styled.img`
   width: 11rem;
@@ -108,13 +102,8 @@ const TagSignin = styled.img`
   @media screen and (max-width: 891px) {
     display: none;
   }
-  /* @media screen and (max-width: 891px) {
-    width: 8rem;
-  } */
-  //border: solid 2px black;
 `;
 const TagSignup = styled.img`
-  //border: solid 2px black;
   width: 8rem;
   height: 5rem;
   cursor: pointer;
@@ -127,15 +116,10 @@ const TagSignup = styled.img`
   @media screen and (max-width: 891px) {
     display: none;
   }
-  /*  @media screen and (max-width: 891px) {
-    width: 6rem;
-  } */
 `;
 const SubTags = styled.div`
-  /* border: solid red 2px; */
   display: flex;
   justify-content: center;
-  //align-items: center;
   height: 3.2rem;
   box-shadow: 15px 10px 15px #3c4a5645;
 
@@ -147,7 +131,6 @@ const Tab = styled.div`
   width: 10vw;
 `;
 const SubTagHome = styled.div`
-  //border: solid green 2px;
   width: 30vw;
   height: 3.2rem;
   padding-top: 15px;
@@ -195,7 +178,6 @@ const Img = styled.img`
   bottom: 10px;
 `;
 const LoginBox = styled.div`
-  // border: solid 2px red;
   height: 80vh;
   display: flex;
   flex-direction: column;
@@ -204,26 +186,14 @@ const LoginBox = styled.div`
   box-sizing: border-box;
 `;
 const Title = styled.div`
-  //border: solid 2px teal;
   font-size: 2rem;
   font-weight: 900;
   margin-top: 2.5rem;
   background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
-  /*  @media screen and (max-width: 891px) {
-    font-size: 1.7rem;
-  }
-  @media screen and (max-width: 575px) {
-    font-size: 1.4rem;
-  }
-  @media screen and (max-width: 440px) {
-    font-size: 1rem;
-  } */
 `;
 const Form = styled.form`
-  // border: dotted 2px red;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -238,28 +208,18 @@ const Form = styled.form`
   }
 `;
 const InputBox = styled.div<{ button?: any }>`
-  //border: solid 2px aqua;
   height: 3.3rem;
   margin-top: ${(props) => (props.button ? '2rem' : '0')};
   box-sizing: border-box;
 `;
 const Message = styled.div`
-  // border: solid 2px green;
   width: 100vw;
-
   height: 1.7rem;
   padding-top: 3px;
   box-sizing: border-box;
   font-size: 15px;
-  //text-align: left;
   position: relative;
   color: #ff8686;
-  /* @media screen and (max-width: 1190px) {
-    font-size: 13px;
-  } */
-  /* @media screen and (max-width: 891px) {
-    display: none;
-  } */
 `;
 const Input = styled.input`
   height: 3rem;
@@ -274,17 +234,8 @@ const Input = styled.input`
   border: 0;
   box-sizing: border-box;
   opacity: 0.6;
-  /*  @media screen and (max-width: 737px) {
-    width: 12rem;
-    height: 3rem;
-  }
-  @media screen and (max-width: 640px) {
-    width: 9rem;
-    height: 3rem;
-  } */
 `;
 const Button = styled.button`
-  //border: solid 2px green;
   width: 18rem;
   height: 3rem;
   border-radius: 30px;
@@ -298,15 +249,8 @@ const Button = styled.button`
   font-size: large;
   font-weight: bold;
   color: white;
-  /*  @media screen and (max-width: 737px) {
-    width: 12rem;
-  }
-  @media screen and (max-width: 640px) {
-    width: 9rem;
-  } */
 `;
 const ButtonKakao = styled.button`
-  //border: solid 2px green;
   width: 18rem;
   height: 3rem;
   border-radius: 30px;
@@ -320,12 +264,6 @@ const ButtonKakao = styled.button`
   background-color: #fdf772;
   cursor: pointer;
   margin-top: 0.7rem;
-  /*  @media screen and (max-width: 737px) {
-    width: 12rem;
-  }
-  @media screen and (max-width: 640px) {
-    width: 9rem;
-  } */
 `;
 const Div = styled.div`
   height: 2rem;
@@ -335,14 +273,9 @@ const Div = styled.div`
   font-size: 0.9rem;
   margin-top: 0.7rem;
   padding: 0.7rem 0rem;
-  //border: solid 2px green;
-  /*  @media screen and (max-width: 575px) {
-    font-size: 0.5rem;
-  } */
 `;
 
 const Box = styled.div`
-  //border: red solid 2px;
   display: flex;
   justify-content: center;
   text-align: center;
@@ -413,16 +346,13 @@ function Login(props: any) {
       try {
         await loginApi.login(userInfo).then((res) => {
           const { accessToken, loginMethod } = res.data.data; //refreshToken
-          //console.log(accessToken, loginMethod);
           if (accessToken) {
             void tokenVerification(accessToken);
-            //void tokenVerification();
           } else {
             console.log('토큰이 없습니다.');
           }
         });
       } catch (error) {
-        //console.log('로그인 실패');
         alert(
           '아이디 또는 비밀번호를 잘못 입력했습니다. 입력하신 내용을 다시 확인해주세요'
         );
@@ -435,7 +365,6 @@ function Login(props: any) {
     try {
       await loginApi.token(token).then((res) => {
         const { userInfo } = res.data.data;
-        // console.log(userInfo);
         if (userInfo) {
           userInfoToStore(userInfo, token);
           navigate('/mainfeed', { replace: true });
@@ -448,12 +377,9 @@ function Login(props: any) {
     }
   };
 
-  //console.log(process.env, 'enenene');
   const handleKakaoLogin = (e: any) => {
     e.preventDefault();
-    //console.log(Kakao);
     window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CODE}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT}&response_type=code&state=kakao`;
-    //navigate(window.location.href);
   };
 
   return (
@@ -560,9 +486,7 @@ function Login(props: any) {
   );
 }
 
-//redux로 상태관리
 const mapStateToProps = (state: object) => {
-  //console.log(state);
   return {
     user: state,
   };

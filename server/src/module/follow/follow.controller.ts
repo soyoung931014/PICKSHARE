@@ -26,16 +26,13 @@ export class FollowController {
   @UseGuards(AuthGuard())
   postFollowing(
     @GetUser() user: User,
-    //have to make pipe that validate whether nickname is same with user's nickname or not
     @Body('followingNickname') followingNickname: string,
   ): Promise<Follow[]> {
     return this.followService.postFollowing(user, followingNickname);
   }
 
   @Get('/following')
-  getFollowingList(
-    @Query('nickname') nickname: string,
-  ): Promise<Follow[]> {
+  getFollowingList(@Query('nickname') nickname: string): Promise<Follow[]> {
     return this.followService.getFollowingList(nickname);
   }
 
@@ -49,9 +46,7 @@ export class FollowController {
   }
 
   @Get('/follower')
-  getFollowerList(
-    @Query('nickname') nickname: string,
-  ): Promise<Follow[]> {
+  getFollowerList(@Query('nickname') nickname: string): Promise<Follow[]> {
     return this.followService.getFollowerList(nickname);
   }
 

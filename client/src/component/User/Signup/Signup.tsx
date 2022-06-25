@@ -5,8 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -24,7 +23,6 @@ const Wrapper = styled.div`
   background-image: url(${background});
 `;
 const Book = styled.div`
-  //border: solid 2px red;
   height: 100vh;
   width: 90vw;
   display: flex;
@@ -47,7 +45,6 @@ const Left = styled.div`
   height: 85vh;
   padding-left: 1em;
   background-color: white;
-  //border: dotted 2px green;
   border-radius: 30px 20px 20px 30px;
   box-shadow: 10px 10px 30px #3c4a5645;
   border-right: #b1b0b0 solid 2px;
@@ -61,7 +58,6 @@ const Right = styled.div`
   height: 85vh;
   background-color: white;
   padding-left: 1em;
-  //border: solid 2px black;
   border-radius: 20px 30px 30px 20px;
   box-shadow: 30px 10px 10px #3c4a5645;
   border-left: #b1b0b0 solid 2px;
@@ -79,7 +75,6 @@ const Index = styled.div`
   display: flex;
   flex-direction: column;
   height: 80vh;
-  //border: solid 2px black;
 `;
 const TagHome = styled.img`
   width: 7rem;
@@ -92,7 +87,6 @@ const TagHome = styled.img`
   @media screen and (max-width: 891px) {
     display: none;
   }
-  //border: solid 2px black;
 `;
 const TagSignin = styled.img`
   width: 11rem;
@@ -105,10 +99,8 @@ const TagSignin = styled.img`
   @media screen and (max-width: 891px) {
     display: none;
   }
-  //border: solid 2px black;
 `;
 const TagSignup = styled.img`
-  //border: solid 2px black;
   width: 8rem;
   height: 5rem;
   cursor: pointer;
@@ -123,7 +115,6 @@ const TagSignup = styled.img`
   }
 `;
 const SubTags = styled.div`
-  /* border: solid red 2px; */
   display: flex;
   justify-content: center;
   height: 3.2rem;
@@ -305,7 +296,6 @@ const Box = styled.div`
   text-align: center;
 `;
 const BoxMessage = styled.div`
-  // border: solid 2px tomato;
   display: flex;
   margin-left: 5.3rem;
   padding-right: 7rem;
@@ -408,15 +398,12 @@ function Signup() {
   //비밀번호 중복검사 필터
   const passwordRegExp = /^[a-zA-z0-9]{4,12}$/;
 
-  //useEffect(() => {}, [emailcheck]);
-
   const handleChangeState = (e: any) => {
     setSignupInfo({ ...signupInfo, [e.target.name]: e.target.value });
   };
 
   const handleEmailValidation = (e: any) => {
     handleChangeState(e);
-    // console.log(signupInfo);
     if (emailRegExp.test(e.target.value) === false) {
       setEmailCheckMessage('알맞은 형식의 이메일을 입력해주세요.');
     } else {
@@ -430,7 +417,6 @@ function Signup() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     e.preventDefault();
     const { email } = signupInfo;
-    // console.log(email);
     if (email === '') {
       setEmailCheckMessage('이메일을 적어주세요');
       inputEmail.current.focus();
@@ -444,12 +430,8 @@ function Signup() {
             console.log(res.data);
             setEmailCheckMessage('사용할 수 있는 이메일입니다.');
             setEmailCheck(email);
-            /* console.log(emailcheck);
-              console.log(signupInfo); */
           } else {
             setEmailCheckMessage('이미 사용중인 이메일입니다.');
-            /* console.log(emailcheck);
-              console.log(signupInfo); */
           }
         });
       } catch (error) {
@@ -586,7 +568,6 @@ function Signup() {
   const handleKakaoSignup = (e: any) => {
     e.preventDefault();
     window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CODE}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT}&response_type=code&state=kakao`;
-    //navigate(window.location.href);
   };
   return (
     <>

@@ -1,13 +1,11 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Board } from '../board/board.entity';
-import { User } from '../user/user.entity';
 import { Comment } from './comment.entity';
 import { CreateCommentDto } from './dto/create-comment-dto';
 
 @EntityRepository(Comment)
 export class CommentRepository extends Repository<Comment> {
   async createComment(
-    id: number, // user.id가 아닌 이유는 뭘까???
+    id: number,
     createCommentDto: CreateCommentDto,
     board_id: number,
   ): Promise<object> {

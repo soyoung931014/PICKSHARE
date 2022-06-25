@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LoginDto } from './dto/login-user.dto';
 import { SignUpDto } from './dto/singup-user.dto';
@@ -12,6 +8,7 @@ import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
+import { NotFoundError } from 'rxjs';
 require('dotenv').config();
 
 @Injectable()
@@ -123,9 +120,7 @@ export class UserService {
           },
         },
       );
-      /* console.log(tokenRequest, '토큰리퀘스트');
-      console.log(tokenRequest.data.access_token, 'token');
-      console.log(userInfoKakao, '토큰 정보'); */
+
       const { access_token } = tokenRequest.data;
       const { email } = userInfoKakao.data.kakao_account;
 
@@ -135,7 +130,6 @@ export class UserService {
       if (!userInfo) {
         const user = await this.userRepository.kakaoCreateUser(email);
         const { data, message, statusCode } = user;
-        // console.log(data, message, statusCode);
         const accessToken = this.token.sign({
           access_token,
           ...data,
@@ -178,8 +172,8 @@ export class UserService {
       nickname: userNickname,
     });
 
-    if (!info) {
-      throw new NotFoundException(`Can't find user nickname ${userNickname}`);
+    if(!info){
+      throw new NotFoundException(`Can't find user nickname ${userNickname}`); 
     }
 
     return {

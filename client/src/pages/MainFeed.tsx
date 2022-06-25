@@ -101,7 +101,6 @@ const FooterDiv = styled.div`
   padding-top: 10px;
   border-top: solid gray 1px;
 `;
-//https://studiomeal.com/archives/533
 export default function MainFeed() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
