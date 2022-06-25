@@ -167,7 +167,9 @@ export default function MainFeedList({
 
   let urlSlice = window.location.pathname.split('/')[2];
 
-  useEffect(() => {}, [render]);
+  useEffect(() => {
+    console.log(nickname)
+  }, [render]);
 
   return (
     <Div>
@@ -186,16 +188,21 @@ export default function MainFeedList({
             : <UserImg src={userImage} />
           }
           <UserDiv>
-            {userInfo.nickname === urlSlice ? (
-              <Title>{title}</Title>
-            ) : (
-              <UserNickname
-                className="nickname"
-                onClick={() => moveToUsersFeed(nickname)}
-              >
-                {nickname}
-              </UserNickname>
-            )}
+            {
+              isLogin &&
+              userInfo.nickname === urlSlice ? (
+              //로그인 상태인지 아닌지
+              //내 피드일 때 타이틀 아닐 때 닉네임
+                <Title>{title}</Title>
+              ) : (
+                <UserNickname
+                  className="nickname"
+                  onClick={() => moveToUsersFeed(nickname)}
+                >
+                  {nickname}
+                </UserNickname>
+              )
+            }
             <DateDiv>{date}</DateDiv>
           </UserDiv>
         </ContentRightDiv>
