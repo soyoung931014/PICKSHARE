@@ -9,7 +9,7 @@ import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { useDispatch } from 'react-redux';
 import Modal from '../component/Modal/Modal';
-import { deleteBoardInfo, editOnAction, modalOnAction } from '../redux/actions';
+import { deleteBoardInfo, diaryOnAction, modalOnAction } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../component/Footer/Footer';
 
@@ -189,7 +189,7 @@ export default function UserFeed() {
   const writeNewDiary = () => {
     //새로 만들기
     dispatch(deleteBoardInfo());
-    dispatch(editOnAction);
+    dispatch(diaryOnAction);
     navigate('/diary');
   };
   const handleFollow = async () => {
