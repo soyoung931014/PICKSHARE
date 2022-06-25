@@ -16,16 +16,6 @@ const UserImage = styled.img`
   overflow: hidden;
 `;
 const UserNick = styled.div``;
-const FollowButton = styled.button`
-  background-color: white;
-  border-radius: 20px;
-  width: 94px;
-  height: 37px;
-  box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
-  &:hover {
-    cursor: pointer;
-  }
-`;
 
 export default function FollowerList(props: any) {
   const [userlist, setUserlist]: any[] = useState({
