@@ -107,8 +107,10 @@ const UserFollowInfo = styled.div`
 `;
 const Feed = styled.div`
   display: grid;
-  gap: 2rem;
+  column-gap: 5rem;
+  row-gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
+  justify-content: start;
 `;
 const PlusButton = styled.div<{ Hidden?: any }>`
   visibility: ${(props) => (
