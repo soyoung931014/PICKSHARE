@@ -126,7 +126,6 @@ const SubTags = styled.div`
   /* border: solid red 2px; */
   display: flex;
   justify-content: center;
-  //align-items: center;
   height: 3.2rem;
   box-shadow: 15px 10px 15px #3c4a5645;
 
@@ -138,7 +137,6 @@ const Tab = styled.div`
   width: 10vw;
 `;
 const SubTagHome = styled.div`
-  //border: solid green 2px;
   width: 30vw;
   height: 3.2rem;
   padding-top: 15px;
@@ -186,7 +184,6 @@ const Img = styled.img`
   bottom: 10px;
 `;
 const LoginBox = styled.div`
-  // border: solid 2px red;
   height: 80vh;
   display: flex;
   flex-direction: column;
@@ -195,7 +192,6 @@ const LoginBox = styled.div`
   box-sizing: border-box;
 `;
 const Title = styled.div`
-  //border: solid 2px teal;
   font-size: 2rem;
   font-weight: 900;
   margin-top: 2.5rem;
@@ -210,7 +206,6 @@ const Title = styled.div`
   }
 `;
 const Form = styled.form`
-  //border: dotted 3px blue;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -225,30 +220,21 @@ const Form = styled.form`
   }
 `;
 const InputBox = styled.div<{ button?: any }>`
-  // border: solid 2px aqua;
   height: 3.4rem;
   margin-top: ${(props) => (props.button ? '0' : '0')};
   box-sizing: border-box;
 `;
 const Message = styled.div<{ PasswordCheck?: any }>`
-  //border: solid 2px green;
   width: 100vw;
   height: 1.7rem;
   padding-top: 3px;
   box-sizing: border-box;
   font-size: 15px;
-
-  // text-align: center;
-  /* position: relative;
-  left: 12rem; */
+  text-align: flex-start;
   color: #ff8686;
   @media screen and (max-width: 1194px) {
     font-size: ${(props) => (props.PasswordCheck ? '14px' : '15px')};
   }
-
-  /*  @media screen and (max-width: 431px) {
-    font-size: ${(props) => (props.PasswordCheck ? '14px' : '15px')};
-  } */
 `;
 const Input = styled.input<{ Password?: any }>`
   height: 3rem;
@@ -265,7 +251,6 @@ const Input = styled.input<{ Password?: any }>`
 `;
 
 const Button = styled.button`
-  //border: solid 2px black;
   width: 17rem;
   height: 3rem;
   border-radius: 30px;
@@ -296,15 +281,8 @@ const TwinCheckButton = styled.button`
   cursor: pointer;
   font-weight: bold;
   color: white;
-  /* @media screen and (max-width: 890px) {
-    font-size: 14px;
-  }
-  @media screen and (max-width: 820px) {
-    font-size: 10px;
-  } */
 `;
 const ButtonKakao = styled.button`
-  //border: solid 2px green;
   width: 17rem;
   height: 3rem;
   border-radius: 30px;
@@ -321,96 +299,84 @@ const ButtonKakao = styled.button`
 `;
 
 const Box = styled.div`
-  //border: red solid 2px;
   margin: 3px 0;
   display: flex;
   justify-content: center;
   text-align: center;
 `;
 const BoxMessage = styled.div`
+  // border: solid 2px tomato;
   display: flex;
   margin-left: 5.3rem;
-  text-align: flex-start;
   padding-right: 7rem;
-  //border: solid 2px tomato;
   width: 50vw;
   margin-left: 12rem;
-  @media screen and (max-width: 1330px) {
+  padding-left: 100px;
+
+  @media screen and (max-width: 1750px) {
     margin-left: 10rem;
   }
-  @media screen and (max-width: 1200px) {
-    margin-left: 9rem;
+
+  @media screen and (max-width: 1670px) {
+    margin-left: 8.4rem;
+  }
+  @media screen and (max-width: 1545px) {
+    margin-left: 7rem;
+  }
+  @media screen and (max-width: 1400px) {
+    margin-left: 6rem;
+  }
+  @media screen and (max-width: 1330px) {
+    margin-left: 5rem;
+  }
+  @media screen and (max-width: 1240px) {
+    margin-left: 3.5rem;
   }
   @media screen and (max-width: 1160px) {
-    margin-left: 7.8rem;
+    margin-left: 3rem;
   }
-  @media screen and (max-width: 1024px) {
-    margin-left: 7rem;
+  @media screen and (max-width: 1091px) {
+    margin-left: 2rem;
   }
-  @media screen and (max-width: 978px) {
-    margin-left: 6rem;
+  @media screen and (max-width: 959px) {
+    margin-left: 0.5rem;
+    width: 80vw;
+  }
+  @media screen and (max-width: 924px) {
+    margin-left: 0;
+    width: 80vw;
   }
   @media screen and (max-width: 891px) {
-    //text-align: center;
-    margin-left: 8rem;
+    margin-left: 2rem;
   }
   @media screen and (max-width: 800px) {
-    //text-align: center;
-    margin-left: 7rem;
+    margin-left: 1rem;
     width: 70vw;
   }
-  @media screen and (max-width: 791px) {
-    //text-align: center;
-    margin-left: 6.8rem;
-  }
+
   @media screen and (max-width: 710px) {
-    //text-align: center;
-    margin-left: 5rem;
+    margin-left: 0rem;
+    padding-left: 90px;
   }
   @media screen and (max-width: 620px) {
-    //text-align: center;
-    margin-left: 4rem;
-    width: 80vw;
+    padding-left: 60px;
   }
-  @media screen and (max-width: 572px) {
-    //text-align: center;
-    margin-left: 3rem;
-    width: 80vw;
+  @media screen and (max-width: 530px) {
+    padding-left: 30px;
   }
-  @media screen and (max-width: 513px) {
-    //text-align: center;
-    margin-left: 8rem;
+  @media screen and (max-width: 515px) {
+    padding-left: 8rem;
     width: 100vw;
   }
-  @media screen and (max-width: 483px) {
-    //text-align: center;
-    margin-left: 6.8rem;
-    // width: 100vw;
+  @media screen and (max-width: 449px) {
+    padding-left: 6rem;
   }
-  @media screen and (max-width: 443px) {
-    //text-align: center;
-    margin-left: 6rem;
-    // width: 100vw;
-  }
-  @media screen and (max-width: 420px) {
-    //text-align: center;
-    margin-left: 5rem;
-    // width: 100vw;
-  }
-  @media screen and (max-width: 390px) {
-    //text-align: center;
-    margin-left: 4rem;
-    // width: 100vw;
-  }
-  @media screen and (max-width: 369px) {
-    //text-align: center;
-    margin-left: 3rem;
-    // width: 100vw;
+  @media screen and (max-width: 380px) {
+    padding-left: 3rem;
   }
 `;
 
 function Signup() {
-  const { Kakao } = window as any;
   const navigate = useNavigate();
 
   const inputEmail: any = useRef();

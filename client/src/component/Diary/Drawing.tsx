@@ -6,8 +6,10 @@ import { v4 as uuidv4 } from 'uuid';
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
 const DiaryWrap = styled.div`
-  width: 100%;
-  height: 100%;
+  border: #a396f8 solid 2px;
+  border-radius: 10px;
+  width: 90%;
+  height: 90%;
 
   h3 {
     text-align: center;
@@ -113,7 +115,7 @@ export default function Drawing({
   boardInput,
   setBoardInput,
   setPickWay,
-  pickWay
+  pickWay,
 }: drawingProps) {
   const canvasRef = useRef(null);
   const inputFile: any = useRef();
@@ -229,10 +231,10 @@ export default function Drawing({
   function dataURItoBlob(dataURI: string) {
     var binary = atob(dataURI.split(',')[1]);
     var array = [];
-    for(var i = 0; i < binary.length; i++) {
-        array.push(binary.charCodeAt(i));
+    for (var i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
     }
-    return new Blob([new Uint8Array(array)], {type: 'image/png'});
+    return new Blob([new Uint8Array(array)], { type: 'image/png' });
   }
 
   // function dataURLtoFile(dataurl: string) {
@@ -256,13 +258,13 @@ export default function Drawing({
     // link.href = image;
     // link.download = 'Print';
     // link.click();
-    setPickWay(1)
+    setPickWay(1);
     alert('그림이 추가되었습니다.');
 
     // setDrawingImg(image)
 
     const newFileName = uuidv4();
-    const imgfile= dataURItoBlob(image)
+    const imgfile = dataURItoBlob(image);
 
     const upload = new AWS.S3.ManagedUpload({
       params: {
@@ -278,7 +280,7 @@ export default function Drawing({
       function (data: { Location: any }) {
         setBoardInput({
           ...boardInput,
-          ["picture"]: data.Location,
+          ['picture']: data.Location,
         });
       },
       function (err: any) {

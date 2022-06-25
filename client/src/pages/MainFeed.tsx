@@ -9,10 +9,7 @@ import { BiSearch } from 'react-icons/bi';
 import { debounce } from 'debounce';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import {
-  deleteBoardInfo,
-  diaryOnAction,
-} from '../redux/actions';
+import { deleteBoardInfo, diaryOnAction } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../component/Footer/Footer';
 
@@ -62,6 +59,7 @@ const SearchInput = styled.input`
   outline: none;
   border: 0;
   height: 2rem;
+  padding-left: 15px;
   &::placeholder {
     font-style: italic;
     text-align: center;
@@ -97,6 +95,11 @@ const Feed = styled.div`
   display: grid;
   gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
+`;
+const FooterDiv = styled.div`
+  padding-left: 25px;
+  padding-top: 10px;
+  border-top: solid gray 1px;
 `;
 //https://studiomeal.com/archives/533
 export default function MainFeed() {
@@ -189,47 +192,51 @@ export default function MainFeed() {
   }, [render]);
 
   return (
-    <Wrapper>
-      <Nav />
-      <Div>
-        <UpperDiv>
-          <ButtonDiv>
-            <Button onClick={sortFeedByRecent} className="left">
-              최신순 |
-            </Button>
-            <Button onClick={sortFeedByHeart}>인기순</Button>
-          </ButtonDiv>
-          <UpperRightDiv>
-            <form>
-              <SearchBar>
-                <SearchInput
-                  name="searchBar"
-                  type={'text'}
-                  placeholder="유저 검색"
-                  onChange={handleSearchInput}
-                />
-                <SearchIcon type="button" onClick={selectFeed}>
-                  <BiSearch size={'1.7rem'} />
-                </SearchIcon>
-              </SearchBar>
-            </form>
-            <PlusButton onClick={writeNewDiary}> + </PlusButton>
-          </UpperRightDiv>
-        </UpperDiv>
-        <Feed>
-          {feedlist.id === ''
-            ? '피드가 없습니다'
-            : feedlist.map((el: any) => (
-                <MainFeedList
-                  {...el}
-                  key={el.id}
-                  render={render}
-                  setRender={setRender}
-                />
-              ))}
-        </Feed>
-      </Div>
-      <Footer />
-    </Wrapper>
+    <>
+      <Wrapper>
+        <Nav />
+        <Div>
+          <UpperDiv>
+            <ButtonDiv>
+              <Button onClick={sortFeedByRecent} className="left">
+                최신순 |
+              </Button>
+              <Button onClick={sortFeedByHeart}>인기순</Button>
+            </ButtonDiv>
+            <UpperRightDiv>
+              <form>
+                <SearchBar>
+                  <SearchInput
+                    name="searchBar"
+                    type={'text'}
+                    placeholder="유저 검색"
+                    onChange={handleSearchInput}
+                  />
+                  <SearchIcon type="button" onClick={selectFeed}>
+                    <BiSearch size={'1.7rem'} />
+                  </SearchIcon>
+                </SearchBar>
+              </form>
+              <PlusButton onClick={writeNewDiary}> + </PlusButton>
+            </UpperRightDiv>
+          </UpperDiv>
+          <Feed>
+            {feedlist.id === ''
+              ? '피드가 없습니다'
+              : feedlist.map((el: any) => (
+                  <MainFeedList
+                    {...el}
+                    key={el.id}
+                    render={render}
+                    setRender={setRender}
+                  />
+                ))}
+          </Feed>
+        </Div>
+        <FooterDiv>
+          <Footer />
+        </FooterDiv>
+      </Wrapper>
+    </>
   );
 }

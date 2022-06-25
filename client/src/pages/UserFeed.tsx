@@ -90,11 +90,17 @@ const Content = styled.div`
   margin: 0.5rem;
   margin-left: 1rem;
   width: 200px;
+  padding-top: 7px;
+  font-weight: 700;
+  color: #494949;
 `;
 const UserFollowInfo = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 4px;
+  font-weight: 700;
+  color: #494949;
   &:hover {
     cursor: pointer;
   }
@@ -121,6 +127,11 @@ const PlusButton = styled.div`
       cursor: pointer;
     }
   }
+`;
+const FooterDiv = styled.div`
+  padding-left: 25px;
+  padding-top: 10px;
+  border-top: solid gray 1px;
 `;
 
 export default function UserFeed() {
@@ -152,7 +163,6 @@ export default function UserFeed() {
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
-  const [counts, setCounts] = useState(0);
   const path = window.location.pathname.split('/')[2];
   const [following, setFollowing]: any[] = useState({
     id: '',
@@ -235,10 +245,6 @@ export default function UserFeed() {
     };
     await getFollowerList();
 
-    const countFeed = async () => {
-      return await setCounts(userfeedlist.length);
-    };
-    await countFeed();
   }, [follow]);
 
   useEffect(() => {
@@ -303,7 +309,7 @@ export default function UserFeed() {
             <UserDescribe>
               <div>
                 <UserFollowInfo>게시물</UserFollowInfo>
-                <UserFollowInfo>{counts}</UserFollowInfo>
+                <UserFollowInfo>{userfeedlist.length}</UserFollowInfo>
               </div>
               <div>
                 <UserFollowInfo onClick={handleModalOn}>팔로잉</UserFollowInfo>
@@ -345,7 +351,9 @@ export default function UserFeed() {
           />
         ) : null}
       </Div>
-      <Footer />
+      <FooterDiv>
+        <Footer />
+      </FooterDiv>
     </UserWapper>
   );
 }
