@@ -110,7 +110,10 @@ const Feed = styled.div`
   gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
 `;
-const PlusButton = styled.div`
+const PlusButton = styled.div<{ Hidden?: any }>`
+  visibility: ${(props) => (
+    props.Hidden ? 'hidden' : 'visible'
+  )};
   display: flex;
   justify-content: right;
   margin: 1rem 0;
@@ -163,7 +166,6 @@ export default function UserFeed() {
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: any) => userReducer.userInfo
   );
-  const [counts, setCounts] = useState(0);
   const path = window.location.pathname.split('/')[2];
   const [following, setFollowing]: any[] = useState({
     id: '',
@@ -246,11 +248,7 @@ export default function UserFeed() {
     };
     await getFollowerList();
 
-    const countFeed = async () => {
-      return await setCounts(userfeedlist.length);
-    };
-    await countFeed();
-  }, [follow]);
+  }, [follow, render]);
 
   useEffect(() => {
     //내 피드가져오기
@@ -314,7 +312,7 @@ export default function UserFeed() {
             <UserDescribe>
               <div>
                 <UserFollowInfo>게시물</UserFollowInfo>
-                <UserFollowInfo>{counts}</UserFollowInfo>
+                <UserFollowInfo>{userfeedlist.length}</UserFollowInfo>
               </div>
               <div>
                 <UserFollowInfo onClick={handleModalOn}>팔로잉</UserFollowInfo>
@@ -327,9 +325,18 @@ export default function UserFeed() {
             </UserDescribe>
           </UserInfo>
         </User>
-        <PlusButton>
-          <button onClick={writeNewDiary}> + </button>
-        </PlusButton>
+        {
+          userInfo.nickname === path
+          ?(
+            <PlusButton>
+              <button onClick={writeNewDiary}> + </button>
+            </PlusButton>
+          ) : (
+            <PlusButton Hidden >
+              <button > + </button>
+            </PlusButton>
+          )
+        }
         <Feed>
           {userfeedlist.id === ''
             ? `${userlist.nickname}님의 피드가 없습니다`

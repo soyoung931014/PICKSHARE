@@ -14,6 +14,7 @@ import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
 import profileImg from '../../../img/profileImg.png'
 
 const Div = styled.div`
+  width: 20rem;
   aspect-ratio: 262 / 302;
   background-color: white;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
@@ -33,8 +34,9 @@ const Img = styled.img`
   border-radius: 1rem 1rem 0 0;
 `;
 const ContentDiv = styled.div`
+  margin: 0 1rem;
   display: grid;
-  grid-template-columns: 3fr 2fr;
+  grid-template-columns: 4fr 2fr;
 `;
 const ContentRightDiv = styled.div`
   display: flex;
@@ -43,7 +45,7 @@ const ContentRightDiv = styled.div`
 `;
 const UserImg = styled.img`
   border-radius: 100%;
-  margin: 0.6rem 1rem;
+  margin: 0.6rem 0;
   width: 3rem;
   height: 3rem;
 `;
@@ -69,11 +71,11 @@ const ContentLeftDiv = styled.div`
   text-align: center;
   align-items: center;
   font-size: 27px;
+  column-gap: 2px;
 `;
 const HeartDiv = styled.div`
   display: flex;
-  column-gap: 3px;
-  margin: 1rem;
+  column-gap: 2px;
 `;
 const Button = styled.button`
   background-color: white;
@@ -185,16 +187,21 @@ export default function MainFeedList({
             : <UserImg src={userImage} />
           }
           <UserDiv>
-            {userInfo.nickname === urlSlice ? (
-              <Title>{title}</Title>
-            ) : (
-              <UserNickname
-                className="nickname"
-                onClick={() => moveToUsersFeed(nickname)}
-              >
-                {nickname}
-              </UserNickname>
-            )}
+            {
+              isLogin &&
+              userInfo.nickname === urlSlice ? (
+              //로그인 상태인지 아닌지
+              //내 피드일 때 타이틀 아닐 때 닉네임
+                <Title>{title}</Title>
+              ) : (
+                <UserNickname
+                  className="nickname"
+                  onClick={() => moveToUsersFeed(nickname)}
+                >
+                  {nickname}
+                </UserNickname>
+              )
+            }
             <DateDiv>{date}</DateDiv>
           </UserDiv>
         </ContentRightDiv>

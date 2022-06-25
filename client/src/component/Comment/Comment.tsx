@@ -83,11 +83,9 @@ function Comment(props: any) {
   const [updateText, setUpdateText] = useState({ text: text });
 
   const updatecheck = async () => {
-    console.log('업뎃체크', id);
     try {
       const { text } = updateText;
       await commentApi.PatchComment(boardId, id, text).then((res) => {
-        console.log(res);
         setOpenUpdate(!openUpdate);
         setUpdateComment(!updateComment);
       });
@@ -98,7 +96,6 @@ function Comment(props: any) {
   const deleteComment = async () => {
     try {
       await commentApi.DeleteComment(boardId, id).then((res) => {
-        console.log(res);
         setUpdateComment(!updateComment);
       });
     } catch (error) {
