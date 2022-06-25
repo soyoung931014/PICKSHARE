@@ -17,7 +17,6 @@ const DiaryWrap = styled.div`
 
   div.drawing {
     margin: auto;
-    /* padding: 2rem 3rem; */
     background-color: #fff;
     border-radius: 1rem;
     position: relative;
@@ -51,7 +50,6 @@ const DiaryWrap = styled.div`
     display: flex;
     justify-content: center;
   }
-  // button css reset
   div.controls_btns button {
     margin: 1.2rem 0.2rem 0.5rem;
     padding: 0.3rem 0.6rem;
@@ -237,31 +235,11 @@ export default function Drawing({
     return new Blob([new Uint8Array(array)], { type: 'image/png' });
   }
 
-  // function dataURLtoFile(dataurl: string) {
-  //   const blobBin = atob(dataurl.split(',')[1]); // base64 데이터 디코딩
-  //   const array = [];
-  //   for (let i = 0; i < blobBin.length; i += 1) {
-  //     array.push(blobBin.charCodeAt(i)); //인코드된 문자들을 0번째부터 끝까지 해독하여 유니코드 값을 array 에 저장한다.
-  //   }
-
-  //   const u8arr = new Uint8Array(array); //8비트의 형식화 배열을 생성한다.
-  //   const file = new Blob([u8arr], { type: 'image/png' }); // Blob 생성
-  //   // const formdata = new FormData(); // formData 생성
-  //   // formdata.append("drawImg", file); // file data 추가
-  //   console.log(file);
-  // }
-
   const SaveImgHandler = async (e: any) => {
-    //base64문자열로 받은 이미지
     const image = canvasRef.current.toDataURL('image/png');
     const link = document.createElement('a');
-    // link.href = image;
-    // link.download = 'Print';
-    // link.click();
     setPickWay(1);
     alert('그림이 추가되었습니다.');
-
-    // setDrawingImg(image)
 
     const newFileName = uuidv4();
     const imgfile = dataURItoBlob(image);

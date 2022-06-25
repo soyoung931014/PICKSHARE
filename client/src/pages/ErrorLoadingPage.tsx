@@ -2,7 +2,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import background from '../img/feedBG.jpg';
-//import camera from '../../public/favicon.ico';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -35,7 +34,6 @@ const Pickshare = styled.div`
   }
 `;
 const Img = styled.img`
-  //border: solid 2px red;
   width: 11%;
   height: 3.7vh;
   animation: camera 1.6s infinite linear alternate;

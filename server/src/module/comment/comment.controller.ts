@@ -10,11 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { UpdateDateColumn } from 'typeorm';
-import { Board } from '../board/board.entity';
 import { GetUser } from '../token/get-user.decorator';
 import { User } from '../user/user.entity';
-import { Comment } from './comment.entity';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment-dto';
 
@@ -22,15 +19,6 @@ import { CreateCommentDto } from './dto/create-comment-dto';
 export class CommentController {
   constructor(private commentService: CommentService) {}
 
-  // @Post()
-  // @UseGuards(AuthGuard())
-  // createComment(
-  //   @Body() createCommentDto: CreateCommentDto,
-  //   board: Board,
-  //   @GetUser() user: User,
-  // ): Promise<Comment> {
-  //   return this.commentService.createComment(createCommentDto, user, board);
-  // }
   // 선택한 게시글에 댓글 생성하기
   @Post()
   @UseGuards(AuthGuard())
@@ -39,7 +27,6 @@ export class CommentController {
     @Body() createCommentDto: CreateCommentDto,
     @Body('board_id') board_id: number,
   ): Promise<object> {
-    //console.log(user, 'user');
     return this.commentService.createComment(user, createCommentDto, board_id);
   }
 

@@ -6,7 +6,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import axios from 'axios';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import styled from 'styled-components';
@@ -17,16 +16,13 @@ import { useNavigate } from 'react-router-dom';
 import commentApi from '../../api/comment';
 
 const Wrapper = styled.div`
-  //border: solid black 2px;
   padding: 1rem;
   box-shadow: 10px 5px 8px #3c4a5645;
 `;
 const CommentsListBox = styled.div`
-  //border: dotted black 2px;
   height: 65%;
 `;
 const CommentBox = styled.div`
-  //  border: dotted black 2px;
   height: 2.2rem;
   margin-top: 4rem;
 `;
@@ -55,10 +51,8 @@ const Button = styled.button`
 
 // 🚀 위 컴포넌트에서 게시글 번호 받아오기
 function CommentSection({ user, boardId }: any) {
-  console.log(user, boardId);
   const { isLogin, accessToken } = user;
   const { email } = user.userInfo;
-  //console.log(isLogin);
   const inputComment: any = useRef();
   const navigate = useNavigate();
   const [commentdata, setCommentdata] = useState([]);
@@ -80,7 +74,6 @@ function CommentSection({ user, boardId }: any) {
         if (res.status === 201) {
           setUpdateComment(!updatecomment);
           inputComment.current.value = '';
-          console.log(res);
         } else {
           return;
         }

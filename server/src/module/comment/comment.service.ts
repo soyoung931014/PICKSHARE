@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Board } from '../board/board.entity';
 import { User } from '../user/user.entity';
 import { UserRepository } from '../user/user.repository';
-import { Comment } from './comment.entity';
 import { CommentRepository } from './comment.repository';
 import { CreateCommentDto } from './dto/create-comment-dto';
 
@@ -15,15 +13,6 @@ export class CommentService {
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
   ) {}
-
-  // CREATE 댓글 생성
-  // createComment(
-  //   createCommentDto: CreateCommentDto,
-  //   user: User,
-  //   board: Board,
-  // ): Promise<Comment> {
-  //   return this.commentRepository.createComment(createCommentDto, user, board);
-  // }
 
   async createComment(
     user: User,
@@ -54,7 +43,6 @@ export class CommentService {
             return await this.userRepository.findOne({ id: el.user_id });
           }),
         );
-        // console.log(user, 'user');
         const result = [];
         for (let i = 0; i < comments.length; i++) {
           const { id, text, created_at, updated_at } = comments[i];

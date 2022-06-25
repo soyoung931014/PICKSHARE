@@ -110,7 +110,10 @@ const Feed = styled.div`
   gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
 `;
-const PlusButton = styled.div`
+const PlusButton = styled.div<{ Hidden?: any }>`
+  visibility: ${(props) => (
+    props.Hidden ? 'hidden' : 'visible'
+  )};
   display: flex;
   justify-content: right;
   margin: 1rem 0;
@@ -245,7 +248,7 @@ export default function UserFeed() {
     };
     await getFollowerList();
 
-  }, [follow]);
+  }, [follow, render]);
 
   useEffect(() => {
     //내 피드가져오기
@@ -325,10 +328,14 @@ export default function UserFeed() {
         {
           userInfo.nickname === path
           ?(
-          <PlusButton>
-            <button onClick={writeNewDiary}> + </button>
-          </PlusButton>
-          ) : null
+            <PlusButton>
+              <button onClick={writeNewDiary}> + </button>
+            </PlusButton>
+          ) : (
+            <PlusButton Hidden >
+              <button > + </button>
+            </PlusButton>
+          )
         }
         <Feed>
           {userfeedlist.id === ''
