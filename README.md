@@ -22,9 +22,10 @@ PICKSHARE이 궁금하시다면, [PICKSHARE 홈페이지](https://www.picksharea
 
 
 
+
 ## 📓 Architecture
 ----
-![스크린샷 2022-07-01 오후 6 38 57](https://user-images.githubusercontent.com/80194405/176869426-6d54a295-b650-413f-b374-b646b2b77d00.jpg)
+![스크린샷 2022-07-02 오전 1 46 58](https://user-images.githubusercontent.com/80194405/176936710-21be7f17-3a69-4fb0-b96e-9ba6254c07b0.jpg)
 
 ## 📓 Team member
 -----
