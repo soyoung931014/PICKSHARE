@@ -333,7 +333,6 @@ function Login(props: any) {
   // 로그인
   const Login = async (e: any) => {
     e.preventDefault();
-    //console.log(userInfo);
     if (emailRegExp.test(userInfo.email) === false) {
       inputEmail.current.focus();
       return;

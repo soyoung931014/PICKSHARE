@@ -425,9 +425,7 @@ function Signup() {
     if (emailRegExp.test(email) === true) {
       try {
         await signupApi.emailcheck(email).then((res) => {
-          console.log(res, 'res');
           if (res.data === false) {
-            console.log(res.data);
             setEmailCheckMessage('사용할 수 있는 이메일입니다.');
             setEmailCheck(email);
           } else {
@@ -467,18 +465,11 @@ function Signup() {
     if (nicknamevalidation === true) {
       try {
         await signupApi.nicknamecheck(nickname).then((res) => {
-          console.log('res');
-          //닉네임을 userInfo value값에 넣어놓기
           if (res.data === false) {
-            console.log(res.data);
             setNicknameCheckMessage('사용할 수 있는 닉네임입니다.');
             setNicknameCheck(nickname); // 나중에 회원가입 버튼을 누를 시  signupInfo.nickname과 nicknamecheck의 정보가 일치하는지를 확인
-            console.log(nicknamecheck);
-            console.log(signupInfo);
           } else {
             setNicknameCheckMessage('이미 사용중인 닉네임입니다');
-            console.log(nicknamecheck);
-            console.log(signupInfo);
           }
         });
       } catch (error) {
@@ -522,7 +513,6 @@ function Signup() {
   // 회원가입완료
   const signupcheck = async (e: any) => {
     e.preventDefault();
-    console.log(signupInfo);
     const { email, nickname, password, passwordcheck } = signupInfo;
     if (
       email === '' ||
@@ -551,7 +541,6 @@ function Signup() {
     if (userInfo) {
       try {
         await signupApi.signup(userInfo).then((res) => {
-          console.log(res);
           setLoading(!loading);
           setTimeout(() => {
             alert('회원가입이 완료되었습니다. 로그인을 시도해주세요');
