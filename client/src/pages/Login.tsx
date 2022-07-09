@@ -9,15 +9,15 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
-import { addUserInfo, deleteUserInfo } from '../../../redux/actions/index';
+import { addUserInfo, deleteUserInfo } from '../redux/actions/index';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import background from '../../../img/feedBG.jpg';
-import pickshareLogo from '../../../img/pickshare.png';
-import homeIndex from '../../../img/homeIndex.png';
-import signupIndex from '../../../img/signupIndex.png';
-import signinIndex from '../../../img/signinIndex.png';
-import loginApi from '../../../api/login';
+import background from '../img/feedBG.jpg';
+import pickshareLogo from '../img/pickshare.png';
+import homeIndex from '../img/homeIndex.png';
+import signupIndex from '../img/signupIndex.png';
+import signinIndex from '../img/signinIndex.png';
+import loginApi from '../api/login';
 
 const Wrapper = styled.div`
   width: 100vw;

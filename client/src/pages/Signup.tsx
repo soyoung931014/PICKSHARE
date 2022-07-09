@@ -9,13 +9,13 @@ import React, { useState } from 'react';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import background from '../../../img/feedBG.jpg';
-import pickshareLogo from '../../../img/pickshare.png';
-import homeIndex from '../../../img/homeIndex.png';
-import signupIndex from '../../../img/signupIndex.png';
-import signinIndex from '../../../img/signinIndex.png';
-import signupApi from '../../../api/signup';
-import ErrorLoadingPage from '../../../pages/ErrorLoadingPage';
+import background from '../img/feedBG.jpg';
+import pickshareLogo from '../img/pickshare.png';
+import homeIndex from '../img/homeIndex.png';
+import signupIndex from '../img/signupIndex.png';
+import signinIndex from '../img/signinIndex.png';
+import signupApi from '../api/signup';
+import ErrorLoadingPage from './ErrorLoadingPage';
 
 const Wrapper = styled.div`
   width: 100vw;

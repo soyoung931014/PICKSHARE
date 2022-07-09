@@ -4,8 +4,8 @@ import { lazy, Suspense } from 'react';
 import CommentSection from './component/Comment/Comments';
 
 const MyPage = lazy(() => import('./component/MyPage/MyPage'));
-const Login = lazy(() => import('./component/User/Login/Login'));
-const Signup = lazy(() => import('./component/User/Signup/Signup'));
+const Login = lazy(() => import('./pages/Login'));
+const Signup = lazy(() => import('./pages/Signup'));
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const MainFeed = lazy(() => import('./pages/MainFeed'));
 const UserFeed = lazy(() => import('./pages/UserFeed'));
