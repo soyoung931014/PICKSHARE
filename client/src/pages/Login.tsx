@@ -9,15 +9,14 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { connect } from 'react-redux';
-import { addUserInfo, deleteUserInfo } from '../../../redux/actions/index';
+import { addUserInfo, deleteUserInfo } from '../redux/actions/index';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import background from '../../../img/feedBG.jpg';
-import pickshareLogo from '../../../img/pickshare.png';
-import homeIndex from '../../../img/homeIndex.png';
-import signupIndex from '../../../img/signupIndex.png';
-import signinIndex from '../../../img/signinIndex.png';
-import loginApi from '../../../api/login';
+import background from '../img/feedBG.jpg';
+import pickshareLogo from '../img/pickshare.png';
+import loginApi from '../api/login';
+import Index from '../component/Index/Index';
+import SubIndex from '../component/Index/SubIndex';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -74,49 +73,7 @@ const Right = styled.div`
     padding-left: 0em;
   }
 `;
-const Index = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 80vh;
-`;
-const TagHome = styled.img`
-  width: 7rem;
-  height: 4.5rem;
-  cursor: pointer;
-  &:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-  }
-  @media screen and (max-width: 891px) {
-    display: none;
-  }
-`;
-const TagSignin = styled.img`
-  width: 11rem;
-  height: 4rem;
-  cursor: pointer;
-  &:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-  }
-  @media screen and (max-width: 891px) {
-    display: none;
-  }
-`;
-const TagSignup = styled.img`
-  width: 8rem;
-  height: 5rem;
-  cursor: pointer;
-  &:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-  }
-  position: relative;
-  top: -10px;
-  @media screen and (max-width: 891px) {
-    display: none;
-  }
-`;
+
 const SubTags = styled.div`
   display: flex;
   justify-content: center;
@@ -125,46 +82,6 @@ const SubTags = styled.div`
 
   @media screen and (min-width: 892px) {
     display: none;
-  }
-`;
-const Tab = styled.div`
-  width: 10vw;
-`;
-const SubTagHome = styled.div`
-  width: 30vw;
-  height: 3.2rem;
-  padding-top: 15px;
-  font-size: 1.5rem;
-  text-align: center;
-  background-color: #f5ffbb;
-  &:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-  }
-`;
-const SubTagSignin = styled.div`
-  width: 30vw;
-  height: 3.2rem;
-  padding-top: 15px;
-  font-size: 1.5rem;
-  text-align: center;
-  background-color: #eae1ff;
-  &:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-  }
-`;
-const SubTagSignup = styled.div`
-  width: 30vw;
-  height: 3.2rem;
-  padding-top: 15px;
-  font-size: 1.5rem;
-  text-align: center;
-
-  background-color: #ffc7c7;
-  &:hover {
-    transform: scale(1.05);
-    cursor: pointer;
   }
 `;
 
@@ -388,30 +305,7 @@ function Login(props: any) {
           <Img src={pickshareLogo} />
         </Left>
         <Right>
-          <Tab></Tab>
-          <SubTags>
-            <SubTagHome
-              onClick={() => {
-                navigate('/mainfeed', { replace: true });
-              }}
-            >
-              home
-            </SubTagHome>
-            <SubTagSignin
-              onClick={() => {
-                navigate('/login', { replace: true });
-              }}
-            >
-              signin
-            </SubTagSignin>
-            <SubTagSignup
-              onClick={() => {
-                navigate('/signup', { replace: true });
-              }}
-            >
-              signup
-            </SubTagSignup>
-          </SubTags>
+          <SubIndex />
           <LoginBox>
             <Title>Log in to your account</Title>
             <Form>
@@ -460,26 +354,7 @@ function Login(props: any) {
             </Form>
           </LoginBox>
         </Right>
-        <Index>
-          <TagHome
-            src={homeIndex}
-            onClick={() => {
-              navigate('/mainfeed', { replace: true });
-            }}
-          ></TagHome>
-          <TagSignin
-            src={signinIndex}
-            onClick={() => {
-              navigate('/login', { replace: true });
-            }}
-          ></TagSignin>
-          <TagSignup
-            src={signupIndex}
-            onClick={() => {
-              navigate('/signup', { replace: true });
-            }}
-          ></TagSignup>
-        </Index>
+        <Index />
       </Book>
     </Wrapper>
   );

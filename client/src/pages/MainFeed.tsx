@@ -190,7 +190,9 @@ export default function MainFeed() {
       navigate('/mypage');
     }
   }, [render]);
-
+const onKeyDown = (e: any) => {
+  console.log(e.key);
+}
   return (
     <>
       <Wrapper>
@@ -217,6 +219,7 @@ export default function MainFeed() {
                   </SearchIcon>
                 </SearchBar>
               </form>
+              <input type="text" onKeyDown={onKeyDown}></input>
               <PlusButton onClick={writeNewDiary}> + </PlusButton>
             </UpperRightDiv>
           </UpperDiv>
