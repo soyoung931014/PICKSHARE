@@ -15,6 +15,7 @@ import signupApi from '../api/signup';
 import ErrorLoadingPage from './ErrorLoadingPage';
 import Index from '../component/Index/Index';
 import SubIndex from '../component/Index/SubIndex';
+import { emailRegExp, passwordRegExp } from '../common/validation';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -296,12 +297,6 @@ function Signup() {
   const [passwordMessage, setPasswordMessage] = useState('');
   // 닉네임 중복검사 실행가능 여부
   const [nicknamevalidation, setNicknameValidation] = useState(false);
-
-  //이메일 중복검사 필터
-  const emailRegExp =
-    /^[A-Za-z0-9_]+[A-Za-z0-9]*[@]{1}[A-Za-z0-9]+[A-Za-z0-9]*[.]{1}[A-Za-z]{1,3}$/;
-  //비밀번호 중복검사 필터
-  const passwordRegExp = /^[a-zA-z0-9]{4,12}$/;
 
   const handleChangeState = (e: any) => {
     setSignupInfo({ ...signupInfo, [e.target.name]: e.target.value });
