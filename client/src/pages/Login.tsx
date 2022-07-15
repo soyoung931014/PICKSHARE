@@ -15,6 +15,7 @@ import styled from 'styled-components';
 import background from '../img/feedBG.jpg';
 import pickshareLogo from '../img/pickshare.png';
 import loginApi from '../api/login';
+import { emailRegExp, passwordRegExp } from '../common/validation';
 import Index from '../component/Index/Index';
 import SubIndex from '../component/Index/SubIndex';
 
@@ -222,12 +223,6 @@ function Login(props: any) {
   const handleUserInfo = (e: any) => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
   };
-
-  //이메일 중복검사 필터
-  const emailRegExp =
-    /^[A-Za-z0-9_]+[A-Za-z0-9]*[@]{1}[A-Za-z0-9]+[A-Za-z0-9]*[.]{1}[A-Za-z]{1,3}$/;
-  //비밀번호 중복검사 필터
-  const passwordRegExp = /^[a-zA-z0-9]{4,12}$/;
 
   //이메일 유효성검사
   const emailValidation = (e: any) => {
