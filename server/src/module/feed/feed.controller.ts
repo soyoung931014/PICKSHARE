@@ -11,23 +11,30 @@ export class FeedController {
     
     @Get()
     getAllFeed(
-      @Query('page') page: number
-      ): Promise<Board[]> {
-        return this.feedService.getAllFeed(page);
+      @Query('start') start: number,
+      @Query('end') end: number,
+    ): Promise<Board[]> {
+      console.log(start, end, '피드컨트롤러' )
+        return this.feedService.getAllFeed(start, end);
     }
 
     @Get('/mainfeed')
     getUserFeed(
       @Query('nickname') nickname: string,
-      @Query('page') page: number,
+      @Query('start') start: number,
+      @Query('end') end: number,
     ): Promise<Board[]>{
-        return this.feedService.getUserFeed(nickname, page);
+        return this.feedService.getUserFeed(nickname, start, end);
     }
 
     @Get('/myfeed')
     @UseGuards(AuthGuard())
-    getMyFeed(@GetUser() user: User): Promise<Board[]>{
-        return this.feedService.getMyFeed(user);
+    getMyFeed(
+      @GetUser() user: User,
+      @Query('start') start: number,
+      @Query('end') end: number,
+    ): Promise<Board[]>{
+        return this.feedService.getMyFeed(user, start, end);
     }
 
 }

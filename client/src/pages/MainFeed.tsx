@@ -117,7 +117,6 @@ export default function MainFeed() {
   const navigate = useNavigate();
 
   const [render, setRender] = useState(false);
-  useState<Feed|null>
   const [feedlist, setFeedlist] = useState<Feed[]|null>([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchOn, setSearchOn] = useState(false);
