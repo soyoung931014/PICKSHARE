@@ -14,6 +14,7 @@ import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
 import profileImg from '../../../img/profileImg.png'
 
 const Div = styled.div`
+  border: solid 1px red;
   width: 20rem;
   aspect-ratio: 262 / 302;
   background-color: white;
@@ -90,7 +91,7 @@ const Num = styled.div`
   margin-left: 2px;
 `;
 
-type MainFeedListProps = {
+export type MainFeedListProps = {
   id: number;
   contentImg: string | undefined;
   userImage: string | undefined;
