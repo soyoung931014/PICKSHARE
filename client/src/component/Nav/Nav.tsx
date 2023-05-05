@@ -5,29 +5,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { connect, useSelector } from 'react-redux';
+import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { BiHome } from 'react-icons/bi';
 
-import defaultprofileImg from '../../img/profileImg.png';
+import { connect, useSelector } from 'react-redux';
 import { deleteUserInfo } from '../../redux/actions';
+
+import { BiHome } from 'react-icons/bi';
 import { FaBars } from 'react-icons/fa';
-import { useState } from 'react';
+import defaultprofileImg from '../../img/profileImg.png';
 
 const Wrapper = styled.section`
-  width: 100%;
   height: 8vh;
   display: flex;
   justify-content: flex-end;
+  padding-right: 0.8rem;
   align-items: center;
   background: white;
   border-bottom: solid 0.8px #bbbbbb;
   box-shadow: 0 0px 10px #acafb345;
+  border: solid red 2px;
 `;
 
 const Logo = styled.section`
-  margin-left: 1.7rem;
+  margin-left: 1rem;
   font-weight: 900;
   width: 70%;
   height: 2.6rem;
@@ -43,57 +45,36 @@ const Logo = styled.section`
 
 const MenuFabar = styled.a`
   display: none;
-  @media screen and (max-width: 977px) {
+  @media ${({ theme }) => theme.deviceSize.tablet} {
     display: block;
+    margin-left: auto;
     width: 100%;
     text-align: end;
-    margin: 0.7rem;
     font-size: 1rem;
-    padding: 0.6rem;
-    margin-right: 1.7rem;
+    padding: 0.7em;
     :hover {
       cursor: pointer;
     }
   }
 `;
-const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
+const NavList = styled.section<{ Menu?: boolean; InitialNav?: any }>`
+  display: ${(props) => (props.Menu ? 'block' : 'none')};
   width: 100%;
   height: 10vh;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  @media screen and (max-width: 977px) {
-    width: ${(props) => (props.InitialNav ? '20vw' : '25vw')};
-    height: ${(props) => (props.InitialNav ? '35vh' : '45vh')};
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #fffceb;
-    border-radius: 5%;
-    margin-top: ${(props) => (props.InitialNav ? '34vh' : '44.4vh')};
+  position: relative;
+  @media ${({ theme }) => theme.deviceSize.tablet} {
+    width: 120px;
+    display: ${(props) => (props.Menu ? 'block' : 'none')};
+    height: ${(props) => (props.InitialNav ? '26vh' : '35vh')};
+    flex: 1 0 auto;
     position: absolute;
-    z-index: 4;
-    right: 10px;
-    margin-top: 30rem;
-    padding-right: 5%;
-    transform: ${({ Menu }) => {
-      return Menu ? 'translatex(25%)' : 'translateX(100%)';
-    }};
-  }
-  @media screen and (max-width: 710px) {
-    width: ${(props) => (props.InitialNav ? '24vw' : '29vw')};
-  }
-  @media screen and (max-width: 607px) {
-    width: ${(props) => (props.InitialNav ? '25vw' : '29vw')};
-  }
-  @media screen and (max-width: 550px) {
-    width: ${(props) => (props.InitialNav ? '27vw' : '40vw')};
-  }
-  @media screen and (max-width: 460px) {
-    width: ${(props) => (props.InitialNav ? '30vw' : '40vw')};
-  }
-  @media screen and (max-width: 408px) {
-    width: ${(props) => (props.InitialNav ? '38vw' : '40vw')};
+    top: 65px;
+    z-index: 1;
+    flex-direction: column;
+    background-color: #fffceb;
   }
 `;
 const Div = styled.div<{ Text?: any }>`
@@ -116,18 +97,19 @@ const Img = styled.img`
   width: 2vw;
   border-radius: 50%;
   margin-right: 0.5rem;
-  @media screen and (max-width: 977px) {
+  @media ${({ theme }) => theme.deviceSize.tablet} {
     width: 3.2vw;
   }
 `;
 const Info = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  @media screen and (max-width: 750px) {
+  @media ${({ theme }) => theme.deviceSize.middle} {
     width: 5rem;
   }
 `;
+
 const FeedDiv = styled.div``;
 
 const Nav = (props: any) => {
@@ -137,7 +119,6 @@ const Nav = (props: any) => {
   const navigate = useNavigate();
 
   const [menu, setMenu] = useState(false);
-
   return (
     <>
       <Wrapper>
