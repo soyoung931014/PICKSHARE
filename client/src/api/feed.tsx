@@ -2,8 +2,8 @@
 import api from './index';
 
 const feedApi = {
-  getMainFeed: () => {
-    return api.get('/feed');
+  getMainFeed: (page: number) => {
+    return api.get(`/feed?page=${page}`);
   },
   getHeart: (board_id: number, accessToken: string) => {
     return api.get(
@@ -18,11 +18,11 @@ const feedApi = {
   getComment: () => {
     return api.get('/comment');
   },
-  getUserFeed: (nickname: string) => {
-    return api.get(`/feed/mainfeed?nickname=${nickname}`);
+  getUserFeed: (nickname: string, page: number) => {
+    return api.get(`/feed/mainfeed?nickname=${nickname}page=${page}`);
   },
-  getMyFeed: (accessToken: string) => {
-    return api.get('/feed/myfeed',{
+  getMyFeed: (accessToken: string, page: number) => {
+    return api.get('/feed/myfeed?page=${page}',{
       headers: {
         authorization: `Bearer ${accessToken}`,
       },

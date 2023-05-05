@@ -47,7 +47,7 @@ export class TokenService extends PassportStrategy(Strategy) {
           throw new UnauthorizedException('토큰 만료');
         }
       } else {
-        const user: User = await this.userRepository.findOne({ email });
+        const user: User = await this.userRepository.findOne({ where:{email} });
         if (!user) {
           throw new UnauthorizedException('유저 없음');
         }

@@ -11,15 +11,17 @@ export class FeedController {
     
     @Get()
     getAllFeed(
+      @Query('page') page: number
       ): Promise<Board[]> {
-        return this.feedService.getAllFeed();
+        return this.feedService.getAllFeed(page);
     }
 
     @Get('/mainfeed')
     getUserFeed(
-        @Query('nickname') nickname: string,
+      @Query('nickname') nickname: string,
+      @Query('page') page: number,
     ): Promise<Board[]>{
-        return this.feedService.getUserFeed(nickname);
+        return this.feedService.getUserFeed(nickname, page);
     }
 
     @Get('/myfeed')

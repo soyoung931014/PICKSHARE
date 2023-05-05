@@ -162,6 +162,7 @@ export default function UserFeed() {
   const [render, setRender] = useState(false);
   const [orderingH, setOrderingH] = useState(false);
   const [follow, setFollow] = useState(false); //팔로우
+  let page = 1;
   const { isModalOn } = useSelector(
     (modalReducer: any) => modalReducer.modalInfo
   );
@@ -255,14 +256,14 @@ export default function UserFeed() {
   useEffect(() => {
     //내 피드가져오기
     const myFeed = async () => {
-      return await feedApi.getMyFeed(accessToken).then((result) => {
+      return await feedApi.getMyFeed(accessToken, page).then((result) => {
         setUserFeedlist(result.data);
       });
     };
 
     //유저들의 피드
     const userPage = async () => {
-      return await feedApi.getUserFeed(path).then((result) => {
+      return await feedApi.getUserFeed(path, page).then((result) => {
         setUserFeedlist(result.data);
       });
     };

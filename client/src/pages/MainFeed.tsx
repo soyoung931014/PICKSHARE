@@ -102,25 +102,31 @@ const FooterDiv = styled.div`
   padding-top: 10px;
   border-top: solid gray 1px;
 `;
+export interface Feed {
+  commentNum: string | undefined;
+  contentImg: string | undefined;
+  createdAt: string | undefined;
+  date: string | undefined;
+  heartNum: string | undefined;
+  id: number | undefined;
+  locked: boolean | undefined;
+  nickname: string | undefined;
+}
 export default function MainFeed() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [render, setRender] = useState(false);
-  const [feedlist, setFeedlist]: any[] = useState({
-    id: '',
-    contentImg: '',
-    date: '',
-    nickname: '',
-    userImage: '',
-    heartNum: '0',
-    lock: '',
-  });
+  useState<Feed|null>
+  const [feedlist, setFeedlist] = useState<Feed[]|null>([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchOn, setSearchOn] = useState(false);
   const [orderingH, setOrderingH] = useState(false);
+  const [target, setTarget] = useState(null);
+  const [isLoaded, setIsloaded] = useState(false);
+  const [list, setList] = useState<Feed[]|null>([]);
+  let page = 0;
   const { userInfo } = useSelector((userReducer: any) => userReducer.userInfo);
-
   const handleSearchInput = debounce(async (e: any) => {
     setSearchOn(true);
     setSearchInput(e.target.value);
@@ -147,13 +153,13 @@ export default function MainFeed() {
   };
 
   const getUserFeed = async (searchNickname: string) => {
-    return await feedApi.getUserFeed(searchNickname).then((result) => {
+    return await feedApi.getUserFeed(searchNickname, page).then((result) => {
       setFeedlist(result.data);
     });
   };
 
   const getUserFeedH = async (searchNickname: string) => {
-    return await feedApi.getUserFeed(searchNickname).then((result) => {
+    return await feedApi.getUserFeed(searchNickname, page).then((result) => {
       result.data.sort((a: any, b: any) => {
         return b.heartNum - a.heartNum;
       });
@@ -162,7 +168,7 @@ export default function MainFeed() {
   };
 
   const getMainFeedH = async () => {
-    return await feedApi.getMainFeed().then((result) => {
+    return await feedApi.getMainFeed(page).then((result) => {
       result.data.sort((a: any, b: any) => {
         return b.heartNum - a.heartNum;
       });
@@ -171,28 +177,54 @@ export default function MainFeed() {
   };
 
   const getMainFeed = async () => {
-    return await feedApi.getMainFeed().then((result) => {
-      setFeedlist(result.data);
+    return await feedApi.getMainFeed(page).then((result) => {
+      setFeedlist((prev) => prev.concat(result.data));
+      // setFeedlist(result.data);
+      // console.log(typeof feedlist, Array.isArray(feedlist))
+
     });
   };
   useEffect(() => {
-    if (orderingH === false && searchOn === false) {
-      getMainFeed();
-    } else if (orderingH === true && searchOn === false) {
-      getMainFeedH();
-    } else if (orderingH === false && searchOn === true) {
-      getUserFeed(searchInput);
-    } else {
-      getUserFeedH(searchInput);
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          if (orderingH === false && searchOn === false) {
+            getMainFeed();
+          } else if (orderingH === true && searchOn === false) {
+            getMainFeedH();
+          } else if (orderingH === false && searchOn === true) {
+            getUserFeed(searchInput);
+          } else {
+            getUserFeedH(searchInput);
+          }
+        }
+        page += 8;
+      })
+    })
+    if (target) {
+      io.observe(target);
+      console.log('콘솔을 해보자',page)
     }
+    
+    // if (orderingH === false && searchOn === false) {
+    //   getMainFeed();
+    // } else if (orderingH === true && searchOn === false) {
+    //   getMainFeedH();
+    // } else if (orderingH === false && searchOn === true) {
+    //   getUserFeed(searchInput);
+    // } else {
+    //   getUserFeedH(searchInput);
+    // }
     if (userInfo.nickname === 'nothing') {
       alert('닉네임을 변경해주세요');
       navigate('/mypage');
     }
-  }, [render]);
-  const onKeyDown = (e: any) => {
-    console.log(e.key);
-  };
+  }, [render, target]);
+  console.log('피드리스트', feedlist, '타겟', target);
+  // const onKeyDown = (e: any) => {
+  //   console.log(e.key);
+  // };
+  
   return (
     <>
       <Wrapper>
@@ -223,7 +255,7 @@ export default function MainFeed() {
             </UpperRightDiv>
           </UpperDiv>
           <Feed>
-            {feedlist.id === ''
+            {feedlist.length === 0
               ? '피드가 없습니다'
               : feedlist.map((el: any) => (
                   <MainFeedList
@@ -232,7 +264,8 @@ export default function MainFeed() {
                     render={render}
                     setRender={setRender}
                   />
-                ))}
+              ))}
+            <div ref={setTarget} className='Target-Element'></div>
           </Feed>
         </Div>
         <FooterDiv>
