@@ -25,7 +25,6 @@ const Wrapper = styled.section`
   background: white;
   border-bottom: solid 0.8px #bbbbbb;
   box-shadow: 0 0px 10px #acafb345;
-  border: solid red 2px;
 `;
 
 const Logo = styled.section`
@@ -57,7 +56,7 @@ const MenuFabar = styled.a`
     }
   }
 `;
-const NavList = styled.section<{ Menu?: boolean; InitialNav?: any }>`
+const NavList = styled.section<{ Menu?: boolean; InitialNav?: boolean }>`
   display: ${(props) => (props.Menu ? 'block' : 'none')};
   width: 100%;
   height: 10vh;
@@ -68,16 +67,16 @@ const NavList = styled.section<{ Menu?: boolean; InitialNav?: any }>`
   @media ${({ theme }) => theme.deviceSize.tablet} {
     width: 120px;
     display: ${(props) => (props.Menu ? 'block' : 'none')};
-    height: ${(props) => (props.InitialNav ? '26vh' : '35vh')};
-    flex: 1 0 auto;
+    height: ${(props) => (props.InitialNav ? '192px' : '258px')};
+    flex: 0 0 auto;
     position: absolute;
-    top: 65px;
+    top: 8.6%;
     z-index: 1;
     flex-direction: column;
     background-color: #fffceb;
   }
 `;
-const Div = styled.div<{ Text?: any }>`
+const Div = styled.div<{ Text?: boolean }>`
   margin: 0.7rem;
   font-size: 1rem;
   font-weight: bolder;
@@ -222,7 +221,7 @@ const Nav = (props: any) => {
           <FaBars
             style={{
               fontWeight: 'bolder',
-              fontSize: '3.8vh',
+              fontSize: '2.3rem',
               color: '#3d3c3c',
             }}
           />
