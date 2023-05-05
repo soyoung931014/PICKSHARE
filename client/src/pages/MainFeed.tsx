@@ -123,8 +123,9 @@ export default function MainFeed() {
   const [orderingH, setOrderingH] = useState(false);
   const [target, setTarget] = useState(null);
   const [isLoaded, setIsloaded] = useState(false);
-  const [list, setList] = useState<Feed[]|null>([]);
-  let page = 0;
+  // const [list, setList] = useState<Feed[]|null>([]);
+  let start = 0;
+  let end = 8;
   const { userInfo } = useSelector((userReducer: any) => userReducer.userInfo);
   const handleSearchInput = debounce(async (e: any) => {
     setSearchOn(true);
@@ -152,13 +153,13 @@ export default function MainFeed() {
   };
 
   const getUserFeed = async (searchNickname: string) => {
-    return await feedApi.getUserFeed(searchNickname, page).then((result) => {
+    return await feedApi.getUserFeed(searchNickname, start, end).then((result) => {
       setFeedlist(result.data);
     });
   };
 
   const getUserFeedH = async (searchNickname: string) => {
-    return await feedApi.getUserFeed(searchNickname, page).then((result) => {
+    return await feedApi.getUserFeed(searchNickname, start, end).then((result) => {
       result.data.sort((a: any, b: any) => {
         return b.heartNum - a.heartNum;
       });
@@ -167,7 +168,7 @@ export default function MainFeed() {
   };
 
   const getMainFeedH = async () => {
-    return await feedApi.getMainFeed(page).then((result) => {
+    return await feedApi.getMainFeed(start, end).then((result) => {
       result.data.sort((a: any, b: any) => {
         return b.heartNum - a.heartNum;
       });
@@ -176,11 +177,11 @@ export default function MainFeed() {
   };
 
   const getMainFeed = async () => {
-    return await feedApi.getMainFeed(page).then((result) => {
+    return await feedApi.getMainFeed(start, end).then((result) => {
+      console.log('페이지는?',start, end)
       setFeedlist((prev) => prev.concat(result.data));
-      // setFeedlist(result.data);
-      // console.log(typeof feedlist, Array.isArray(feedlist))
-
+      start += 8;
+      end += 8;
     });
   };
   useEffect(() => {
@@ -197,12 +198,12 @@ export default function MainFeed() {
             getUserFeedH(searchInput);
           }
         }
-        page += 8;
       })
+
     })
     if (target) {
       io.observe(target);
-      console.log('콘솔을 해보자',page)
+      console.log('콘솔을 해보자',start,end)
     }
     
     // if (orderingH === false && searchOn === false) {
@@ -216,7 +217,7 @@ export default function MainFeed() {
     // }
     if (userInfo.nickname === 'nothing') {
       alert('닉네임을 변경해주세요');
-      navigate('/mypage');
+      navigate('/mystart');
     }
   }, [render, target]);
   console.log('피드리스트', feedlist, '타겟', target);
