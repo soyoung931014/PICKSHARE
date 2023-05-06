@@ -16,10 +16,10 @@ import { deleteUserInfo } from '../../redux/actions';
 import { RootState } from '../../redux';
 
 const Wrapper = styled.section`
-  height: 8vh;
+  box-sizing: border-box;
+  height: 100%;
   display: flex;
   justify-content: flex-end;
-  padding-right: 0.8rem;
   align-items: center;
   background: white;
   border-bottom: solid 0.8px #bbbbbb;
@@ -29,7 +29,7 @@ const Wrapper = styled.section`
 const Logo = styled.section`
   margin-left: 1rem;
   font-weight: 900;
-  width: 70%;
+  width: 13rem;
   height: 2.6rem;
   background: linear-gradient(to right, #ee64c7, #8272eb, #d06be0);
   -webkit-background-clip: text;
@@ -73,7 +73,7 @@ const NavList = styled.section<{
     height: ${(props) => (props.InitialNav ? '192px' : '258px')};
     flex: 0 0 auto;
     position: absolute;
-    top: 8.6%;
+    top: 4.7em;
     z-index: 1;
     flex-direction: column;
     background-color: #fffceb;
@@ -81,11 +81,9 @@ const NavList = styled.section<{
 `;
 const Div = styled.div<{ Text?: boolean }>`
   margin: 0.7rem;
-  font-size: 1rem;
+  height: 3.2rem;
   font-weight: bolder;
-  padding: 0.6rem;
-  padding-top: ${(props) => (props.Text ? '1rem' : null)};
-  padding-bottom: ${(props) => (props.Text ? '1rem' : null)};
+  padding: ${(props) => (props.Text ? '1.1rem 0.6rem' : '0.7rem 0.6rem')};
   :hover {
     cursor: pointer;
     background: #fee9f7;
@@ -95,20 +93,23 @@ const Div = styled.div<{ Text?: boolean }>`
 
 const Img = styled.img`
   border: solid gray 1px;
-  height: 3.5vh;
-  width: 2vw;
+  height: 1.8rem;
+  width: 2rem;
   border-radius: 50%;
   margin-right: 0.5rem;
   @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
-    width: 3.2vw;
+    width: 3.6vw;
   }
 `;
 const Info = styled.div`
   display: flex;
-  justify-content: flex-start;
   align-items: center;
+  justify-content: flex-start;
+  height: 36px;
+  padding-bottom: 5.6px;
   @media ${({ theme: themeProps }) => theme.deviceSize.middle} {
     width: 5rem;
+    padding-bottom: 0;
   }
 `;
 
@@ -120,6 +121,7 @@ const FeedDiv = styled.div``;
 // }
 // const Nav = ({ render, setRender }: navProps) => {
 const Nav = (props: any) => {
+  const menuStyle = { textDecoration: 'none', color: '#3d3c3c' };
   const { isLogin, userInfo } = useSelector(
     (selector: RootState) => selector.userInfo
   );
@@ -139,8 +141,7 @@ const Nav = (props: any) => {
                 <NavLink
                   to="/mainfeed"
                   style={{
-                    textDecoration: 'none',
-                    color: '#3d3c3c',
+                    ...menuStyle,
                     fontSize: '1.7rem',
                   }}
                 >
@@ -152,10 +153,7 @@ const Nav = (props: any) => {
                   <NavLink
                     to={`/feed/${userInfo.nickname}`}
                     onClick={() => props.setRender(!props.render)}
-                    style={{
-                      textDecoration: 'none',
-                      color: '#3d3c3c',
-                    }}
+                    style={{ ...menuStyle }}
                   >
                     <FeedDiv>
                       {userInfo.userImage === 'nothing' ? (
@@ -169,13 +167,7 @@ const Nav = (props: any) => {
                 </Info>
               </Div>
               <Div Text>
-                <NavLink
-                  to="/mypage"
-                  style={{
-                    textDecoration: 'none',
-                    color: '#3d3c3c',
-                  }}
-                >
+                <NavLink to="/mypage" style={{ ...menuStyle }}>
                   회원정보
                 </NavLink>
               </Div>
@@ -183,10 +175,7 @@ const Nav = (props: any) => {
                 <NavLink
                   onClick={() => dispatch(deleteUserInfo())}
                   to="/mainfeed"
-                  style={{
-                    textDecoration: 'none',
-                    color: '#3d3c3c',
-                  }}
+                  style={{ ...menuStyle }}
                 >
                   로그아웃
                 </NavLink>
@@ -200,8 +189,7 @@ const Nav = (props: any) => {
                 <NavLink
                   to="/mainfeed"
                   style={{
-                    textDecoration: 'none',
-                    color: '#3d3c3c',
+                    ...menuStyle,
                     fontSize: '1.7rem',
                   }}
                 >
@@ -209,18 +197,12 @@ const Nav = (props: any) => {
                 </NavLink>
               </Div>
               <Div Text>
-                <NavLink
-                  to="/login"
-                  style={{ textDecoration: 'none', color: '#3d3c3c' }}
-                >
+                <NavLink to="/login" style={{ ...menuStyle }}>
                   로그인
                 </NavLink>
               </Div>
               <Div Text>
-                <NavLink
-                  to="/signup"
-                  style={{ textDecoration: 'none', color: '#3d3c3c' }}
-                >
+                <NavLink to="/signup" style={{ ...menuStyle }}>
                   회원가입
                 </NavLink>
               </Div>
@@ -231,7 +213,7 @@ const Nav = (props: any) => {
           <FaBars
             style={{
               fontWeight: 'bolder',
-              fontSize: '3.8vh',
+              fontSize: '2rem',
               color: '#3d3c3c',
             }}
           />
