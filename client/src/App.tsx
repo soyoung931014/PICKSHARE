@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import GlobalStyles from './styles/GlobalStyles';
 import { ThemeProvider } from 'styled-components';
-import theme from './styles/theme';
 import { lazy, Suspense } from 'react';
 import CommentSection from './component/Comment/Comments';
+import GlobalStyles from './styles/GlobalStyles';
+import theme from './styles/theme';
 import Layout from './layout/Layout';
 
 const MyPage = lazy(() => import('./component/MyPage/MyPage'));
@@ -28,13 +28,13 @@ function App() {
               <Route path="/diary" element={<DiaryPage />} />
               <Route path="/mainfeed" element={<MainFeed />} />
               <Route path="/feed/:nickname" element={<UserFeed />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/mypage" element={<MyPage />} />
-              <Route path="/loading" element={<KakaoLoading />} />
               <Route path="/errorloading" element={<ErrorLoadingPage />} />
               <Route path="/commentsection" element={<CommentSection />} />
             </Route>
+            <Route path="/loading" element={<KakaoLoading />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/mypage" element={<MyPage />} />
           </Routes>
         </Suspense>
       </ThemeProvider>
