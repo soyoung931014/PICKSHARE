@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useState, useEffect } from 'react';
@@ -18,6 +12,175 @@ import loginApi from '../api/login';
 import { emailRegExp, passwordRegExp } from '../common/validation';
 import Index from '../component/Index/Index';
 import SubIndex from '../component/Index/SubIndex';
+
+function Login(props: any) {
+  const navigate = useNavigate();
+
+  const { userInfoToStore, initialUserInfoToStore } = props;
+  useEffect(() => {
+    initialUserInfoToStore();
+  }, []);
+
+  const inputEmail: any = useRef();
+  const inputpassword: any = useRef();
+
+  const [userInfo, setUserInfo] = useState({ email: '', password: '' });
+  const [emailcheckMessage, setEmailCheckMessage] =
+    useState('이메일을 입력해주세요');
+  const [passwordMessage, setPasswordMessage] =
+    useState('비밀번호를 입력해주세요');
+
+  const handleUserInfo = (e: any) => {
+    setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
+  };
+
+  //이메일 유효성검사
+  const emailValidation = (e: any) => {
+    handleUserInfo(e);
+    if (emailRegExp.test(e.target.value) === false) {
+      setEmailCheckMessage('올바른 이메일을 입력해주세요.');
+    } else {
+      setEmailCheckMessage('');
+    }
+  };
+  //비밀번호 유효성검사
+  const passwordValidation = (e: any) => {
+    handleUserInfo(e);
+    if (passwordRegExp.test(e.target.value) === false) {
+      setPasswordMessage('영문 대소문자와 숫자 4-12자리로 입력해야합니다.');
+    } else {
+      setPasswordMessage('');
+    }
+  };
+  // 로그인
+  const Login = async (e: any): Promise<void> => {
+    e.preventDefault();
+    if (emailRegExp.test(userInfo.email) === false) {
+      inputEmail.current.focus();
+      return;
+    }
+    if (passwordRegExp.test(userInfo.password) === false) {
+      inputpassword.current.focus();
+      return;
+    }
+    if (userInfo) {
+      try {
+        await loginApi.login(userInfo).then((res) => {
+          const { accessToken, loginMethod } = res.data.data; //refreshToken
+          if (accessToken) {
+            void tokenVerification(accessToken);
+          } else {
+            console.log('토큰이 없습니다.');
+          }
+        });
+      } catch (error) {
+        alert(
+          '아이디 또는 비밀번호를 잘못 입력했습니다. 입력하신 내용을 다시 확인해주세요'
+        );
+      }
+    }
+  };
+
+  // 토큰 검증 후 유저 정보 불러오는 함수
+  const tokenVerification = async (token: string) => {
+    try {
+      await loginApi.token(token).then((res) => {
+        const { userInfo } = res.data.data;
+        if (userInfo) {
+          userInfoToStore(userInfo, token);
+          navigate('/mainfeed', { replace: true });
+        } else {
+          console.log('로그인 실패');
+        }
+      });
+    } catch (error) {
+      console.log('error');
+    }
+  };
+
+  const handleKakaoLogin = (e: any) => {
+    e.preventDefault();
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CODE}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT}&response_type=code&state=kakao`;
+  };
+
+  return (
+    <Wrapper>
+      <Book>
+        <Left>
+          <Img src={pickshareLogo} />
+        </Left>
+        <Right>
+          <SubIndex />
+          <LoginBox>
+            <Title>Log in to your account</Title>
+            <Form>
+              <InputBox>
+                <Box>
+                  <Input
+                    type="text"
+                    ref={inputEmail}
+                    name="email"
+                    placeholder="이메일"
+                    onChange={emailValidation}
+                  />
+                </Box>
+              </InputBox>
+              <BoxMessage>
+                <Message>{emailcheckMessage}</Message>
+              </BoxMessage>
+              <InputBox>
+                <Box>
+                  <Input
+                    type="password"
+                    ref={inputpassword}
+                    autoComplete="off"
+                    name="password"
+                    placeholder="비밀번호"
+                    onChange={passwordValidation}
+                  />
+                </Box>
+              </InputBox>
+              <BoxMessage>
+                <Message>{passwordMessage}</Message>
+              </BoxMessage>
+              <InputBox button>
+                <Box>
+                  <Button onClick={Login}>SignIn</Button>
+                </Box>
+                <Box>
+                  <Div>SNS 계정으로 편하게 시작하기</Div>
+                </Box>
+              </InputBox>
+              <InputBox button>
+                <Box>
+                  <ButtonKakao onClick={handleKakaoLogin}>kakao</ButtonKakao>
+                </Box>
+              </InputBox>
+            </Form>
+          </LoginBox>
+        </Right>
+        <Index />
+      </Book>
+    </Wrapper>
+  );
+}
+
+const mapStateToProps = (state: object) => {
+  return {
+    user: state,
+  };
+};
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    userInfoToStore: (userInfo: object, token: string) => {
+      dispatch(addUserInfo(userInfo, token));
+    },
+    initialUserInfoToStore: () => {
+      dispatch(deleteUserInfo());
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -202,172 +365,3 @@ const BoxMessage = styled.div`
   display: flex;
   text-align: center;
 `;
-
-function Login(props: any) {
-  const navigate = useNavigate();
-
-  const { userInfoToStore, initialUserInfoToStore } = props;
-  useEffect(() => {
-    initialUserInfoToStore();
-  }, []);
-
-  const inputEmail: any = useRef();
-  const inputpassword: any = useRef();
-
-  const [userInfo, setUserInfo] = useState({ email: '', password: '' });
-  const [emailcheckMessage, setEmailCheckMessage] =
-    useState('이메일을 입력해주세요');
-  const [passwordMessage, setPasswordMessage] =
-    useState('비밀번호를 입력해주세요');
-
-  const handleUserInfo = (e: any) => {
-    setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
-  };
-
-  //이메일 유효성검사
-  const emailValidation = (e: any) => {
-    handleUserInfo(e);
-    if (emailRegExp.test(e.target.value) === false) {
-      setEmailCheckMessage('올바른 이메일을 입력해주세요.');
-    } else {
-      setEmailCheckMessage('');
-    }
-  };
-  //비밀번호 유효성검사
-  const passwordValidation = (e: any) => {
-    handleUserInfo(e);
-    if (passwordRegExp.test(e.target.value) === false) {
-      setPasswordMessage('영문 대소문자와 숫자 4-12자리로 입력해야합니다.');
-    } else {
-      setPasswordMessage('');
-    }
-  };
-  // 로그인
-  const Login = async (e: any) => {
-    e.preventDefault();
-    if (emailRegExp.test(userInfo.email) === false) {
-      inputEmail.current.focus();
-      return;
-    }
-    if (passwordRegExp.test(userInfo.password) === false) {
-      inputpassword.current.focus();
-      return;
-    }
-    if (userInfo) {
-      try {
-        await loginApi.login(userInfo).then((res) => {
-          const { accessToken, loginMethod } = res.data.data; //refreshToken
-          if (accessToken) {
-            void tokenVerification(accessToken);
-          } else {
-            console.log('토큰이 없습니다.');
-          }
-        });
-      } catch (error) {
-        alert(
-          '아이디 또는 비밀번호를 잘못 입력했습니다. 입력하신 내용을 다시 확인해주세요'
-        );
-      }
-    }
-  };
-
-  // 토큰 검증 후 유저 정보 불러오는 함수
-  const tokenVerification = async (token: string) => {
-    try {
-      await loginApi.token(token).then((res) => {
-        const { userInfo } = res.data.data;
-        if (userInfo) {
-          userInfoToStore(userInfo, token);
-          navigate('/mainfeed', { replace: true });
-        } else {
-          console.log('로그인 실패');
-        }
-      });
-    } catch (error) {
-      console.log('error');
-    }
-  };
-
-  const handleKakaoLogin = (e: any) => {
-    e.preventDefault();
-    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CODE}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT}&response_type=code&state=kakao`;
-  };
-
-  return (
-    <Wrapper>
-      <Book>
-        <Left>
-          <Img src={pickshareLogo} />
-        </Left>
-        <Right>
-          <SubIndex />
-          <LoginBox>
-            <Title>Log in to your account</Title>
-            <Form>
-              <InputBox>
-                <Box>
-                  <Input
-                    type="text"
-                    ref={inputEmail}
-                    name="email"
-                    placeholder="이메일"
-                    onChange={emailValidation}
-                  />
-                </Box>
-              </InputBox>
-              <BoxMessage>
-                <Message>{emailcheckMessage}</Message>
-              </BoxMessage>
-              <InputBox>
-                <Box>
-                  <Input
-                    type="password"
-                    ref={inputpassword}
-                    autoComplete="off"
-                    name="password"
-                    placeholder="비밀번호"
-                    onChange={passwordValidation}
-                  />
-                </Box>
-              </InputBox>
-              <BoxMessage>
-                <Message>{passwordMessage}</Message>
-              </BoxMessage>
-              <InputBox button>
-                <Box>
-                  <Button onClick={Login}>SignIn</Button>
-                </Box>
-                <Box>
-                  <Div>SNS 계정으로 편하게 시작하기</Div>
-                </Box>
-              </InputBox>
-              <InputBox button>
-                <Box>
-                  <ButtonKakao onClick={handleKakaoLogin}>kakao</ButtonKakao>
-                </Box>
-              </InputBox>
-            </Form>
-          </LoginBox>
-        </Right>
-        <Index />
-      </Book>
-    </Wrapper>
-  );
-}
-
-const mapStateToProps = (state: object) => {
-  return {
-    user: state,
-  };
-};
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    userInfoToStore: (userInfo: object, token: string) => {
-      dispatch(addUserInfo(userInfo, token));
-    },
-    initialUserInfoToStore: () => {
-      dispatch(deleteUserInfo());
-    },
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
