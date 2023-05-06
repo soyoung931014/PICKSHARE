@@ -1,20 +1,19 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { connect, useSelector } from 'react-redux';
-import { deleteUserInfo } from '../../redux/actions';
-
+import theme from '../../styles/theme';
 import { BiHome } from 'react-icons/bi';
 import { FaBars } from 'react-icons/fa';
 import defaultprofileImg from '../../img/profileImg.png';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteUserInfo } from '../../redux/actions';
+
+import { RootState } from '../../redux';
 
 const Wrapper = styled.section`
   height: 8vh;
@@ -44,19 +43,23 @@ const Logo = styled.section`
 
 const MenuFabar = styled.a`
   display: none;
-  @media ${({ theme }) => theme.deviceSize.tablet} {
+  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
     display: block;
-    margin-left: auto;
     width: 100%;
     text-align: end;
+    margin: 0.7rem;
     font-size: 1rem;
-    padding: 0.7em;
+    padding: 0.6rem;
+    margin-right: 1.7rem;
     :hover {
       cursor: pointer;
     }
   }
 `;
-const NavList = styled.section<{ Menu?: boolean; InitialNav?: boolean }>`
+const NavList = styled.section<{
+  Menu?: boolean;
+  InitialNav?: boolean;
+}>`
   display: ${(props) => (props.Menu ? 'block' : 'none')};
   width: 100%;
   height: 10vh;
@@ -64,7 +67,7 @@ const NavList = styled.section<{ Menu?: boolean; InitialNav?: boolean }>`
   justify-content: flex-end;
   align-items: center;
   position: relative;
-  @media ${({ theme }) => theme.deviceSize.tablet} {
+  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
     width: 120px;
     display: ${(props) => (props.Menu ? 'block' : 'none')};
     height: ${(props) => (props.InitialNav ? '192px' : '258px')};
@@ -96,7 +99,7 @@ const Img = styled.img`
   width: 2vw;
   border-radius: 50%;
   margin-right: 0.5rem;
-  @media ${({ theme }) => theme.deviceSize.tablet} {
+  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
     width: 3.2vw;
   }
 `;
@@ -104,20 +107,27 @@ const Info = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  @media ${({ theme }) => theme.deviceSize.middle} {
+  @media ${({ theme: themeProps }) => theme.deviceSize.middle} {
     width: 5rem;
   }
 `;
 
 const FeedDiv = styled.div``;
 
+// export interface navProps {
+//   render: any;
+//   setRender: (render: boolean) => void;
+// }
+// const Nav = ({ render, setRender }: navProps) => {
 const Nav = (props: any) => {
   const { isLogin, userInfo } = useSelector(
-    (userReducer: any) => userReducer.userInfo
+    (selector: RootState) => selector.userInfo
   );
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [menu, setMenu] = useState(false);
+
   return (
     <>
       <Wrapper>
@@ -171,7 +181,7 @@ const Nav = (props: any) => {
               </Div>
               <Div Text>
                 <NavLink
-                  onClick={() => props.userInfoToStore()}
+                  onClick={() => dispatch(deleteUserInfo())}
                   to="/mainfeed"
                   style={{
                     textDecoration: 'none',
@@ -221,7 +231,7 @@ const Nav = (props: any) => {
           <FaBars
             style={{
               fontWeight: 'bolder',
-              fontSize: '2.3rem',
+              fontSize: '3.8vh',
               color: '#3d3c3c',
             }}
           />
@@ -230,11 +240,5 @@ const Nav = (props: any) => {
     </>
   );
 };
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    userInfoToStore: () => {
-      dispatch(deleteUserInfo());
-    },
-  };
-};
-export default connect(null, mapDispatchToProps)(Nav);
+
+export default Nav;
