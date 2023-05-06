@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -50,7 +47,7 @@ const MenuFabar = styled.a`
     margin: 0.7rem;
     font-size: 1rem;
     padding: 0.6rem;
-    margin-right: 1.7rem;
+    margin-right: 0.5rem;
     :hover {
       cursor: pointer;
     }
@@ -97,9 +94,6 @@ const Img = styled.img`
   width: 2rem;
   border-radius: 50%;
   margin-right: 0.5rem;
-  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
-    width: 3.6vw;
-  }
 `;
 const Info = styled.div`
   display: flex;
@@ -107,8 +101,8 @@ const Info = styled.div`
   justify-content: flex-start;
   height: 36px;
   padding-bottom: 5.6px;
-  @media ${({ theme: themeProps }) => theme.deviceSize.middle} {
-    width: 5rem;
+  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
+    width: 5.1rem;
     padding-bottom: 0;
   }
 `;
@@ -120,7 +114,7 @@ const FeedDiv = styled.div``;
 //   setRender: (render: boolean) => void;
 // }
 // const Nav = ({ render, setRender }: navProps) => {
-const Nav = (props: any) => {
+const Nav = () => {
   const menuStyle = { textDecoration: 'none', color: '#3d3c3c' };
   const { isLogin, userInfo } = useSelector(
     (selector: RootState) => selector.userInfo
@@ -152,7 +146,7 @@ const Nav = (props: any) => {
                 <Info>
                   <NavLink
                     to={`/feed/${userInfo.nickname}`}
-                    onClick={() => props.setRender(!props.render)}
+                    /*   onClick={() => props.setRender(!props.render)} */
                     style={{ ...menuStyle }}
                   >
                     <FeedDiv>
