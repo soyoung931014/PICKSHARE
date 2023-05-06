@@ -85,7 +85,7 @@ function CommentSection({ user, boardId }: any) {
   return (
     <Wrapper>
       <CommentsListBox>
-        {commentdata === [] ? (
+        {commentdata === undefined ? (
           <></>
         ) : (
           commentdata.map((el: any) => (

@@ -35,7 +35,7 @@ export class CommentService {
   // 해당 보드의 댓글 모두 불러오기
   async getBoardComments(id: number): Promise<object> {
     try {
-      const comments = await this.commentRepository.find({ board_id: id });
+      const comments = await this.commentRepository.find({ where:{board_id: id} });
       console.log(comments);
       if (comments) {
         const user = await Promise.all(

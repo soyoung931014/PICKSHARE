@@ -11,7 +11,7 @@ export class FeedService {
     private boardRepository: BoardRepository,
   ) {}
 
-  async getAllFeed(): Promise<Board[]> {
+  async getAllFeed(page): Promise<Board[]> {
       const result =  await this.boardRepository.createQueryBuilder('board')
         .select([
           'board.id AS id',
@@ -37,12 +37,14 @@ export class FeedService {
         .groupBy('board.id')
         .orderBy('board.date', 'DESC')
         .getRawMany()
-
-      return result;
+    // console.log('리졸트', result.slice(0, 2), result.slice(0, 2).length);
+    console.log('리졸트2', result.length);
+    console.log(page);
+      return result.slice(page, page+8);
   }
 
-  async getUserFeed(nickname: string): Promise<Board[]> {
-    const board = await this.getAllFeed();
+  async getUserFeed(nickname: string, page:number): Promise<Board[]> {
+    const board = await this.getAllFeed(page);
     return board.filter((el) => el.nickname === nickname);
   }
 
