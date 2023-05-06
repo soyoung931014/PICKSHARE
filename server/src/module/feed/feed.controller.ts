@@ -14,7 +14,6 @@ export class FeedController {
       @Query('start') start: number,
       @Query('end') end: number,
     ): Promise<Board[]> {
-      console.log(start, end, '피드컨트롤러' )
         return this.feedService.getAllFeed(start, end);
     }
 

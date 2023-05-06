@@ -37,8 +37,6 @@ export class FeedService {
         .groupBy('board.id')
         .orderBy('board.date', 'DESC')
         .getRawMany()
-    // console.log('리졸트', result.slice(0, 2), result.slice(0, 2).length)
-    console.log('리졸트2', result.length);
     const data = result.slice(start, end);
 
     console.log('데이터 길이', data.length, 'start:',start,'end:', end)

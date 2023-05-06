@@ -7,8 +7,7 @@ import Nav from '../component/Nav/Nav';
 import feedBG from '../img/feedBG.jpg';
 import { BiSearch } from 'react-icons/bi';
 import { debounce } from 'debounce';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { deleteBoardInfo, diaryOnAction } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../component/Footer/Footer';
@@ -102,7 +101,7 @@ const FooterDiv = styled.div`
   padding-top: 10px;
   border-top: solid gray 1px;
 `;
-export interface Feed {
+export interface Feedlist {
   commentNum: string | undefined;
   contentImg: string | undefined;
   createdAt: string | undefined;
@@ -117,13 +116,12 @@ export default function MainFeed() {
   const navigate = useNavigate();
 
   const [render, setRender] = useState(false);
-  const [feedlist, setFeedlist] = useState<Feed[]|null>([]);
+  const [feedlist, setFeedlist] = useState<Feedlist[]|null>([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchOn, setSearchOn] = useState(false);
   const [orderingH, setOrderingH] = useState(false);
   const [target, setTarget] = useState(null);
   const [isLoaded, setIsloaded] = useState(false);
-  // const [list, setList] = useState<Feed[]|null>([]);
   let start = 0;
   let end = 8;
   const { userInfo } = useSelector((userReducer: any) => userReducer.userInfo);
@@ -154,7 +152,10 @@ export default function MainFeed() {
 
   const getUserFeed = async (searchNickname: string) => {
     return await feedApi.getUserFeed(searchNickname, start, end).then((result) => {
-      setFeedlist(result.data);
+      // setFeedlist(result.data);
+      setFeedlist((prev) => prev.concat(result.data));
+      start += 8;
+      end += 8;
     });
   };
 
@@ -163,7 +164,10 @@ export default function MainFeed() {
       result.data.sort((a: any, b: any) => {
         return b.heartNum - a.heartNum;
       });
-      setFeedlist(result.data);
+      // setFeedlist(result.data);
+      setFeedlist((prev) => prev.concat(result.data));
+      start += 8;
+      end += 8;
     });
   };
 
@@ -172,7 +176,10 @@ export default function MainFeed() {
       result.data.sort((a: any, b: any) => {
         return b.heartNum - a.heartNum;
       });
-      setFeedlist(result.data);
+      // setFeedlist(result.data);
+      setFeedlist((prev) => prev.concat(result.data));
+      start += 8;
+      end += 8;
     });
   };
 
