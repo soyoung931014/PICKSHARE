@@ -2,15 +2,119 @@ import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteUserInfo } from '../../redux/actions';
+
 import theme from '../../styles/theme';
 import { BiHome } from 'react-icons/bi';
 import { FaBars } from 'react-icons/fa';
 import defaultprofileImg from '../../img/profileImg.png';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteUserInfo } from '../../redux/actions';
-
 import { RootState } from '../../redux';
+
+const Nav = () => {
+  const menuStyle = { textDecoration: 'none', color: '#3d3c3c' };
+  const { isLogin, userInfo } = useSelector(
+    (selector: RootState) => selector.userInfo
+  );
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [menu, setMenu] = useState(false);
+
+  return (
+    <>
+      <Wrapper>
+        <Logo onClick={() => navigate('/mainfeed')}>PICKSHARE</Logo>
+        {isLogin === true ? (
+          <>
+            <NavList Menu={menu}>
+              <Div>
+                <NavLink
+                  to="/mainfeed"
+                  style={{
+                    ...menuStyle,
+                    fontSize: '1.7rem',
+                  }}
+                >
+                  <BiHome />
+                </NavLink>
+              </Div>
+              <Div>
+                <Info>
+                  <NavLink
+                    to={`/feed/${userInfo.nickname}`}
+                    /*   onClick={() => props.setRender(!props.render)} */
+                    style={{ ...menuStyle }}
+                  >
+                    <FeedDiv>
+                      {userInfo.userImage === 'nothing' ? (
+                        <Img src={defaultprofileImg} />
+                      ) : (
+                        <Img src={userInfo.userImage} />
+                      )}
+                    </FeedDiv>
+                  </NavLink>
+                  <FeedDiv>피드</FeedDiv>
+                </Info>
+              </Div>
+              <Div Text>
+                <NavLink to="/mypage" style={{ ...menuStyle }}>
+                  회원정보
+                </NavLink>
+              </Div>
+              <Div Text>
+                <NavLink
+                  onClick={() => dispatch(deleteUserInfo())}
+                  to="/mainfeed"
+                  style={{ ...menuStyle }}
+                >
+                  로그아웃
+                </NavLink>
+              </Div>
+            </NavList>
+          </>
+        ) : (
+          <>
+            <NavList Menu={menu} InitialNav>
+              <Div>
+                <NavLink
+                  to="/mainfeed"
+                  style={{
+                    ...menuStyle,
+                    fontSize: '1.7rem',
+                  }}
+                >
+                  <BiHome />
+                </NavLink>
+              </Div>
+              <Div Text>
+                <NavLink to="/login" style={{ ...menuStyle }}>
+                  로그인
+                </NavLink>
+              </Div>
+              <Div Text>
+                <NavLink to="/signup" style={{ ...menuStyle }}>
+                  회원가입
+                </NavLink>
+              </Div>
+            </NavList>
+          </>
+        )}
+        <MenuFabar href="#" onClick={() => setMenu(!menu)}>
+          <FaBars
+            style={{
+              fontWeight: 'bolder',
+              fontSize: '2rem',
+              color: '#3d3c3c',
+            }}
+          />
+        </MenuFabar>
+      </Wrapper>
+    </>
+  );
+};
+export default Nav;
 
 const Wrapper = styled.section`
   box-sizing: border-box;
@@ -114,107 +218,3 @@ const FeedDiv = styled.div``;
 //   setRender: (render: boolean) => void;
 // }
 // const Nav = ({ render, setRender }: navProps) => {
-const Nav = () => {
-  const menuStyle = { textDecoration: 'none', color: '#3d3c3c' };
-  const { isLogin, userInfo } = useSelector(
-    (selector: RootState) => selector.userInfo
-  );
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const [menu, setMenu] = useState(false);
-
-  return (
-    <>
-      <Wrapper>
-        <Logo onClick={() => navigate('/mainfeed')}>PICKSHARE</Logo>
-        {isLogin === true ? (
-          <>
-            <NavList Menu={menu}>
-              <Div>
-                <NavLink
-                  to="/mainfeed"
-                  style={{
-                    ...menuStyle,
-                    fontSize: '1.7rem',
-                  }}
-                >
-                  <BiHome />
-                </NavLink>
-              </Div>
-              <Div>
-                <Info>
-                  <NavLink
-                    to={`/feed/${userInfo.nickname}`}
-                    /*   onClick={() => props.setRender(!props.render)} */
-                    style={{ ...menuStyle }}
-                  >
-                    <FeedDiv>
-                      {userInfo.userImage === 'nothing' ? (
-                        <Img src={defaultprofileImg} />
-                      ) : (
-                        <Img src={userInfo.userImage} />
-                      )}
-                    </FeedDiv>
-                  </NavLink>
-                  <FeedDiv>피드</FeedDiv>
-                </Info>
-              </Div>
-              <Div Text>
-                <NavLink to="/mypage" style={{ ...menuStyle }}>
-                  회원정보
-                </NavLink>
-              </Div>
-              <Div Text>
-                <NavLink
-                  onClick={() => dispatch(deleteUserInfo())}
-                  to="/mainfeed"
-                  style={{ ...menuStyle }}
-                >
-                  로그아웃
-                </NavLink>
-              </Div>
-            </NavList>
-          </>
-        ) : (
-          <>
-            <NavList Menu={menu} InitialNav>
-              <Div>
-                <NavLink
-                  to="/mainfeed"
-                  style={{
-                    ...menuStyle,
-                    fontSize: '1.7rem',
-                  }}
-                >
-                  <BiHome />
-                </NavLink>
-              </Div>
-              <Div Text>
-                <NavLink to="/login" style={{ ...menuStyle }}>
-                  로그인
-                </NavLink>
-              </Div>
-              <Div Text>
-                <NavLink to="/signup" style={{ ...menuStyle }}>
-                  회원가입
-                </NavLink>
-              </Div>
-            </NavList>
-          </>
-        )}
-        <MenuFabar href="#" onClick={() => setMenu(!menu)}>
-          <FaBars
-            style={{
-              fontWeight: 'bolder',
-              fontSize: '2rem',
-              color: '#3d3c3c',
-            }}
-          />
-        </MenuFabar>
-      </Wrapper>
-    </>
-  );
-};
-
-export default Nav;
