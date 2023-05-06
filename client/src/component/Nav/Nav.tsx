@@ -1,139 +1,23 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-import { connect, useSelector } from 'react-redux';
+import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { BiHome } from 'react-icons/bi';
 
-import defaultprofileImg from '../../img/profileImg.png';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteUserInfo } from '../../redux/actions';
+
+import theme from '../../styles/theme';
+import { BiHome } from 'react-icons/bi';
 import { FaBars } from 'react-icons/fa';
-import { useState } from 'react';
+import defaultprofileImg from '../../img/profileImg.png';
 
-const Wrapper = styled.section`
-  width: 100%;
-  height: 8vh;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  background: white;
-  border-bottom: solid 0.8px #bbbbbb;
-  box-shadow: 0 0px 10px #acafb345;
-`;
+import { RootState } from '../../redux';
 
-const Logo = styled.section`
-  margin-left: 1.7rem;
-  font-weight: 900;
-  width: 70%;
-  height: 2.6rem;
-  background: linear-gradient(to right, #ee64c7, #8272eb, #d06be0);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-size: 2.5rem;
-  margin-top: 5px;
-  :hover {
-    cursor: pointer;
-  }
-`;
-
-const MenuFabar = styled.a`
-  display: none;
-  @media screen and (max-width: 977px) {
-    display: block;
-    width: 100%;
-    text-align: end;
-    margin: 0.7rem;
-    font-size: 1rem;
-    padding: 0.6rem;
-    margin-right: 1.7rem;
-    :hover {
-      cursor: pointer;
-    }
-  }
-`;
-const NavList = styled.section<{ Menu?: any; InitialNav?: any }>`
-  width: 100%;
-  height: 10vh;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  @media screen and (max-width: 977px) {
-    width: ${(props) => (props.InitialNav ? '20vw' : '25vw')};
-    height: ${(props) => (props.InitialNav ? '35vh' : '45vh')};
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #fffceb;
-    border-radius: 5%;
-    margin-top: ${(props) => (props.InitialNav ? '34vh' : '44.4vh')};
-    position: absolute;
-    z-index: 4;
-    right: 10px;
-    margin-top: 30rem;
-    padding-right: 5%;
-    transform: ${({ Menu }) => {
-      return Menu ? 'translatex(25%)' : 'translateX(100%)';
-    }};
-  }
-  @media screen and (max-width: 710px) {
-    width: ${(props) => (props.InitialNav ? '24vw' : '29vw')};
-  }
-  @media screen and (max-width: 607px) {
-    width: ${(props) => (props.InitialNav ? '25vw' : '29vw')};
-  }
-  @media screen and (max-width: 550px) {
-    width: ${(props) => (props.InitialNav ? '27vw' : '40vw')};
-  }
-  @media screen and (max-width: 460px) {
-    width: ${(props) => (props.InitialNav ? '30vw' : '40vw')};
-  }
-  @media screen and (max-width: 408px) {
-    width: ${(props) => (props.InitialNav ? '38vw' : '40vw')};
-  }
-`;
-const Div = styled.div<{ Text?: any }>`
-  margin: 0.7rem;
-  font-size: 1rem;
-  font-weight: bolder;
-  padding: 0.6rem;
-  padding-top: ${(props) => (props.Text ? '1rem' : null)};
-  padding-bottom: ${(props) => (props.Text ? '1rem' : null)};
-  :hover {
-    cursor: pointer;
-    background: #fee9f7;
-    border-radius: 10px;
-  }
-`;
-
-const Img = styled.img`
-  border: solid gray 1px;
-  height: 3.5vh;
-  width: 2vw;
-  border-radius: 50%;
-  margin-right: 0.5rem;
-  @media screen and (max-width: 977px) {
-    width: 3.2vw;
-  }
-`;
-const Info = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  @media screen and (max-width: 750px) {
-    width: 5rem;
-  }
-`;
-const FeedDiv = styled.div``;
-
-const Nav = (props: any) => {
+const Nav = () => {
+  const menuStyle = { textDecoration: 'none', color: '#3d3c3c' };
   const { isLogin, userInfo } = useSelector(
-    (userReducer: any) => userReducer.userInfo
+    (selector: RootState) => selector.userInfo
   );
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [menu, setMenu] = useState(false);
@@ -149,8 +33,7 @@ const Nav = (props: any) => {
                 <NavLink
                   to="/mainfeed"
                   style={{
-                    textDecoration: 'none',
-                    color: '#3d3c3c',
+                    ...menuStyle,
                     fontSize: '1.7rem',
                   }}
                 >
@@ -161,11 +44,8 @@ const Nav = (props: any) => {
                 <Info>
                   <NavLink
                     to={`/feed/${userInfo.nickname}`}
-                    onClick={() => props.setRender(!props.render)}
-                    style={{
-                      textDecoration: 'none',
-                      color: '#3d3c3c',
-                    }}
+                    /*   onClick={() => props.setRender(!props.render)} */
+                    style={{ ...menuStyle }}
                   >
                     <FeedDiv>
                       {userInfo.userImage === 'nothing' ? (
@@ -179,24 +59,15 @@ const Nav = (props: any) => {
                 </Info>
               </Div>
               <Div Text>
-                <NavLink
-                  to="/mypage"
-                  style={{
-                    textDecoration: 'none',
-                    color: '#3d3c3c',
-                  }}
-                >
+                <NavLink to="/mypage" style={{ ...menuStyle }}>
                   회원정보
                 </NavLink>
               </Div>
               <Div Text>
                 <NavLink
-                  onClick={() => props.userInfoToStore()}
+                  onClick={() => dispatch(deleteUserInfo())}
                   to="/mainfeed"
-                  style={{
-                    textDecoration: 'none',
-                    color: '#3d3c3c',
-                  }}
+                  style={{ ...menuStyle }}
                 >
                   로그아웃
                 </NavLink>
@@ -210,8 +81,7 @@ const Nav = (props: any) => {
                 <NavLink
                   to="/mainfeed"
                   style={{
-                    textDecoration: 'none',
-                    color: '#3d3c3c',
+                    ...menuStyle,
                     fontSize: '1.7rem',
                   }}
                 >
@@ -219,18 +89,12 @@ const Nav = (props: any) => {
                 </NavLink>
               </Div>
               <Div Text>
-                <NavLink
-                  to="/login"
-                  style={{ textDecoration: 'none', color: '#3d3c3c' }}
-                >
+                <NavLink to="/login" style={{ ...menuStyle }}>
                   로그인
                 </NavLink>
               </Div>
               <Div Text>
-                <NavLink
-                  to="/signup"
-                  style={{ textDecoration: 'none', color: '#3d3c3c' }}
-                >
+                <NavLink to="/signup" style={{ ...menuStyle }}>
                   회원가입
                 </NavLink>
               </Div>
@@ -241,7 +105,7 @@ const Nav = (props: any) => {
           <FaBars
             style={{
               fontWeight: 'bolder',
-              fontSize: '3.8vh',
+              fontSize: '2rem',
               color: '#3d3c3c',
             }}
           />
@@ -250,11 +114,107 @@ const Nav = (props: any) => {
     </>
   );
 };
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    userInfoToStore: () => {
-      dispatch(deleteUserInfo());
-    },
-  };
-};
-export default connect(null, mapDispatchToProps)(Nav);
+export default Nav;
+
+const Wrapper = styled.section`
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background: white;
+  border-bottom: solid 0.8px #bbbbbb;
+  box-shadow: 0 0px 10px #acafb345;
+`;
+
+const Logo = styled.section`
+  margin-left: 1rem;
+  font-weight: 900;
+  width: 13rem;
+  height: 2.6rem;
+  background: linear-gradient(to right, #ee64c7, #8272eb, #d06be0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 2.5rem;
+  margin-top: 5px;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const MenuFabar = styled.a`
+  display: none;
+  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
+    display: block;
+    width: 100%;
+    text-align: end;
+    margin: 0.7rem;
+    font-size: 1rem;
+    padding: 0.6rem;
+    margin-right: 0.5rem;
+    :hover {
+      cursor: pointer;
+    }
+  }
+`;
+const NavList = styled.section<{
+  Menu?: boolean;
+  InitialNav?: boolean;
+}>`
+  display: ${(props) => (props.Menu ? 'block' : 'none')};
+  width: 100%;
+  height: 10vh;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
+    width: 120px;
+    display: ${(props) => (props.Menu ? 'block' : 'none')};
+    height: ${(props) => (props.InitialNav ? '192px' : '258px')};
+    flex: 0 0 auto;
+    position: absolute;
+    top: 4.7em;
+    z-index: 1;
+    flex-direction: column;
+    background-color: #fffceb;
+  }
+`;
+const Div = styled.div<{ Text?: boolean }>`
+  margin: 0.7rem;
+  height: 3.2rem;
+  font-weight: bolder;
+  padding: ${(props) => (props.Text ? '1.1rem 0.6rem' : '0.7rem 0.6rem')};
+  :hover {
+    cursor: pointer;
+    background: #fee9f7;
+    border-radius: 10px;
+  }
+`;
+
+const Img = styled.img`
+  border: solid gray 1px;
+  height: 1.8rem;
+  width: 2rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+`;
+const Info = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 36px;
+  padding-bottom: 5.6px;
+  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
+    width: 5.1rem;
+    padding-bottom: 0;
+  }
+`;
+
+const FeedDiv = styled.div``;
+
+// export interface navProps {
+//   render: any;
+//   setRender: (render: boolean) => void;
+// }
+// const Nav = ({ render, setRender }: navProps) => {
