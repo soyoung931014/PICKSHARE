@@ -22,5 +22,5 @@ const persistConfig = {
   storage,
   whitelist: ['userInfo'],
 };
-
+export type RootState = ReturnType<typeof rootReducer>;
 export default persistReducer(persistConfig, rootReducer);

@@ -1,21 +1,6 @@
+import { auth } from '../../../types/user';
 import { ADD_USER_INFO } from '../../actions/actionTypes';
 import { DELETE_USER_INFO } from '../../actions/actionTypes';
-
-export interface auth {
-  isLogin: boolean;
-  accessToken?: string;
-  refreshToken?: string;
-  userInfo: {
-    id?: number;
-    email?: string;
-    nickname?: string;
-    userImage?: string;
-    loginMethod?: number;
-    statusMessage?: string;
-    created_at?: string;
-    updated_at?: string;
-  };
-}
 
 const initialState: auth = {
   isLogin: false,
