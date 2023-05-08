@@ -1,17 +1,11 @@
-import { IInitial, IKakaoUser, IUser } from '../../../types/user';
+import { IInitialUser, IUserAction } from '../../../types/reduxType/userReType';
 import { ADD_USER_INFO } from '../../actions/actionTypes';
 import { DELETE_USER_INFO } from '../../actions/actionTypes';
 
-const initialState: IInitial = {
+const initialState: IInitialUser = {
   isLogin: false,
   accessToken: '',
 };
-export interface IUserAction {
-  type: string;
-  isLogin: boolean;
-  payload: IUser | IKakaoUser;
-  accessToken: string;
-}
 
 const userReducer = (state = initialState, action: IUserAction) => {
   switch (action.type) {

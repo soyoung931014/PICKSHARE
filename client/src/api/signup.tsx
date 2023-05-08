@@ -1,4 +1,4 @@
-import { ISignup } from '../types/user';
+import { ISignup } from '../types/userType';
 import api from './index';
 
 const signupApi = {

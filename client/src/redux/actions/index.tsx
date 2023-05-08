@@ -1,6 +1,6 @@
 // action 작성
 
-import { IKakaoUser, IUser } from '../../types/user';
+import { IKakaoUser, IUser } from '../../types/userType';
 import {
   ADD_USER_INFO,
   DELETE_USER_INFO,

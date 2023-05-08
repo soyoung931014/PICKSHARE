@@ -17,7 +17,7 @@ import edit from '../../img/edit.jpg';
 import nothing from '../../img/profileImg.png';
 
 import { RootState } from '../../redux';
-import { IMyPageData } from '../../types/user';
+import { IMyPageData } from '../../types/mypageType';
 
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 

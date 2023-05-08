@@ -8,8 +8,7 @@ import loginApi from '../api/login';
 
 import styled from 'styled-components';
 import background from '../img/feedBG.jpg';
-
-import { IKakaoData } from '../types/user';
+import { IKakaoData } from '../types/userType';
 
 function kakaoLoading() {
   const navigate = useNavigate();

@@ -15,7 +15,7 @@ import styled from 'styled-components';
 import background from '../img/feedBG.jpg';
 import pickshareLogo from '../img/pickshare.png';
 
-import { ITokenData, IUserData } from '../types/user';
+import { ITokenData, IUserData } from '../types/userType';
 
 function Login() {
   const navigate = useNavigate();
