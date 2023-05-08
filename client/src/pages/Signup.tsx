@@ -13,6 +13,7 @@ import Index from '../component/Index/Index';
 import SubIndex from '../component/Index/SubIndex';
 
 import { emailRegExp, passwordRegExp } from '../common/validation';
+import theme from '../styles/theme';
 
 function Signup() {
   const navigate = useNavigate();
@@ -179,7 +180,7 @@ function Signup() {
     const userInfo = { email, nickname, password };
     if (userInfo) {
       try {
-        await signupApi.signup(userInfo).then((res) => {
+        await signupApi.signup(userInfo).then(() => {
           setLoading(!loading);
           setTimeout(() => {
             alert('회원가입이 완료되었습니다. 로그인을 시도해주세요');
@@ -197,6 +198,7 @@ function Signup() {
     e.preventDefault();
     window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CODE}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT}&response_type=code&state=kakao`;
   };
+
   return (
     <>
       {loading ? (
@@ -313,7 +315,7 @@ const Book = styled.div`
   padding-left: 1em;
   position: relative;
   left: 8rem;
-  @media screen and (max-width: 891px) {
+  @media ${() => theme.deviceSize.tablet} {
     width: 100vw;
     position: none;
     left: 0rem;
@@ -346,7 +348,7 @@ const Right = styled.div`
   @media screen and (max-width: 1190px) {
     width: 32rem;
   }
-  @media screen and (max-width: 891px) {
+  @media ${() => theme.deviceSize.tablet} {
     width: 100vw;
     height: 100vh;
     border-radius: 0px;
@@ -378,33 +380,24 @@ const Title = styled.div`
   background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  @media screen and (max-width: 359px) {
-    font-size: 2rem;
-  }
-  @media screen and (max-width: 323px) {
-    font-size: 1.7rem;
-  }
 `;
 const Form = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 45vw;
+  width: 18rem;
   height: 50vh;
   box-sizing: border-box;
-  @media screen and (max-width: 891px) {
-    width: 60vw;
-  }
-  @media screen and (max-width: 513px) {
-    width: 100vw;
+  @media ${() => theme.deviceSize.tablet} {
+    width: 18rem;
   }
 `;
-const InputBox = styled.div<{ button?: any }>`
+const InputBox = styled.div<{ button?: boolean }>`
   height: 3.4rem;
   margin-top: ${(props) => (props.button ? '0' : '0')};
   box-sizing: border-box;
 `;
-const Message = styled.div<{ PasswordCheck?: any }>`
+const Message = styled.div<{ PasswordCheck?: boolean }>`
   width: 100vw;
   height: 1.7rem;
   padding-top: 3px;
@@ -412,11 +405,8 @@ const Message = styled.div<{ PasswordCheck?: any }>`
   font-size: 15px;
   text-align: flex-start;
   color: #ff8686;
-  @media screen and (max-width: 1194px) {
-    font-size: ${(props) => (props.PasswordCheck ? '14px' : '15px')};
-  }
 `;
-const Input = styled.input<{ Password?: any }>`
+const Input = styled.input<{ Password?: boolean }>`
   height: 3rem;
   width: ${(props) => (props.Password ? '17rem' : '12rem')};
   border-radius: 30px;
@@ -440,11 +430,14 @@ const Button = styled.button`
   text-decoration: none;
   font-size: large;
   background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
-  cursor: pointer;
   font-size: large;
   font-weight: bold;
   color: white;
   margin-top: 0.8rem;
+  :hover {
+    cursor: pointer;
+    background: #f7a3db;
+  }
 `;
 
 const TwinCheckButton = styled.button`
@@ -452,30 +445,32 @@ const TwinCheckButton = styled.button`
   height: 3rem;
   margin-left: 2%;
   border-radius: 5px;
-  box-sizing: border-box;
-  border: 0;
   box-shadow: 0 5px 14px #3c4a5645;
   text-decoration: none;
   font-size: large;
   background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
-  cursor: pointer;
   font-weight: bold;
   color: white;
+  :hover {
+    cursor: pointer;
+    background: #f7a3db;
+  }
 `;
 const ButtonKakao = styled.button`
   width: 17rem;
   height: 3rem;
   border-radius: 30px;
-  box-sizing: border-box;
-  border: 0;
   box-shadow: 0 5px 14px #3c4a5645;
   text-decoration: none;
   font-size: large;
   font-weight: bold;
   color: #4e4d4d;
   background-color: #fdf772;
-  cursor: pointer;
   margin-top: 0.7rem;
+  :hover {
+    cursor: pointer;
+    background: #f7a3db;
+  }
 `;
 
 const Box = styled.div`
@@ -486,71 +481,6 @@ const Box = styled.div`
 `;
 const BoxMessage = styled.div`
   display: flex;
-  margin-left: 5.3rem;
-  padding-right: 7rem;
-  width: 50vw;
-  margin-left: 12rem;
-  padding-left: 100px;
-
-  @media screen and (max-width: 1750px) {
-    margin-left: 10rem;
-  }
-
-  @media screen and (max-width: 1670px) {
-    margin-left: 8.4rem;
-  }
-  @media screen and (max-width: 1545px) {
-    margin-left: 7rem;
-  }
-  @media screen and (max-width: 1400px) {
-    margin-left: 6rem;
-  }
-  @media screen and (max-width: 1330px) {
-    margin-left: 5rem;
-  }
-  @media screen and (max-width: 1240px) {
-    margin-left: 3.5rem;
-  }
-  @media screen and (max-width: 1160px) {
-    margin-left: 3rem;
-  }
-  @media screen and (max-width: 1091px) {
-    margin-left: 2rem;
-  }
-  @media screen and (max-width: 959px) {
-    margin-left: 0.5rem;
-    width: 80vw;
-  }
-  @media screen and (max-width: 924px) {
-    margin-left: 0;
-    width: 80vw;
-  }
-  @media screen and (max-width: 891px) {
-    margin-left: 2rem;
-  }
-  @media screen and (max-width: 800px) {
-    margin-left: 1rem;
-    width: 70vw;
-  }
-
-  @media screen and (max-width: 710px) {
-    margin-left: 0rem;
-    padding-left: 90px;
-  }
-  @media screen and (max-width: 620px) {
-    padding-left: 60px;
-  }
-  @media screen and (max-width: 530px) {
-    padding-left: 30px;
-  }
-  @media screen and (max-width: 515px) {
-    padding-left: 8rem;
-    width: 100vw;
-  }
-  @media screen and (max-width: 449px) {
-    padding-left: 6rem;
-  }
-  @media screen and (max-width: 380px) {
-    padding-left: 3rem;
-  }
+  width: 17rem;
+  padding-left: 14px;
 `;

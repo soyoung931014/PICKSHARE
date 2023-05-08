@@ -16,6 +16,7 @@ import background from '../img/feedBG.jpg';
 import pickshareLogo from '../img/pickshare.png';
 
 import { ITokenData, IUserData } from '../types/userType';
+import theme from '../styles/theme';
 
 function Login() {
   const navigate = useNavigate();
@@ -173,11 +174,14 @@ export default Login;
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
   background-image: url(${background});
 `;
-
 const Book = styled.div`
-  height: 100vh;
+  border: solid red 2px;
+  height: 100%;
+  flex: 1 0 auto;
   width: 90vw;
   display: flex;
   justify-content: center;
@@ -185,7 +189,7 @@ const Book = styled.div`
   padding-left: 1em;
   position: relative;
   left: 8rem;
-  @media screen and (max-width: 891px) {
+  @media ${() => theme.deviceSize.tablet} {
     width: 100vw;
     position: none;
     left: 0rem;
@@ -197,6 +201,7 @@ const Left = styled.div`
   align-items: flex-end;
   width: 32rem;
   height: 85vh;
+  flex: 0 auto;
   padding-left: 1em;
   background-color: white;
   border-radius: 30px 20px 20px 30px;
@@ -218,22 +223,11 @@ const Right = styled.div`
   @media screen and (max-width: 1190px) {
     width: 32rem;
   }
-  @media screen and (max-width: 891px) {
+  @media ${() => theme.deviceSize.tablet} {
     width: 100vw;
     height: 100vh;
     border-radius: 0px;
     padding-left: 0em;
-  }
-`;
-
-const SubTags = styled.div`
-  display: flex;
-  justify-content: center;
-  height: 3.2rem;
-  box-shadow: 15px 10px 15px #3c4a5645;
-
-  @media screen and (min-width: 892px) {
-    display: none;
   }
 `;
 
@@ -267,7 +261,7 @@ const Form = styled.form`
   flex-direction: column;
   justify-content: center;
   width: 35vw;
-  height: 50vh;
+  height: 30rem;
   box-sizing: border-box;
   @media screen and (max-width: 891px) {
     width: 60vw;
@@ -276,10 +270,9 @@ const Form = styled.form`
     width: 90vw;
   }
 `;
-const InputBox = styled.div<{ button?: any }>`
+const InputBox = styled.div<{ button?: boolean }>`
   height: 3.3rem;
   margin-top: ${(props) => (props.button ? '2rem' : '0')};
-  box-sizing: border-box;
 `;
 const Message = styled.div`
   width: 100vw;

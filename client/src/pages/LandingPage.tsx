@@ -5,7 +5,6 @@ import styled from 'styled-components';
 const LandingPage = () => {
   return (
     <>
-      <Nav />
       <Landing />
     </>
   );
