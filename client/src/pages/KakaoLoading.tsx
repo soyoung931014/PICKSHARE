@@ -1,15 +1,51 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
+
 import { addUserInfo } from '../redux/actions';
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { useDispatch } from 'react-redux';
+
+import loginApi from '../api/login';
+
 import styled from 'styled-components';
 import background from '../img/feedBG.jpg';
-import loginApi from '../api/login';
+
+import { IKakaoData } from '../types/user';
+
+function kakaoLoading() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setTimeout(() => {
+      void loginApi.kakao().then(({ data }: IKakaoData) => {
+        const {
+          accessToken,
+          data: { nickname, ...rest },
+        } = data;
+        void dispatch(addUserInfo({ nickname, ...rest }, accessToken));
+        if (nickname === '') {
+          alert('닉네임을 설정해주세요');
+          return navigate('/mypage', { replace: true });
+        }
+        navigate('/mainfeed', { replace: true });
+      });
+    }, 3000);
+  }, []);
+
+  return (
+    <>
+      <Wrapper>
+        <Pickshare>Loading..</Pickshare>
+        <LoadingBox>
+          <Img src={process.env.PUBLIC_URL + 'favicon.ico'} />
+        </LoadingBox>
+      </Wrapper>
+    </>
+  );
+}
+
+export default kakaoLoading;
+
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
@@ -61,41 +97,3 @@ const LoadingBox = styled.div`
   width: 26%;
   height: 4.5vh;
 `;
-
-function kakaoLoading(props: any) {
-  const { userInfoToStore } = props;
-  const navigate = useNavigate();
-  useEffect(() => {
-    setTimeout(() => {
-      void loginApi.kakao().then((res) => {
-        const { accessToken, data, nickname } = res.data;
-        void userInfoToStore(data, accessToken);
-        if (nickname === '') {
-          alert('닉네임을 설정해주세요');
-          return navigate('/mypage', { replace: true });
-        }
-        navigate('/mainfeed', { replace: true });
-      });
-    }, 3000);
-  }, []);
-
-  return (
-    <>
-      <Wrapper>
-        <Pickshare>Loading..</Pickshare>
-        <LoadingBox>
-          <Img src={process.env.PUBLIC_URL + 'favicon.ico'} />
-        </LoadingBox>
-      </Wrapper>
-    </>
-  );
-}
-
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    userInfoToStore: (userInfo: object, token: string) => {
-      dispatch(addUserInfo(userInfo, token));
-    },
-  };
-};
-export default connect(null, mapDispatchToProps)(kakaoLoading);
