@@ -28,7 +28,7 @@ function kakaoLoading() {
         }
         navigate('/mainfeed', { replace: true });
       });
-    }, 300000);
+    }, 3000);
   }, []);
 
   return (
