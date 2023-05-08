@@ -13,7 +13,9 @@ const Layout = () => {
       <Main>
         <Outlet />
       </Main>
-      <Footer />
+      <FooterDiv>
+        <Footer />
+      </FooterDiv>
     </Container>
   );
 };
@@ -22,11 +24,15 @@ export default Layout;
 
 const Container = styled.div`
   background-color: #ffff;
-  overflow-x: hidden;
   display: flex;
   flex-direction: column;
 `;
 const Header = styled.div`
   height: 70px;
 `;
-const Main = styled.div``;
+const Main = styled.div`
+  overflow: auto;
+`;
+const FooterDiv = styled.div`
+  margin: 1em;
+`;
