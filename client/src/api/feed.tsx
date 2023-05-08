@@ -1,8 +1,10 @@
 /*eslint-disable*/
+import { AxiosPromise } from 'axios';
 import api from './index';
+import { Feedlist } from '../pages/MainFeed';
 
 const feedApi = {
-  getMainFeed: (start: number, end: number) => {
+  getMainFeed: (start: number, end: number):AxiosPromise<Feedlist[]> => {
     return api.get(`/feed?start=${start}&end=${end}`);
   },
   getHeart: (board_id: number, accessToken: string) => {
@@ -18,10 +20,10 @@ const feedApi = {
   getComment: () => {
     return api.get('/comment');
   },
-  getUserFeed: (nickname: string, start: number, end: number) => {
+  getUserFeed: (nickname: string, start: number, end: number):AxiosPromise<Feedlist[]> => {
     return api.get(`/feed/mainfeed?nickname=${nickname}&start=${start}end=${end}`);
   },
-  getMyFeed: (accessToken: string, start: number, end: number) => {
+  getMyFeed: (accessToken: string, start: number, end: number):AxiosPromise<Feedlist[]> => {
     return api.get('/feed/myfeed?start=${start}&end=${end}',{
       headers: {
         authorization: `Bearer ${accessToken}`,

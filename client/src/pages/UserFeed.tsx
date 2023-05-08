@@ -4,15 +4,20 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Nav from '../component/Nav/Nav';
 import feedBG from '../img/feedBG.jpg';
-import profileImg from '../img/profileImg.png'
+import profileImg from '../img/profileImg.png';
 import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { useDispatch } from 'react-redux';
 import Modal from '../component/Modal/Modal';
-import { deleteBoardInfo, diaryOnAction, modalOnAction } from '../redux/actions';
+import {
+  deleteBoardInfo,
+  diaryOnAction,
+  modalOnAction,
+} from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../component/Footer/Footer';
 import { Feedlist } from './MainFeed';
+import { RootState } from '../redux';
 
 export interface Userlist {
   nickname: string | undefined;
@@ -23,18 +28,18 @@ export interface Userlist {
 export default function UserFeed() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [userfeedlist, setUserFeedlist] = useState<Feedlist[]|null>([]);
-  const [userlist, setUserlist] = useState<Userlist[]|null>();
+  const [userfeedlist, setUserFeedlist] = useState<Feedlist[] | null>([]);
+  const [userlist, setUserlist] = useState<Userlist[] | null>();
   const [render, setRender] = useState(false);
-  const [orderingH, setOrderingH] = useState(false);
+  // const [orderingH, setOrderingH] = useState(false);
   const [follow, setFollow] = useState(false); //팔로우
   let start = 0;
   let end = 8;
   const { isModalOn } = useSelector(
-    (modalReducer: any) => modalReducer.modalInfo
+    (modalReducer: RootState) => modalReducer.modalInfo
   );
   const { isLogin, accessToken, userInfo } = useSelector(
-    (userReducer: any) => userReducer.userInfo
+    (userReducer: RootState) => userReducer.userInfo
   );
   const path = window.location.pathname.split('/')[2];
   const [following, setFollowing]: any[] = useState({
@@ -48,12 +53,12 @@ export default function UserFeed() {
     followerNickname: '',
   });
 
-  const searchShareHandler = (value: {}) => {
-    if (!value) {
-      setUserFeedlist([]);
-      return;
-    }
-  };
+  // const searchShareHandler = (value: {}) => {
+  //   if (!value) {
+  //     setUserFeedlist([]);
+  //     return;
+  //   }
+  // };
   const writeNewDiary = () => {
     //새로 만들기
     dispatch(deleteBoardInfo());
@@ -64,10 +69,12 @@ export default function UserFeed() {
     if (isLogin === false) {
       alert('로그인이 필요한 서비스입니다');
     }
-    return await feedApi.postFollow(userlist[0].nickname, accessToken).then(() => {
-      setFollow(true);
-      setRender(!render);
-    });
+    return await feedApi
+      .postFollow(userlist[0].nickname, accessToken)
+      .then(() => {
+        setFollow(true);
+        setRender(!render);
+      });
   };
 
   const handleUnFollow = async () => {
@@ -88,9 +95,14 @@ export default function UserFeed() {
 
   useMemo(async () => {
     const userfeedinfo = async () => {
-      return await feedApi.userInfo(path).then((result) => {
-        setUserlist(result.data.data);
-      });
+      return await feedApi
+        .userInfo(path)
+        .then((result) => {
+          setUserlist(result.data.data);
+        })
+        .catch((err) => {
+          return console.log(err);
+        });
     };
 
     await userfeedinfo();
@@ -106,7 +118,9 @@ export default function UserFeed() {
     const getFollowingList = async () => {
       return await feedApi.getFollowingList(path).then((result) => {
         setFollowing(result.data);
-      });
+      }).catch((err) => {
+        return console.log(err);
+        });
     };
 
     await getFollowingList();
@@ -114,10 +128,11 @@ export default function UserFeed() {
     const getFollowerList = async () => {
       return await feedApi.getFollowerList(path).then((result) => {
         setFollower(result.data);
+      }).catch((err) => {
+        return console.log(err);
       });
     };
     await getFollowerList();
-
   }, [follow, render]);
 
   useEffect(() => {
@@ -134,7 +149,6 @@ export default function UserFeed() {
     //유저들의 피드
     const userPage = async () => {
       return await feedApi.getUserFeed(path, start, end).then((result) => {
-        // setUserFeedlist(result.data);
         setUserFeedlist((prev) => prev.concat(result.data));
         start += 8;
         end += 8;
@@ -149,17 +163,19 @@ export default function UserFeed() {
 
   return (
     <UserWapper>
-      <Nav setRender={setRender} render={render} />
+      <Nav
+        //setRender={setRender} render={render}
+      />
       <Div>
         <User>
           <div>
             <UserDiv>
               <>
-                {
-                  !userlist || userlist[0].userImage === 'nothing'
-                  ? <UserImg src={profileImg} />
-                  : <UserImg src={userlist[0].userImage} />
-                } 
+                {!userlist || userlist[0].userImage === 'nothing' ? (
+                  <UserImg src={profileImg} />
+                ) : (
+                  <UserImg src={userlist[0].userImage} />
+                )}
               </>
               <>
                 {isLogin === true ? (
@@ -201,18 +217,15 @@ export default function UserFeed() {
             </UserDescribe>
           </UserInfo>
         </User>
-        {
-          userInfo.nickname === path
-          ?(
-            <PlusButton>
-              <button onClick={writeNewDiary}> + </button>
-            </PlusButton>
-          ) : (
-            <PlusButton Hidden >
-              <button > + </button>
-            </PlusButton>
-          )
-        }
+        {userInfo.nickname === path ? (
+          <PlusButton>
+            <button onClick={writeNewDiary}> + </button>
+          </PlusButton>
+        ) : (
+          <PlusButton Hidden>
+            <button> + </button>
+          </PlusButton>
+        )}
         <Feed>
           {userfeedlist.length === 0
             ? `${userlist[0].nickname}님의 피드가 없습니다`
@@ -241,128 +254,126 @@ export default function UserFeed() {
   );
 }
 
-  const UserWapper = styled.div`
-    width: 100%;
-    height: 100%;
-    background-image: url(${feedBG});
-    background-size: cover;
-    background-attachment: scroll;
-  `;
-  const Div = styled.div`
-    margin: 150px;
-    min-width: 21rem;
-  `;
-  const User = styled.div`
+const UserWapper = styled.div`
+  width: 100%;
+  height: 100%;
+  background-image: url(${feedBG});
+  background-size: cover;
+  background-attachment: scroll;
+`;
+const Div = styled.div`
+  margin: 150px;
+  min-width: 21rem;
+`;
+const User = styled.div`
+  display: flex;
+  column-gap: 7rem;
+
+  @media screen and (max-width: 947px) {
+    flex-direction: column;
+    margin: 0 auto;
+  }
+`;
+
+const UserDiv = styled.div`
+  @media screen and (max-width: 947px) {
     display: flex;
-    column-gap: 7rem;
-  
-    @media screen and (max-width: 947px) {
-      flex-direction: column;
-      margin: 0 auto;
-    }
-  `;
-  
-  const UserDiv = styled.div`
-    @media screen and (max-width: 947px) {
-      display: flex;
-      justify-content: center;
-    }
-  `;
-  
-  const UserImg = styled.img`
-    position: relative;
+    justify-content: center;
+  }
+`;
+
+const UserImg = styled.img`
+  position: relative;
+  border-radius: 100%;
+  width: 178px;
+  height: 178px;
+  box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
+`;
+const UserFollow = styled.button`
+  background-color: white;
+  position: absolute;
+  border-radius: 20px;
+  box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
+  width: 94px;
+  height: 37px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-weight: 600;
+  left: 17rem;
+  top: 23.7rem;
+  &:hover {
+    cursor: pointer;
+  }
+  @media screen and (max-width: 947px) {
+    left: 21rem;
+  }
+`;
+const UserInfo = styled.div`
+  @media screen and (max-width: 947px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+const UserDescribe = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-radius: 1rem;
+  box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
+  width: 261px;
+  height: 40px;
+  background-color: white;
+  margin: 1rem;
+`;
+const Content = styled.div`
+  margin: 0.5rem;
+  margin-left: 1rem;
+  width: 200px;
+  padding-top: 7px;
+  font-weight: 700;
+  color: #494949;
+`;
+const UserFollowInfo = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 4px;
+  font-weight: 700;
+  color: #494949;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+const Feed = styled.div`
+  display: grid;
+  column-gap: 5rem;
+  row-gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
+  justify-content: start;
+`;
+const PlusButton = styled.div<{ Hidden?: any }>`
+  visibility: ${(props) => (props.Hidden ? 'hidden' : 'visible')};
+  display: flex;
+  justify-content: right;
+  margin: 1rem 0;
+  button {
+    background-color: #c4c4c4;
     border-radius: 100%;
-    width: 178px;
-    height: 178px;
-    box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
-  `;
-  const UserFollow = styled.button`
-    background-color: white;
-    position: absolute;
-    border-radius: 20px;
-    box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
-    width: 94px;
-    height: 37px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    font-weight: 600;
-    left: 17rem;
-    top: 23.7rem;
+    width: 2rem;
+    height: 2rem;
+    margin-left: 0.3rem;
+    font-size: 1.8rem;
+    text-align: center;
+    font-weight: 400;
     &:hover {
       cursor: pointer;
     }
-    @media screen and (max-width: 947px) {
-      left: 21rem;
-    }
-  `;
-  const UserInfo = styled.div`
-    @media screen and (max-width: 947px) {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-  `;
-  const UserDescribe = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    border-radius: 1rem;
-    box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
-    width: 261px;
-    height: 40px;
-    background-color: white;
-    margin: 1rem;
-  `;
-  const Content = styled.div`
-    margin: 0.5rem;
-    margin-left: 1rem;
-    width: 200px;
-    padding-top: 7px;
-    font-weight: 700;
-    color: #494949;
-  `;
-  const UserFollowInfo = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 4px;
-    font-weight: 700;
-    color: #494949;
-    &:hover {
-      cursor: pointer;
-    }
-  `;
-  const Feed = styled.div`
-    display: grid;
-    column-gap: 5rem;
-    row-gap: 2rem;
-    grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
-    justify-content: start;
-  `;
-  const PlusButton = styled.div<{ Hidden?: any }>`
-    visibility: ${(props) => (
-      props.Hidden ? 'hidden' : 'visible'
-    )};
-    display: flex;
-    justify-content: right;
-    margin: 1rem 0;
-    button {
-      background-color: #c4c4c4;
-      border-radius: 100%;
-      width: 2rem;
-      height: 2rem;
-      margin-left: 0.3rem;
-      font-size: 1.8rem;
-      text-align: center;
-      font-weight: 400;
-      &:hover {
-        cursor: pointer;
-      }
-    }
-  `;
-  const FooterDiv = styled.div`
-    padding-left: 25px;
-    padding-top: 10px;
-    border-top: solid gray 1px;
-  `;
+  }
+`;
+const FooterDiv = styled.div`
+  padding-left: 25px;
+  padding-top: 10px;
+  border-top: solid gray 1px;
+`;

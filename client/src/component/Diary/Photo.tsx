@@ -1,15 +1,8 @@
-/* eslint-disable */
 import { useRef } from 'react';
 import styled from 'styled-components';
 import { FormValues } from '../../pages/DiaryPage';
 
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
-
-const Img = styled.img`
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-`;
 
 export interface photoProps {
   boardInput: FormValues;
@@ -29,11 +22,11 @@ export default function Photo({ boardInput, setBoardInput }: photoProps) {
   const pickImgHandle = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const imgFile = e.target.files[0];
     /* 개체가 null인 것 같습니다 에러 없애기 위해
-          1. e: any로 타입지정
-          2. tsconfig.json에서 "sstrictNullChecks":"false"설정
-          3. 유니온타입설정
-        */
-    if (!imgFile) {
+    1. e: any로 타입지정
+    2. tsconfig.json에서 "sstrictNullChecks":"false"설정
+    3. 유니온타입설정
+    */
+   if (!imgFile) {
       return setBoardInput({
         ...boardInput,
         [e.target.name]: '',
@@ -86,3 +79,9 @@ export default function Photo({ boardInput, setBoardInput }: photoProps) {
     </>
   );
 }
+
+const Img = styled.img`
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+`;

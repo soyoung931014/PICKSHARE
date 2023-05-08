@@ -44,7 +44,7 @@ const Nav = () => {
                 <Info>
                   <NavLink
                     to={`/feed/${userInfo.nickname}`}
-                    /*   onClick={() => props.setRender(!props.render)} */
+                    // onClick={() => setRender(!render)}
                     style={{ ...menuStyle }}
                   >
                     <FeedDiv>

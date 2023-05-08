@@ -1,107 +1,9 @@
-/* eslint-disable */
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { FormValues } from '../../pages/DiaryPage';
 import { v4 as uuidv4 } from 'uuid';
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
-const DiaryWrap = styled.div`
-  border: #a396f8 solid 2px;
-  border-radius: 10px;
-  width: 90%;
-  height: 90%;
-
-  h3 {
-    text-align: center;
-  }
-
-  div.drawing {
-    margin: auto;
-    background-color: #fff;
-    border-radius: 1rem;
-    position: relative;
-  }
-  button.close_btn {
-    margin: 0;
-    padding: 1rem 1.2rem;
-    font-size: 1.5em;
-    line-height: 1;
-    color: var(--color-black);
-    border: none;
-    background: none;
-    cursor: pointer;
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-  button.close_btn:hover {
-    color: var(--color-red);
-  }
-  div.controls_range {
-    margin-top: 1rem;
-    font-size: 0.9em;
-    color: #666;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  div.controls_btns {
-    display: flex;
-    justify-content: center;
-  }
-  div.controls_btns button {
-    margin: 1.2rem 0.2rem 0.5rem;
-    padding: 0.3rem 0.6rem;
-    border: 1px solid #ccc;
-    background: #fff;
-    border-radius: 4px;
-  }
-  div.controls_btns button.active {
-    border: 1px solid #999;
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
-  }
-  ul {
-    margin: 1rem;
-    display: flex;
-    justify-content: center;
-  }
-  li {
-    width: 2.5rem;
-    height: 2.5rem;
-    margin: 0 0.2rem;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  p {
-    text-align: center;
-    color: var(--color-black);
-  }
-`;
-const CanvasWrap = styled.div`
-  width: 100%;
-  height: auto;
-  min-height: 30vh;
-
-  margin: auto;
-  background-color: #eee;
-  position: relative;
-  canvas {
-    border: 2px solid #ccc;
-    background-color: #fff;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    cursor: pointer;
-  }
-`;
-const Img = styled.img`
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-`;
 
 export interface drawingProps {
   boardInput: FormValues;
@@ -376,3 +278,101 @@ export default function Drawing({
     </DiaryWrap>
   );
 }
+
+const DiaryWrap = styled.div`
+  border: #a396f8 solid 2px;
+  border-radius: 10px;
+  width: 90%;
+  height: 90%;
+
+  h3 {
+    text-align: center;
+  }
+
+  div.drawing {
+    margin: auto;
+    background-color: #fff;
+    border-radius: 1rem;
+    position: relative;
+  }
+  button.close_btn {
+    margin: 0;
+    padding: 1rem 1.2rem;
+    font-size: 1.5em;
+    line-height: 1;
+    color: var(--color-black);
+    border: none;
+    background: none;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  button.close_btn:hover {
+    color: var(--color-red);
+  }
+  div.controls_range {
+    margin-top: 1rem;
+    font-size: 0.9em;
+    color: #666;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  div.controls_btns {
+    display: flex;
+    justify-content: center;
+  }
+  div.controls_btns button {
+    margin: 1.2rem 0.2rem 0.5rem;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 4px;
+  }
+  div.controls_btns button.active {
+    border: 1px solid #999;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
+  }
+  ul {
+    margin: 1rem;
+    display: flex;
+    justify-content: center;
+  }
+  li {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0 0.2rem;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  p {
+    text-align: center;
+    color: var(--color-black);
+  }
+`;
+const CanvasWrap = styled.div`
+  width: 100%;
+  height: auto;
+  min-height: 30vh;
+
+  margin: auto;
+  background-color: #eee;
+  position: relative;
+  canvas {
+    border: 2px solid #ccc;
+    background-color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+  }
+`;
+const Img = styled.img`
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+`;

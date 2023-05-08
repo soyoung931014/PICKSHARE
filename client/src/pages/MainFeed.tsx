@@ -11,6 +11,203 @@ import { useSelector, useDispatch } from 'react-redux';
 import { deleteBoardInfo, diaryOnAction } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../component/Footer/Footer';
+import { RootState } from '../redux';
+
+export interface Feedlist {
+  commentNum: string | undefined;
+  contentImg: string | undefined;
+  createdAt: string | undefined;
+  date: string | undefined;
+  heartNum: string | undefined;
+  id: number | undefined;
+  locked: boolean | undefined;
+  nickname: string | undefined;
+}
+export default function MainFeed() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [render, setRender] = useState(false);
+  const [feedlist, setFeedlist] = useState<Feedlist[] | null>([]);
+  const [searchInput, setSearchInput] = useState('');
+  const [searchOn, setSearchOn] = useState(false);
+  const [orderingH, setOrderingH] = useState(false);
+  const [target, setTarget] = useState(null);
+  // const [isLoaded, setIsloaded] = useState(false);
+  let start = 0;
+  let end = 8;
+  const { userInfo } = useSelector(
+    (userReducer: RootState) => userReducer.userInfo
+  );
+  const handleSearchInput = debounce(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchOn(true);
+      setSearchInput(e.target.value);
+    },
+    300
+  );
+
+  const writeNewDiary = () => {
+    //새로 만들기
+    dispatch(deleteBoardInfo());
+    dispatch(diaryOnAction);
+    navigate('/diary');
+  };
+
+  const selectFeed = () => {
+    setRender(!render);
+  };
+  const sortFeedByRecent = () => {
+    setOrderingH(false);
+    setRender(!render);
+  };
+
+  const sortFeedByHeart = () => {
+    console.log('인기순')
+    setOrderingH(true);
+    setRender(!render);
+    console.log(orderingH, render)
+  };
+
+  const getUserFeed = async (searchNickname: string) => {
+    return await feedApi
+      .getUserFeed(searchNickname, start, end)
+      .then((result) => {
+        console.log(result);
+        setFeedlist((prev) => prev.concat(result.data));
+        start += 8;
+        end += 8;
+      });
+  };
+
+  const getUserFeedH = async (searchNickname: string) => {
+    return await feedApi
+      .getUserFeed(searchNickname, start, end)
+      .then((result) => {
+        console.log('겟유저피드H', result)
+        result.data.sort((a: any, b: any) => {
+          return b.heartNum - a.heartNum;
+        });
+        // setFeedlist(result.data);
+        setFeedlist((prev) => prev.concat(result.data));
+        start += 8;
+        end += 8;
+      });
+  };
+
+  const getMainFeedH = async () => {
+    return await feedApi.getMainFeed(start, end).then((result) => {
+      console.log('인기순으로좀..', result)
+      result.data.sort((a: any, b: any) => {
+        return b.heartNum - a.heartNum;
+      });
+      // setFeedlist(result.data);
+      setFeedlist((prev) => prev.concat(result.data));
+      start += 8;
+      end += 8;
+    });
+  };
+
+  const getMainFeed = async () => {
+    return await feedApi.getMainFeed(start, end).then((result) => {
+      console.log('페이지는?', start, end);
+      console.log(result)
+      setFeedlist((prev) => prev.concat(result.data));
+      start += 8;
+      end += 8;
+    });
+  };
+  useEffect(() => {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (orderingH === false && searchOn === false) {
+            getMainFeed();
+          } else if (orderingH === true && searchOn === false) {
+            getMainFeedH();
+            console.log('잘 왔냐')
+          } else if (orderingH === false && searchOn === true) {
+            getUserFeed(searchInput);
+          } else {
+            getUserFeedH(searchInput);
+          }
+        }
+      });
+    });
+    if (target) {
+      io.observe(target);
+      // console.log('콘솔을 해보자', start, end);
+    }
+
+    // if (orderingH === false && searchOn === false) {
+    //   getMainFeed();
+    // } else if (orderingH === true && searchOn === false) {
+    //   getMainFeedH();
+    // } else if (orderingH === false && searchOn === true) {
+    //   getUserFeed(searchInput);
+    // } else {
+    //   getUserFeedH(searchInput);
+    // }
+    if (userInfo.nickname === 'nothing') {
+      alert('닉네임을 변경해주세요');
+      navigate('/mystart');
+    }
+  }, [render, target]);
+  // console.log('피드리스트', feedlist, '타겟', target);
+  // const onKeyDown = (e: any) => {
+  //   console.log(e.key);
+  // };
+
+  return (
+    <>
+      <Wrapper>
+        <Nav />
+        <Div>
+          <UpperDiv>
+            <ButtonDiv>
+              <Button onClick={sortFeedByRecent} className="left">
+                최신순 |
+              </Button>
+              <Button onClick={sortFeedByHeart}>인기순</Button>
+            </ButtonDiv>
+            <UpperRightDiv>
+              <form>
+                <SearchBar>
+                  <SearchInput
+                    name="searchBar"
+                    type={'text'}
+                    placeholder="유저 검색"
+                    onChange={handleSearchInput}
+                  />
+                  <SearchIcon type="button" onClick={selectFeed}>
+                    <BiSearch size={'1.7rem'} />
+                  </SearchIcon>
+                </SearchBar>
+              </form>
+              <PlusButton onClick={writeNewDiary}> + </PlusButton>
+            </UpperRightDiv>
+          </UpperDiv>
+          <Feed>
+            {feedlist.length === 0
+              ? '피드가 없습니다'
+              : feedlist.map((el: any) => (
+                  <MainFeedList
+                    {...el}
+                    key={el.id}
+                    render={render}
+                    setRender={setRender}
+                  />
+                ))}
+            <div ref={setTarget} className="Target-Element"></div>
+          </Feed>
+        </Div>
+        <FooterDiv>
+          <Footer />
+        </FooterDiv>
+      </Wrapper>
+    </>
+  );
+}
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -101,184 +298,3 @@ const FooterDiv = styled.div`
   padding-top: 10px;
   border-top: solid gray 1px;
 `;
-export interface Feedlist {
-  commentNum: string | undefined;
-  contentImg: string | undefined;
-  createdAt: string | undefined;
-  date: string | undefined;
-  heartNum: string | undefined;
-  id: number | undefined;
-  locked: boolean | undefined;
-  nickname: string | undefined;
-}
-export default function MainFeed() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const [render, setRender] = useState(false);
-  const [feedlist, setFeedlist] = useState<Feedlist[]|null>([]);
-  const [searchInput, setSearchInput] = useState('');
-  const [searchOn, setSearchOn] = useState(false);
-  const [orderingH, setOrderingH] = useState(false);
-  const [target, setTarget] = useState(null);
-  const [isLoaded, setIsloaded] = useState(false);
-  let start = 0;
-  let end = 8;
-  const { userInfo } = useSelector((userReducer: any) => userReducer.userInfo);
-  const handleSearchInput = debounce(async (e: any) => {
-    setSearchOn(true);
-    setSearchInput(e.target.value);
-  }, 300);
-
-  const writeNewDiary = () => {
-    //새로 만들기
-    dispatch(deleteBoardInfo());
-    dispatch(diaryOnAction);
-    navigate('/diary');
-  };
-
-  const selectFeed = () => {
-    setRender(!render);
-  };
-  const sortFeedByRecent = () => {
-    setOrderingH(false);
-    setRender(!render);
-  };
-
-  const sortFeedByHeart = () => {
-    setOrderingH(true);
-    setRender(!render);
-  };
-
-  const getUserFeed = async (searchNickname: string) => {
-    return await feedApi.getUserFeed(searchNickname, start, end).then((result) => {
-      // setFeedlist(result.data);
-      setFeedlist((prev) => prev.concat(result.data));
-      start += 8;
-      end += 8;
-    });
-  };
-
-  const getUserFeedH = async (searchNickname: string) => {
-    return await feedApi.getUserFeed(searchNickname, start, end).then((result) => {
-      result.data.sort((a: any, b: any) => {
-        return b.heartNum - a.heartNum;
-      });
-      // setFeedlist(result.data);
-      setFeedlist((prev) => prev.concat(result.data));
-      start += 8;
-      end += 8;
-    });
-  };
-
-  const getMainFeedH = async () => {
-    return await feedApi.getMainFeed(start, end).then((result) => {
-      result.data.sort((a: any, b: any) => {
-        return b.heartNum - a.heartNum;
-      });
-      // setFeedlist(result.data);
-      setFeedlist((prev) => prev.concat(result.data));
-      start += 8;
-      end += 8;
-    });
-  };
-
-  const getMainFeed = async () => {
-    return await feedApi.getMainFeed(start, end).then((result) => {
-      console.log('페이지는?',start, end)
-      setFeedlist((prev) => prev.concat(result.data));
-      start += 8;
-      end += 8;
-    });
-  };
-  useEffect(() => {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          if (orderingH === false && searchOn === false) {
-            getMainFeed();
-          } else if (orderingH === true && searchOn === false) {
-            getMainFeedH();
-          } else if (orderingH === false && searchOn === true) {
-            getUserFeed(searchInput);
-          } else {
-            getUserFeedH(searchInput);
-          }
-        }
-      })
-
-    })
-    if (target) {
-      io.observe(target);
-      console.log('콘솔을 해보자',start,end)
-    }
-    
-    // if (orderingH === false && searchOn === false) {
-    //   getMainFeed();
-    // } else if (orderingH === true && searchOn === false) {
-    //   getMainFeedH();
-    // } else if (orderingH === false && searchOn === true) {
-    //   getUserFeed(searchInput);
-    // } else {
-    //   getUserFeedH(searchInput);
-    // }
-    if (userInfo.nickname === 'nothing') {
-      alert('닉네임을 변경해주세요');
-      navigate('/mystart');
-    }
-  }, [render, target]);
-  console.log('피드리스트', feedlist, '타겟', target);
-  // const onKeyDown = (e: any) => {
-  //   console.log(e.key);
-  // };
-  
-  return (
-    <>
-      <Wrapper>
-        <Nav />
-        <Div>
-          <UpperDiv>
-            <ButtonDiv>
-              <Button onClick={sortFeedByRecent} className="left">
-                최신순 |
-              </Button>
-              <Button onClick={sortFeedByHeart}>인기순</Button>
-            </ButtonDiv>
-            <UpperRightDiv>
-              <form>
-                <SearchBar>
-                  <SearchInput
-                    name="searchBar"
-                    type={'text'}
-                    placeholder="유저 검색"
-                    onChange={handleSearchInput}
-                  />
-                  <SearchIcon type="button" onClick={selectFeed}>
-                    <BiSearch size={'1.7rem'} />
-                  </SearchIcon>
-                </SearchBar>
-              </form>
-              <PlusButton onClick={writeNewDiary}> + </PlusButton>
-            </UpperRightDiv>
-          </UpperDiv>
-          <Feed>
-            {feedlist.length === 0
-              ? '피드가 없습니다'
-              : feedlist.map((el: any) => (
-                  <MainFeedList
-                    {...el}
-                    key={el.id}
-                    render={render}
-                    setRender={setRender}
-                  />
-              ))}
-            <div ref={setTarget} className='Target-Element'></div>
-          </Feed>
-        </Div>
-        <FooterDiv>
-          <Footer />
-        </FooterDiv>
-      </Wrapper>
-    </>
-  );
-}

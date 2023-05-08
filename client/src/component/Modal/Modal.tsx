@@ -1,4 +1,3 @@
-/*eslint-disable*/
 import React, { useState } from 'react';
 import { IoIosCloseCircleOutline } from 'react-icons/io';
 import { useDispatch } from 'react-redux';
@@ -8,34 +7,6 @@ import { modalOffAction } from '../../redux/actions';
 import FollowerList from '../Feed/PersonalFeed/FollowerList';
 import FollowingList from '../Feed/PersonalFeed/FollowingList';
 import FollowList from '../Feed/PersonalFeed/FollowerList';
-
-const ModalBackdrop = styled.div`
-  position: fixed;
-  z-index: 999;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: grid;
-  place-items: center;
-`;
-
-const ModalContainer = styled.div`
-  width: 20rem;
-  height: 30rem;
-  background-color: #ebf1f1;
-  opacity: 0.8;
-  border-radius: 12%;
-  padding: 2rem 0.5rem;
-`;
-const ListBtn = styled.div`
-  display: grid;
-  grid-template-columns: 5fr 5fr 1fr;
-  font-size: 17px;
-`
-const List = styled.button`
-`;
 
 export interface modalProps {
   follower: any;
@@ -118,3 +89,31 @@ export default function Modal({
     </>
   );
 }
+
+const ModalBackdrop = styled.div`
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: grid;
+  place-items: center;
+`;
+
+const ModalContainer = styled.div`
+  width: 20rem;
+  height: 30rem;
+  background-color: #ebf1f1;
+  opacity: 0.8;
+  border-radius: 12%;
+  padding: 2rem 0.5rem;
+`;
+const ListBtn = styled.div`
+  display: grid;
+  grid-template-columns: 5fr 5fr 1fr;
+  font-size: 17px;
+`
+const List = styled.button`
+`;

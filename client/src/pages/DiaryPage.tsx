@@ -1,4 +1,3 @@
-/* eslint-disable */
 import background from '../img/feedBG.jpg';
 import styled from 'styled-components';
 import React, { useEffect, useRef, useState } from 'react';
@@ -33,6 +32,378 @@ import {
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 import Nav from '../component/Nav/Nav';
 import Footer from '../component/Footer/Footer';
+
+export interface FormValues {
+  title: string;
+  picture: string;
+  pictureMethod: number;
+  mood: number;
+  lock: string;
+  content: string;
+  date: string;
+}
+
+const DiaryPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [rendering, setRendering] = useState(false);
+  const [pickWay, setPickWay] = useState(0); //책갈피 선택 0: 그림 / 1: 사진
+  const [lockBtn, setLockBtn] = useState(false);
+  const file: any = useRef();
+  const { boardInfo } = useSelector(
+    (boardReducer: any) => boardReducer.boardInfo
+  );
+  const { userInfo, accessToken } = useSelector(
+    (userReducer: any) => userReducer.userInfo
+  );
+  const { isEditOn } = useSelector((editReducer: any) => editReducer.editInfo);
+  const { isDiaryOn } = useSelector(
+    (diaryReducer: any) => diaryReducer.diaryInfo
+  );
+  const { isModalOn } = useSelector(
+    (modalReducer: any) => modalReducer.modalInfo
+  );
+  const [userImg, setUserImg] = useState('');
+  const [boardInput, setBoardInput] = useState<FormValues>({
+    title: '',
+    picture: '',
+    pictureMethod: 0,
+    mood: 0,
+    lock: 'UNLOCK',
+    content: '',
+    date: '',
+  });
+
+  const editModeHandler = () => {
+    dispatch(editOnAction);
+  };
+
+  const pickPicture = () => {
+    setPickWay(1);
+    setBoardInput({ ...boardInput, ['pictureMethod']: 1, ['picture']: '' });
+  };
+
+  const pickDrowing = () => {
+    setPickWay(0);
+    setBoardInput({ ...boardInput, ['pictureMethod']: 1, ['picture']: '' });
+  };
+  const cancelButton = (): void => {
+    setBoardInput({
+      title: '',
+      picture: '',
+      pictureMethod: 0,
+      mood: 0,
+      lock: 'UNLOCK',
+      content: '',
+      date: '',
+    });
+    dispatch(deleteBoardInfo());
+    dispatch(editOffAction);
+    navigate('/mainfeed');
+  };
+
+  const handleBoardInputValue = debounce(async (e: any) => {
+    const { name, value } = e.target;
+    setBoardInput({ ...boardInput, [name]: value });
+  });
+
+  const boardLockHandler = () => {
+    setLockBtn(!lockBtn);
+    if (lockBtn) {
+      setBoardInput({ ...boardInput, ['lock']: 'LOCK' });
+    } else {
+      setBoardInput({ ...boardInput, ['lock']: 'UNLOCK' });
+    }
+  };
+
+  const boardMoodHandler = (e: any) => {
+    setBoardInput({ ...boardInput, ['mood']: e.target.value });
+  };
+
+  const changeLock = () => {
+    setLockBtn(!lockBtn);
+
+    if (lockBtn) {
+      setBoardInput({ ...boardInput, ['lock']: 'LOCK' });
+      boardApi.lockBoard(boardInfo.id, 'LOCK', accessToken).then((result) => {
+        dispatch(addBoardInfo(result.data));
+      });
+    } else {
+      setBoardInput({ ...boardInput, ['lock']: 'UNLOCK' });
+      boardApi.lockBoard(boardInfo.id, 'UNLOCK', accessToken).then((result) => {
+        dispatch(addBoardInfo(result.data));
+      });
+    }
+  };
+
+  const handleSaveBoard = () => {
+    const { title, picture, content, date } = boardInput;
+    if (title === '' || picture === '' || content === '' || date === '') {
+      return alert('내용을 작성해주세요');
+    } else {
+      dispatch(addBoardInfo(boardInput));
+      boardApi.createBoard(boardInput, accessToken).then((result) => {
+        dispatch(addBoardInfo(result.data));
+        dispatch(diaryOffAction);
+      });
+    }
+  };
+
+  const handleEditBoard = () => {
+    const { title, picture, content, date } = boardInput;
+    if (title === '' || picture === '' || content === '' || date === '') {
+      return alert('내용을 작성해주세요');
+    } else {
+      boardApi
+        .editBoard(boardInfo.id, boardInput, accessToken)
+        .then((result) => {
+          dispatch(addBoardInfo(result.data));
+          dispatch(editOffAction);
+        });
+      }
+  };
+
+  const deleteWriting = () => {
+    boardApi.deleteBoard(boardInfo.id, accessToken);
+    window.history.back();
+  };
+
+  const handleConfirm = (e: any) => {
+    const text = e.target.name;
+    const result: any = confirm(`게시글을 ${text} 하시겠습니끼?`);
+    
+    if (text === '삭제') {
+      if (result) {
+        alert(`${text}되었습니다.`);
+        return deleteWriting();
+      }
+      {
+        alert('취소되었습니다.');
+      }
+    } else if (text === '저장') {
+      if (result) {
+        alert(`${text}되었습니다.`);
+        return handleSaveBoard();
+      }
+      {
+        alert('취소되었습니다.');
+      }
+    } else {
+      if (result) {
+        alert(`${text}되었습니다.`);
+        return handleEditBoard();
+      }
+      {
+        alert('취소되었습니다.');
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (boardInfo.title !== undefined || '') {
+      setPickWay(boardInfo.pictureMethod);
+      setBoardInput({
+        title: boardInfo.title,
+        picture: boardInfo.picture,
+        pictureMethod: boardInfo.pictureMethod,
+        mood: boardInfo.mood,
+        lock: boardInfo.lock,
+        content: boardInfo.content,
+        date: boardInfo.date,
+      });
+
+      feedApi.userInfo(boardInfo.nickname).then((result) => {
+        setUserImg(result.data.data.userImage);
+      });
+    }
+  }, [rendering]);
+  
+  return (
+    <>
+      <Nav />
+      <Container>
+        {
+          //새로 만들기
+          isEditOn || isDiaryOn ? (
+            <BookMark>
+              <Book Yellow onClick={pickPicture}>
+                사진
+              </Book>
+              <Book onClick={pickDrowing}>그림</Book>
+            </BookMark>
+          ) : userInfo.nickname === boardInfo.nickname ? (
+            <BookMark>
+              <Book Yellow onClick={editModeHandler}>
+                수정
+              </Book>
+              <Book name="삭제" onClick={(e) => handleConfirm(e)}>
+                삭제
+              </Book>
+            </BookMark>
+          ) : null
+        }
+
+        <LeftWrapper>
+          <>
+            {
+              //새로 만들기
+              isEditOn || isDiaryOn ? (
+                <SubBookMark>
+                  <SubBookMarkContent onClick={pickPicture}>
+                    사진
+                  </SubBookMarkContent>
+                  <SubBookMarkContent Picture onClick={pickDrowing}>
+                    그림
+                  </SubBookMarkContent>
+                </SubBookMark>
+              ) : userInfo.nickname === boardInfo.nickname ? (
+                <SubBookMark>
+                  <SubBookMarkContent onClick={editModeHandler}>
+                    수정
+                  </SubBookMarkContent>
+                  <SubBookMarkContent Picture onClick={(e) => handleConfirm(e)}>
+                    삭제
+                  </SubBookMarkContent>
+                </SubBookMark>
+              ) : null
+            }
+          </>
+
+          {isEditOn || isDiaryOn ? ( //수정모드
+            pickWay === 1 ? (
+              <ImgDiv>
+                <Photo boardInput={boardInput} setBoardInput={setBoardInput} />
+              </ImgDiv>
+            ) : (
+              <Drawing
+                boardInput={boardInput}
+                setBoardInput={setBoardInput}
+                setPickWay={setPickWay}
+                pickWay={pickWay}
+              />
+            )
+          ) : (
+            <LeftSide>
+              <LeftInfo>
+                {userImg === 'nothing' ? (
+                  <UserImg src={profileImg} />
+                ) : (
+                  <UserImg src={userImg} />
+                )}
+                <WordInfo>
+                  <div>{boardInfo.nickname}</div>
+                  <div>{boardInput.date}</div>
+                </WordInfo>
+                <ImoInfo>
+                  {userInfo.nickname === boardInfo.nickname ? (
+                    boardInput.lock === 'UNLOCK' ? (
+                      <div onClick={changeLock}>
+                        <GrUnlock />
+                      </div>
+                    ) : (
+                      <div onClick={changeLock}>
+                        <GrLock />
+                      </div>
+                    )
+                  ) : null}
+                  <div>
+                    {boardInput.mood === 0 ? (
+                      <BsEmojiLaughing />
+                    ) : boardInput.mood === 1 ? (
+                      <BsEmojiSmile />
+                    ) : boardInput.mood === 2 ? (
+                      <BsEmojiNeutral />
+                    ) : boardInput.mood === 3 ? (
+                      <BsEmojiFrown />
+                    ) : (
+                      <BsEmojiAngry />
+                      )}
+                  </div>
+                </ImoInfo>
+              </LeftInfo>
+              <img className="board" src={boardInput.picture} />
+            </LeftSide>
+          )}
+        </LeftWrapper>
+        <RightWrapper>
+          {isEditOn || isDiaryOn ? (
+            <form id="writeDiary">
+              <input
+                name="title"
+                type="text"
+                className="diary"
+                placeholder="제목을 입력해 주세요."
+                onChange={handleBoardInputValue}
+                defaultValue={boardInfo.title}
+              />
+              <div className="select-wrapper">
+                <input
+                  type="date"
+                  className="diary dates"
+                  name="date"
+                  onChange={handleBoardInputValue}
+                  defaultValue={boardInput.date}
+                />
+                <select className="moods" onClick={boardMoodHandler}>
+                  <option value="0">행복</option>
+                  <option value="1">좋음</option>
+                  <option value="2">보통</option>
+                  <option value="3">우울</option>
+                  <option value="4">화남</option>
+                </select>
+                <div className="diary lock" onClick={boardLockHandler}>
+                  {boardInput.lock === 'UNLOCK' ? <GrUnlock /> : <GrLock />}
+                </div>
+              </div>
+              <textarea
+                name="content"
+                className="diary diary-content"
+                placeholder="내용을 입력해 주세요."
+                onChange={handleBoardInputValue}
+                defaultValue={boardInput.content}
+              />
+              <div className="save-btns">
+                <button className="diary save-btn" onClick={cancelButton}>
+                  취소
+                </button>
+                {isDiaryOn ? (
+                  <button
+                    type="button"
+                    className="diary save-btn"
+                    name="저장"
+                    onClick={(e) => handleConfirm(e)}
+                  >
+                    저장
+                  </button>
+                ) : isEditOn ? (
+                  <button
+                    type="button"
+                    className="diary save-btn"
+                    name="수정"
+                    onClick={(e) => handleConfirm(e)}
+                  >
+                    수정
+                  </button>
+                ) : null}
+              </div>
+            </form>
+          ) : (
+            <RightSide>
+              <div className="write_content title">{boardInput.title}</div>
+              <div className="write_content">{boardInput.content}</div>
+              <Comments boardId={boardInfo.id} />
+            </RightSide>
+          )}
+        </RightWrapper>
+      </Container>
+      <FooterDiv>
+        <Footer />
+      </FooterDiv>
+    </>
+  );
+};
+
+export default DiaryPage;
 
 const Container = styled.section`
   height: 100%;
@@ -318,375 +689,3 @@ const FooterDiv = styled.div`
   margin-left: 2rem;
   margin-top: 2rem;
 `;
-
-export interface FormValues {
-  title: string;
-  picture: string;
-  pictureMethod: number;
-  mood: number;
-  lock: string;
-  content: string;
-  date: string;
-}
-
-const DiaryPage = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [rendering, setRendering] = useState(false);
-  const [pickWay, setPickWay] = useState(0); //책갈피 선택 0: 그림 / 1: 사진
-  const [lockBtn, setLockBtn] = useState(false);
-  const file: any = useRef();
-  const { boardInfo } = useSelector(
-    (boardReducer: any) => boardReducer.boardInfo
-  );
-  const { userInfo, accessToken } = useSelector(
-    (userReducer: any) => userReducer.userInfo
-  );
-  const { isEditOn } = useSelector((editReducer: any) => editReducer.editInfo);
-  const { isDiaryOn } = useSelector(
-    (diaryReducer: any) => diaryReducer.diaryInfo
-  );
-  const { isModalOn } = useSelector(
-    (modalReducer: any) => modalReducer.modalInfo
-  );
-  const [userImg, setUserImg] = useState('');
-  const [boardInput, setBoardInput] = useState<FormValues>({
-    title: '',
-    picture: '',
-    pictureMethod: 0,
-    mood: 0,
-    lock: 'UNLOCK',
-    content: '',
-    date: '',
-  });
-
-  const editModeHandler = () => {
-    dispatch(editOnAction);
-  };
-
-  const pickPicture = () => {
-    setPickWay(1);
-    setBoardInput({ ...boardInput, ['pictureMethod']: 1, ['picture']: '' });
-  };
-
-  const pickDrowing = () => {
-    setPickWay(0);
-    setBoardInput({ ...boardInput, ['pictureMethod']: 1, ['picture']: '' });
-  };
-  const cancelButton = (): void => {
-    setBoardInput({
-      title: '',
-      picture: '',
-      pictureMethod: 0,
-      mood: 0,
-      lock: 'UNLOCK',
-      content: '',
-      date: '',
-    });
-    dispatch(deleteBoardInfo());
-    dispatch(editOffAction);
-    navigate('/mainfeed');
-  };
-
-  const handleBoardInputValue = debounce(async (e: any) => {
-    const { name, value } = e.target;
-    setBoardInput({ ...boardInput, [name]: value });
-  });
-
-  const boardLockHandler = () => {
-    setLockBtn(!lockBtn);
-    if (lockBtn) {
-      setBoardInput({ ...boardInput, ['lock']: 'LOCK' });
-    } else {
-      setBoardInput({ ...boardInput, ['lock']: 'UNLOCK' });
-    }
-  };
-
-  const boardMoodHandler = (e: any) => {
-    setBoardInput({ ...boardInput, ['mood']: e.target.value });
-  };
-
-  const changeLock = () => {
-    setLockBtn(!lockBtn);
-
-    if (lockBtn) {
-      setBoardInput({ ...boardInput, ['lock']: 'LOCK' });
-      boardApi.lockBoard(boardInfo.id, 'LOCK', accessToken).then((result) => {
-        dispatch(addBoardInfo(result.data));
-      });
-    } else {
-      setBoardInput({ ...boardInput, ['lock']: 'UNLOCK' });
-      boardApi.lockBoard(boardInfo.id, 'UNLOCK', accessToken).then((result) => {
-        dispatch(addBoardInfo(result.data));
-      });
-    }
-  };
-
-  const handleSaveBoard = () => {
-    const { title, picture, content, date } = boardInput;
-    if (title === '' || picture === '' || content === '' || date === '') {
-      return alert('내용을 작성해주세요');
-    } else {
-      dispatch(addBoardInfo(boardInput));
-      boardApi.createBoard(boardInput, accessToken).then((result) => {
-        dispatch(addBoardInfo(result.data));
-        dispatch(diaryOffAction);
-      });
-    }
-  };
-
-  const handleEditBoard = () => {
-    const { title, picture, content, date } = boardInput;
-    if (title === '' || picture === '' || content === '' || date === '') {
-      return alert('내용을 작성해주세요');
-    } else {
-      boardApi
-        .editBoard(boardInfo.id, boardInput, accessToken)
-        .then((result) => {
-          dispatch(addBoardInfo(result.data));
-          dispatch(editOffAction);
-        });
-    }
-  };
-
-  const deleteWriting = () => {
-    boardApi.deleteBoard(boardInfo.id, accessToken);
-    window.history.back();
-  };
-
-  const handleConfirm = (e: any) => {
-    const text = e.target.name;
-    const result: any = confirm(`게시글을 ${text} 하시겠습니끼?`);
-
-    if (text === '삭제') {
-      if (result) {
-        alert(`${text}되었습니다.`);
-        return deleteWriting();
-      }
-      {
-        alert('취소되었습니다.');
-      }
-    } else if (text === '저장') {
-      if (result) {
-        alert(`${text}되었습니다.`);
-        return handleSaveBoard();
-      }
-      {
-        alert('취소되었습니다.');
-      }
-    } else {
-      if (result) {
-        alert(`${text}되었습니다.`);
-        return handleEditBoard();
-      }
-      {
-        alert('취소되었습니다.');
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (boardInfo.title !== undefined || '') {
-      setPickWay(boardInfo.pictureMethod);
-      setBoardInput({
-        title: boardInfo.title,
-        picture: boardInfo.picture,
-        pictureMethod: boardInfo.pictureMethod,
-        mood: boardInfo.mood,
-        lock: boardInfo.lock,
-        content: boardInfo.content,
-        date: boardInfo.date,
-      });
-
-      feedApi.userInfo(boardInfo.nickname).then((result) => {
-        setUserImg(result.data.data.userImage);
-      });
-    }
-  }, [rendering]);
-
-  return (
-    <>
-      <Nav />
-      <Container>
-        {
-          //새로 만들기
-          isEditOn || isDiaryOn ? (
-            <BookMark>
-              <Book Yellow onClick={pickPicture}>
-                사진
-              </Book>
-              <Book onClick={pickDrowing}>그림</Book>
-            </BookMark>
-          ) : userInfo.nickname === boardInfo.nickname ? (
-            <BookMark>
-              <Book Yellow onClick={editModeHandler}>
-                수정
-              </Book>
-              <Book name="삭제" onClick={(e) => handleConfirm(e)}>
-                삭제
-              </Book>
-            </BookMark>
-          ) : null
-        }
-
-        <LeftWrapper>
-          <>
-            {
-              //새로 만들기
-              isEditOn || isDiaryOn ? (
-                <SubBookMark>
-                  <SubBookMarkContent onClick={pickPicture}>
-                    사진
-                  </SubBookMarkContent>
-                  <SubBookMarkContent Picture onClick={pickDrowing}>
-                    그림
-                  </SubBookMarkContent>
-                </SubBookMark>
-              ) : userInfo.nickname === boardInfo.nickname ? (
-                <SubBookMark>
-                  <SubBookMarkContent onClick={editModeHandler}>
-                    수정
-                  </SubBookMarkContent>
-                  <SubBookMarkContent Picture onClick={(e) => handleConfirm(e)}>
-                    삭제
-                  </SubBookMarkContent>
-                </SubBookMark>
-              ) : null
-            }
-          </>
-
-          {isEditOn || isDiaryOn ? ( //수정모드
-            pickWay === 1 ? (
-              <ImgDiv>
-                <Photo boardInput={boardInput} setBoardInput={setBoardInput} />
-              </ImgDiv>
-            ) : (
-              <Drawing
-                boardInput={boardInput}
-                setBoardInput={setBoardInput}
-                setPickWay={setPickWay}
-                pickWay={pickWay}
-              />
-            )
-          ) : (
-            <LeftSide>
-              <LeftInfo>
-                {userImg === 'nothing' ? (
-                  <UserImg src={profileImg} />
-                ) : (
-                  <UserImg src={userImg} />
-                )}
-                <WordInfo>
-                  <div>{boardInfo.nickname}</div>
-                  <div>{boardInput.date}</div>
-                </WordInfo>
-                <ImoInfo>
-                  {userInfo.nickname === boardInfo.nickname ? (
-                    boardInput.lock === 'UNLOCK' ? (
-                      <div onClick={changeLock}>
-                        <GrUnlock />
-                      </div>
-                    ) : (
-                      <div onClick={changeLock}>
-                        <GrLock />
-                      </div>
-                    )
-                  ) : null}
-                  <div>
-                    {boardInput.mood === 0 ? (
-                      <BsEmojiLaughing />
-                    ) : boardInput.mood === 1 ? (
-                      <BsEmojiSmile />
-                    ) : boardInput.mood === 2 ? (
-                      <BsEmojiNeutral />
-                    ) : boardInput.mood === 3 ? (
-                      <BsEmojiFrown />
-                    ) : (
-                      <BsEmojiAngry />
-                    )}
-                  </div>
-                </ImoInfo>
-              </LeftInfo>
-              <img className="board" src={boardInput.picture} />
-            </LeftSide>
-          )}
-        </LeftWrapper>
-        <RightWrapper>
-          {isEditOn || isDiaryOn ? (
-            <form id="writeDiary">
-              <input
-                name="title"
-                type="text"
-                className="diary"
-                placeholder="제목을 입력해 주세요."
-                onChange={handleBoardInputValue}
-                defaultValue={boardInfo.title}
-              />
-              <div className="select-wrapper">
-                <input
-                  type="date"
-                  className="diary dates"
-                  name="date"
-                  onChange={handleBoardInputValue}
-                  defaultValue={boardInput.date}
-                />
-                <select className="moods" onClick={boardMoodHandler}>
-                  <option value="0">행복</option>
-                  <option value="1">좋음</option>
-                  <option value="2">보통</option>
-                  <option value="3">우울</option>
-                  <option value="4">화남</option>
-                </select>
-                <div className="diary lock" onClick={boardLockHandler}>
-                  {boardInput.lock === 'UNLOCK' ? <GrUnlock /> : <GrLock />}
-                </div>
-              </div>
-              <textarea
-                name="content"
-                className="diary diary-content"
-                placeholder="내용을 입력해 주세요."
-                onChange={handleBoardInputValue}
-                defaultValue={boardInput.content}
-              />
-              <div className="save-btns">
-                <button className="diary save-btn" onClick={cancelButton}>
-                  취소
-                </button>
-                {isDiaryOn ? (
-                  <button
-                    type="button"
-                    className="diary save-btn"
-                    name="저장"
-                    onClick={(e) => handleConfirm(e)}
-                  >
-                    저장
-                  </button>
-                ) : isEditOn ? (
-                  <button
-                    type="button"
-                    className="diary save-btn"
-                    name="수정"
-                    onClick={(e) => handleConfirm(e)}
-                  >
-                    수정
-                  </button>
-                ) : null}
-              </div>
-            </form>
-          ) : (
-            <RightSide>
-              <div className="write_content title">{boardInput.title}</div>
-              <div className="write_content">{boardInput.content}</div>
-              <Comments boardId={boardInfo.id} />
-            </RightSide>
-          )}
-        </RightWrapper>
-      </Container>
-      <FooterDiv>
-        <Footer />
-      </FooterDiv>
-    </>
-  );
-};
-
-export default DiaryPage;
