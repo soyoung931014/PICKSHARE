@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-loss-of-precision */
-
-//eslint-disable
 // action 작성
 
+import { IKakaoUser, IUser } from '../../types/user';
 import {
   ADD_USER_INFO,
   DELETE_USER_INFO,
@@ -16,7 +14,7 @@ import {
   EDIT_MODE_OFF,
 } from './actionTypes';
 
-export const addUserInfo = (userInfo: object, token: string) => {
+export const addUserInfo = (userInfo: IUser | IKakaoUser, token: string) => {
   return {
     type: ADD_USER_INFO,
     isLogin: true,
