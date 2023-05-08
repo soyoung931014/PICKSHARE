@@ -1,28 +1,32 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Ref } from 'react';
 import { useRef } from 'react';
-import { connect } from 'react-redux';
-import { addUserInfo, deleteUserInfo } from '../redux/actions/index';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import background from '../img/feedBG.jpg';
-import pickshareLogo from '../img/pickshare.png';
-import loginApi from '../api/login';
+
+import { useDispatch } from 'react-redux';
+import { addUserInfo, deleteUserInfo } from '../redux/actions/index';
+
 import { emailRegExp, passwordRegExp } from '../common/validation';
+
+import loginApi from '../api/login';
 import Index from '../component/Index/Index';
 import SubIndex from '../component/Index/SubIndex';
 
-function Login(props: any) {
-  const navigate = useNavigate();
+import styled from 'styled-components';
+import background from '../img/feedBG.jpg';
+import pickshareLogo from '../img/pickshare.png';
 
-  const { userInfoToStore, initialUserInfoToStore } = props;
+import { ITokenData, IUserData } from '../types/user';
+
+function Login() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    initialUserInfoToStore();
+    dispatch(deleteUserInfo());
   }, []);
 
-  const inputEmail: any = useRef();
-  const inputpassword: any = useRef();
+  const inputEmail: Ref<HTMLInputElement> = useRef();
+  const inputpassword: Ref<HTMLInputElement> = useRef();
 
   const [userInfo, setUserInfo] = useState({ email: '', password: '' });
   const [emailcheckMessage, setEmailCheckMessage] =
@@ -30,12 +34,12 @@ function Login(props: any) {
   const [passwordMessage, setPasswordMessage] =
     useState('비밀번호를 입력해주세요');
 
-  const handleUserInfo = (e: any) => {
+  const handleUserInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
   };
 
   //이메일 유효성검사
-  const emailValidation = (e: any) => {
+  const emailValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleUserInfo(e);
     if (emailRegExp.test(e.target.value) === false) {
       setEmailCheckMessage('올바른 이메일을 입력해주세요.');
@@ -44,7 +48,7 @@ function Login(props: any) {
     }
   };
   //비밀번호 유효성검사
-  const passwordValidation = (e: any) => {
+  const passwordValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleUserInfo(e);
     if (passwordRegExp.test(e.target.value) === false) {
       setPasswordMessage('영문 대소문자와 숫자 4-12자리로 입력해야합니다.');
@@ -52,8 +56,8 @@ function Login(props: any) {
       setPasswordMessage('');
     }
   };
-  // 로그인
-  const Login = async (e: any): Promise<void> => {
+
+  const Login = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (emailRegExp.test(userInfo.email) === false) {
       inputEmail.current.focus();
@@ -65,8 +69,8 @@ function Login(props: any) {
     }
     if (userInfo) {
       try {
-        await loginApi.login(userInfo).then((res) => {
-          const { accessToken, loginMethod } = res.data.data; //refreshToken
+        await loginApi.login(userInfo).then(({ data }: ITokenData) => {
+          const { accessToken } = data.data;
           if (accessToken) {
             void tokenVerification(accessToken);
           } else {
@@ -84,10 +88,11 @@ function Login(props: any) {
   // 토큰 검증 후 유저 정보 불러오는 함수
   const tokenVerification = async (token: string) => {
     try {
-      await loginApi.token(token).then((res) => {
-        const { userInfo } = res.data.data;
+      await loginApi.token(token).then(({ data }: IUserData) => {
+        const { userInfo } = data.data;
+        console.log(userInfo);
         if (userInfo) {
-          userInfoToStore(userInfo, token);
+          dispatch(addUserInfo(userInfo, token));
           navigate('/mainfeed', { replace: true });
         } else {
           console.log('로그인 실패');
@@ -98,7 +103,7 @@ function Login(props: any) {
     }
   };
 
-  const handleKakaoLogin = (e: any) => {
+  const handleKakaoLogin = (e: React.MouseEvent): void => {
     e.preventDefault();
     window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CODE}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT}&response_type=code&state=kakao`;
   };
@@ -164,23 +169,7 @@ function Login(props: any) {
     </Wrapper>
   );
 }
-
-const mapStateToProps = (state: object) => {
-  return {
-    user: state,
-  };
-};
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    userInfoToStore: (userInfo: object, token: string) => {
-      dispatch(addUserInfo(userInfo, token));
-    },
-    initialUserInfoToStore: () => {
-      dispatch(deleteUserInfo());
-    },
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default Login;
 
 const Wrapper = styled.div`
   width: 100vw;
