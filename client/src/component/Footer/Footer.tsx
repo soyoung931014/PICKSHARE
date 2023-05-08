@@ -1,54 +1,5 @@
 import styled from 'styled-components';
 
-const Wrapper = styled.div`
-  margin-top: 1rem;
-  box-shadow: 10 10px 0px #3c4a5645;
-  width: 100vw;
-`;
-
-const Div = styled.div`
-  flex: 1;
-  padding-bottom: 20px;
-`;
-
-const Title = styled.p`
-  margin-top: 12px;
-  font-weight: 700;
-  font-size: 23px;
-  opacity: 0.5;
-`;
-
-const Alink = styled.a`
-  text-decoration: none;
-  margin-right: 1rem;
-  opacity: 0.5;
-  width: 1rem;
-`;
-
-const Position = styled.div`
-  margin-top: 2px;
-  margin-bottom: 2px;
-  font-size: 18px;
-  opacity: 0.5;
-  padding-top: 0.2rem;
-  padding-bottom: 0.2rem;
-  font-weight: 600;
-`;
-const Logo = styled.div`
-  font-weight: 900;
-  width: 30%;
-  height: 2rem;
-  background: linear-gradient(to right, #ee64c7, #8272eb, #d06be0);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-size: 2rem;
-  :hover {
-    cursor: pointer;
-  }
-`;
-const Content = styled.div`
-  margin-top: 4px;
-`;
 function Footer() {
   return (
     <Wrapper>
@@ -102,3 +53,52 @@ function Footer() {
 }
 
 export default Footer;
+const Wrapper = styled.div`
+  margin-top: 1rem;
+  box-shadow: 10 10px 0px #3c4a5645;
+  width: 100vw;
+`;
+
+const Div = styled.div`
+  flex: 1;
+  padding-bottom: 20px;
+`;
+
+const Title = styled.p`
+  margin-top: 12px;
+  font-weight: 700;
+  font-size: 23px;
+  opacity: 0.5;
+`;
+
+const Alink = styled.a`
+  text-decoration: none;
+  margin-right: 1rem;
+  opacity: 0.5;
+  width: 1rem;
+`;
+
+const Position = styled.div`
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: 18px;
+  opacity: 0.5;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  font-weight: 600;
+`;
+const Logo = styled.div`
+  font-weight: 900;
+  width: 12rem;
+  height: 2rem;
+  background: linear-gradient(to right, #ee64c7, #8272eb, #d06be0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 2rem;
+  :hover {
+    cursor: pointer;
+  }
+`;
+const Content = styled.div`
+  margin-top: 4px;
+`;
