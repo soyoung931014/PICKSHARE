@@ -28,7 +28,7 @@ function kakaoLoading() {
         }
         navigate('/mainfeed', { replace: true });
       });
-    }, 3000);
+    }, 300000);
   }, []);
 
   return (
@@ -63,7 +63,7 @@ const Pickshare = styled.div`
   background: linear-gradient(to right, #8272eb, #d06be0, #fd40c8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: text 1s infinite linear alternate;
+  animation: text 1.2s infinite linear alternate;
   @keyframes text {
     0% {
       transform: scale(1);
@@ -80,19 +80,19 @@ const Pickshare = styled.div`
 const Img = styled.img`
   width: 11%;
   height: 3.7vh;
-  animation: camera 1.6s infinite linear alternate;
+  animation: camera 1.3s infinite linear alternate;
   @keyframes camera {
     0% {
       transform: rotateY(0);
     }
     100% {
-      transform: rotateX(30deg) translateX(22vw);
+      transform: rotateX(30deg) translateX(21.5rem);
     }
   }
 `;
 const LoadingBox = styled.div`
   border: solid #ffff 2px;
   border-radius: 20px;
-  width: 26%;
+  width: 25rem;
   height: 4.5vh;
 `;
