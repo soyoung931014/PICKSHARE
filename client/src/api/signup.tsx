@@ -1,3 +1,4 @@
+import { ISignup } from '../types/userType';
 import api from './index';
 
 const signupApi = {
@@ -7,7 +8,7 @@ const signupApi = {
   nicknamecheck: (nickname: string) => {
     return api.get(`user/nicknamecheck/${nickname}`);
   },
-  signup: (userInfo: object) => {
+  signup: (userInfo: ISignup) => {
     return api.post(`user/signup`, userInfo);
   },
 };

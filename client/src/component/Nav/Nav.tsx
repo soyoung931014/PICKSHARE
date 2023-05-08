@@ -17,6 +17,7 @@ const Nav = () => {
   const { isLogin, userInfo } = useSelector(
     (selector: RootState) => selector.userInfo
   );
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -144,7 +145,7 @@ const Logo = styled.section`
 
 const MenuFabar = styled.a`
   display: none;
-  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
+  @media ${() => theme.deviceSize.tablet} {
     display: block;
     width: 100%;
     text-align: end;
@@ -168,7 +169,7 @@ const NavList = styled.section<{
   justify-content: flex-end;
   align-items: center;
   position: relative;
-  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
+  @media ${() => theme.deviceSize.tablet} {
     width: 120px;
     display: ${(props) => (props.Menu ? 'block' : 'none')};
     height: ${(props) => (props.InitialNav ? '192px' : '258px')};
@@ -205,7 +206,7 @@ const Info = styled.div`
   justify-content: flex-start;
   height: 36px;
   padding-bottom: 5.6px;
-  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
+  @media ${() => theme.deviceSize.tablet} {
     width: 5.1rem;
     padding-bottom: 0;
   }
