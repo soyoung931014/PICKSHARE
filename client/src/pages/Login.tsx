@@ -90,7 +90,6 @@ function Login() {
     try {
       await loginApi.token(token).then(({ data }: IUserData) => {
         const { userInfo } = data.data;
-        console.log(userInfo);
         if (userInfo) {
           dispatch(addUserInfo(userInfo, token));
           navigate('/mainfeed', { replace: true });

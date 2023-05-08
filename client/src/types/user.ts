@@ -20,6 +20,11 @@ export interface IUserData {
     statusCode: number;
   };
 }
+export interface IMyPageData {
+  data: IMyPage;
+  message?: string;
+  statusCode?: number;
+}
 export interface IKakaoData {
   data: {
     accessToken: string;
@@ -35,8 +40,20 @@ export interface IUser {
   userImage: string;
   loginMethod: number;
   statusMessage: string;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
+}
+export interface IMyPage extends IUser {
+  data: {
+    id: any;
+    email: any;
+    loginMethod: any;
+    nickname: any;
+    statusMessage: any;
+    userImage: any;
+  };
+  currentHashedRefreshToken: null;
+  password: null;
 }
 export interface IKakaoUser {
   email: string;
@@ -50,4 +67,10 @@ export interface IInitial {
   accessToken: string;
   userInfo?: IUser | IKakaoUser;
   refreshToken?: string;
+}
+
+export interface IUpdateUser {
+  nickname: string;
+  statusMessage: string;
+  userImage: string;
 }
