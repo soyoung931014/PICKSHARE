@@ -12,10 +12,10 @@ const Layout = () => {
       </Header>
       <Main>
         <Outlet />
+        <FooterDiv>
+          <Footer />
+        </FooterDiv>
       </Main>
-      <FooterDiv>
-        <Footer />
-      </FooterDiv>
     </Container>
   );
 };
@@ -26,13 +26,13 @@ const Container = styled.div`
   background-color: #ffff;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `;
 const Header = styled.div`
   height: 70px;
 `;
 const Main = styled.div`
   overflow: auto;
+  height: 100vh;
 `;
-const FooterDiv = styled.div`
-  margin: 1em;
-`;
+const FooterDiv = styled.div``;
