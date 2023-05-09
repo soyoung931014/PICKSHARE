@@ -54,7 +54,7 @@ function Footer() {
 
 export default Footer;
 const Wrapper = styled.div`
-  margin-top: 1rem;
+  padding: 2rem 0 0 1rem;
   box-shadow: 10 10px 0px #3c4a5645;
   width: 100vw;
 `;
@@ -88,6 +88,7 @@ const Position = styled.div`
   font-weight: 600;
 `;
 const Logo = styled.div`
+  font-family: sans-serif;
   font-weight: 900;
   width: 12rem;
   height: 2rem;
