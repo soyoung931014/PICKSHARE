@@ -297,7 +297,7 @@ function MyPage() {
                       type="file"
                       id="imgUpload"
                       ref={file}
-                      accept="image/*"
+                      accept="image"
                       onChange={firstImgHandle}
                       name="userImage"
                     ></InputProfile>
@@ -470,39 +470,45 @@ function MyPage() {
 }
 
 export default MyPage;
-
 const Wrapper = styled.div`
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   background-image: url(${background});
 `;
 
 const Book = styled.div`
   height: 100vh;
-  width: 90vw;
+  width: 100%;
   display: flex;
+  padding-top: 70px;
   justify-content: center;
-  align-items: center;
-  padding-left: 1em;
   position: relative;
-  left: 8rem;
+  flex-shrink: 0;
 `;
 const Left = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 32vw;
-  height: 85vh;
+  width: 511px;
+  height: 800px;
   padding-left: 1em;
   background-color: white;
   border-radius: 30px 20px 20px 30px;
   box-shadow: 10px 10px 30px #3c4a5645;
   border-right: #b1b0b0 solid 2px;
+  @media screen and (max-width: 1200px) {
+    position: relative;
+    left: 260px;
+    top: 20rem;
+    width: 0px;
+    height: 0px;
+  }
 `;
 
 const Right = styled.div`
-  width: 32vw;
-  height: 85vh;
+  height: 800px;
+  width: 511px;
+  flex-shrink: 0;
   background-color: white;
   padding-left: 1em;
   border-radius: 20px 30px 30px 20px;
@@ -530,12 +536,12 @@ const Img = styled.img`
   border: solid #bbbabe 3px;
   padding: 0.5rem;
   box-sizing: border-box;
-  width: 15vw;
-  height: 28vh;
+  flex: 1 0 auto;
+  height: 16rem;
   border-radius: 100%;
 `;
 const UpdateProfileBox = styled.div`
-  height: 80vh;
+  height: 750px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -555,8 +561,8 @@ const Form = styled.form<{ Left?: any }>`
   flex-direction: column;
   justify-content: center;
   align-items: ${(props) => (props.Left ? 'center' : null)};
-  width: 30vw;
-  height: ${(props) => (props.Left ? '60vh' : '50vh')};
+  width: 359px;
+  height: ${(props) => (props.Left ? '60vh' : '472px')};
   box-sizing: border-box;
 `;
 const InputBox = styled.div<{ button?: any }>`
@@ -625,13 +631,17 @@ const Div = styled.div`
   align-items: center;
   flex-direction: column;
   width: 20rem;
-  height: 50%;
+  height: 22rem;
 `;
 
 const Box = styled.div`
   display: flex;
   justify-content: center;
   text-align: center;
+  @media screen and (max-width: 1200px) {
+    position: relative;
+    top: 150px;
+  }
 `;
 const BoxMessage = styled.div`
   display: flex;
@@ -640,8 +650,8 @@ const BoxMessage = styled.div`
   padding-right: 7rem;
 `;
 const Profile = styled.div`
-  width: 19vw;
-  height: 28vh;
+  width: 15rem;
+  height: 20rem;
   border-radius: 100%;
   display: flex;
   justify-content: center;
@@ -664,9 +674,8 @@ const Edit = styled.img`
 `;
 const StatusMessage = styled.div`
   font-weight: bolder;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: #5f5e5e;
-  margin-top: 1rem;
 `;
 
 // input file(프로필 변경태그, 이 부분 숨김)
