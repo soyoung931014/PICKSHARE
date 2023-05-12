@@ -24,9 +24,9 @@ function App() {
         <Suspense fallback={<div>로딩중</div>}>
           <Routes>
             <Route element={<Layout />}>
+              <Route path="/mainfeed" element={<MainFeed />} />
               <Route path="/" element={<LandingPage />} />
               <Route path="/diary" element={<DiaryPage />} />
-              <Route path="/mainfeed" element={<MainFeed />} />
               <Route path="/feed/:nickname" element={<UserFeed />} />
               <Route path="/errorloading" element={<ErrorLoadingPage />} />
               <Route path="/commentsection" element={<CommentSection />} />

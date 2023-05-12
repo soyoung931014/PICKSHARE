@@ -11,42 +11,56 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { deleteBoardInfo, diaryOnAction } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
-import Footer from '../component/Footer/Footer';
-
-const Wrapper = styled.div`
-  width: 100vw;
-  height: 100%;
+import theme from '../styles/theme';
+const Con = styled.div`
   background-image: url(${feedBG});
   background-size: cover;
-  background-attachment: scroll;
+`;
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 `;
 const Div = styled.div`
-  margin: 150px;
-  min-width: 21rem;
+  width: 100%;
+  margin-top: 3em;
+ 
 `;
 const UpperDiv = styled.div`
   display: flex;
-  justify-content: space-between;
+  padding:  0 1%;
+  justify-content: space-evenly;
+  
 `;
 const ButtonDiv = styled.div`
   display: flex;
+  width: 120px;
+  flex: 1 0 auto;
+  text-align: center;
+  margin-left: 0.9em;
 `;
 
 const Button = styled.button`
-  background-color: transparent;
+  font-family:sans-serif ;
+  border-radius:10px ;
+  flex-shrink: 0;
   margin-right: 0.5rem;
   font-size: 1rem;
-  color: #615b5b;
+  padding: 5px 7px;
   text-align: center;
-  font-weight: 400;
-  outline: 0;
+  font-weight: 650;
+  opacity:0.8 ;
+  background: linear-gradient(to right, #ee64c7, #8272eb, #d06be0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   &:hover {
     cursor: pointer;
+    border-bottom: solid gray 2px ;
   }
 `;
 const UpperRightDiv = styled.div`
   display: flex;
-  margin: 0.5rem 0;
+  margin: 0.5em;
 `;
 const SearchBar = styled.div`
   border-radius: 30rem;
@@ -83,25 +97,36 @@ const PlusButton = styled.button`
   justify-content: center;
   width: 2rem;
   height: 2rem;
-  margin-left: 0.3rem;
+  margin-left: 0.5em;
   font-size: 1.8rem;
   text-align: center;
   font-weight: 400;
   &:hover {
     cursor: pointer;
+    background-color: #fee9f7;
   }
 `;
-const Feed = styled.div`
-  display: grid;
-  column-gap: 5rem;
-  row-gap: 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
+const Feed = styled.div` // 전체피드 
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  @media screen and (min-width: 840px) {
+    padding: 0px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+  } 
 `;
-const FooterDiv = styled.div`
-  padding-left: 25px;
-  padding-top: 10px;
-  border-top: solid gray 1px;
-`;
+const Line = styled.div`
+  border: solid gray 1px;
+  height:2rem ;
+  margin-top:8px ;
+  margin-right: 7px;
+  opacity:0.6 ;
+`
+
 export interface Feed {
   commentNum: string | undefined;
   contentImg: string | undefined;
@@ -226,15 +251,15 @@ export default function MainFeed() {
   // };
   
   return (
-    <>
+    <Con>
       <Wrapper>
-        <Nav />
         <Div>
           <UpperDiv>
             <ButtonDiv>
               <Button onClick={sortFeedByRecent} className="left">
-                최신순 |
+                최신순 
               </Button>
+              <Line></Line>
               <Button onClick={sortFeedByHeart}>인기순</Button>
             </ButtonDiv>
             <UpperRightDiv>
@@ -268,10 +293,7 @@ export default function MainFeed() {
             <div ref={setTarget} className='Target-Element'></div>
           </Feed>
         </Div>
-        <FooterDiv>
-          <Footer />
-        </FooterDiv>
       </Wrapper>
-    </>
+    </Con>
   );
 }

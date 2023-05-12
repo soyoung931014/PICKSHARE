@@ -33,6 +33,8 @@ import {
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 import Nav from '../component/Nav/Nav';
 import Footer from '../component/Footer/Footer';
+import Calendar from '../component/Calendar/Calendar'; //✅
+import { format } from 'date-fns'; //✅
 
 const Container = styled.section`
   height: 100%;
@@ -49,6 +51,8 @@ const Container = styled.section`
     flex-direction: column;
     padding-top: 4rem;
     padding-bottom: 4rem;
+    justify-content: flex-start;
+    height: 160vh;
   }
 `;
 
@@ -60,6 +64,9 @@ const wrapperStyle = styled.div`
   padding: 3.8rem 2rem;
   border-radius: 1.5rem;
   background-color: var(--color-white);
+  @media screen and (max-width: 620px) {
+    width: 100%;
+  }
 `;
 // ---- ----
 const BookMark = styled.div`
@@ -150,7 +157,8 @@ const RightWrapper = styled(wrapperStyle)`
     display: flex;
     flex-direction: row;
     gap: 1.2rem;
-    
+    position: relative;
+
     input.dates {
       &:hover {
         cursor: pointer;
@@ -164,8 +172,8 @@ const RightWrapper = styled(wrapperStyle)`
     }
   }
   div.lock {
-      width: 5rem;
-      padding-left: -16px;
+    width: 5rem;
+    padding-left: -16px;
     &:hover {
       cursor: pointer;
     }
@@ -275,10 +283,12 @@ const RightSide = styled.div`
   div {
     border-radius: 1rem;
     background-color: #fbedfa;
-    text-indent: 10px;
-    padding-left: 5px;
+    @media screen and (max-width: 607px) {
+      width: 100%;
+    }
   }
   div.write_content {
+    text-indent: 10px;
     box-shadow: 0px 5px 8px #3c4a5645;
     padding-top: 1.2rem;
     font-weight: 500;
@@ -289,6 +299,7 @@ const RightSide = styled.div`
     font-weight: 700;
     color: black;
     opacity: 0.7;
+    padding-bottom: 12px;
   }
 `;
 const SubBookMark = styled.div`
@@ -330,6 +341,8 @@ export interface FormValues {
 }
 
 const DiaryPage = () => {
+  const [selectedDate, setSelectedDate] = useState(new Date()); //✅
+  const [calOpen, setCalOpen] = useState(false); //✅
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [rendering, setRendering] = useState(false);
@@ -506,7 +519,6 @@ const DiaryPage = () => {
 
   return (
     <>
-      <Nav />
       <Container>
         {
           //새로 만들기
@@ -583,13 +595,9 @@ const DiaryPage = () => {
                 <ImoInfo>
                   {userInfo.nickname === boardInfo.nickname ? (
                     boardInput.lock === 'UNLOCK' ? (
-                      <div onClick={changeLock}>
-                        <GrUnlock />
-                      </div>
+                      <div onClick={changeLock}>{/*  <GrUnlock /> */}🔓</div>
                     ) : (
-                      <div onClick={changeLock}>
-                        <GrLock />
-                      </div>
+                      <div onClick={changeLock}>{/*  <GrLock /> */}🔒</div>
                     )
                   ) : null}
                   <div>
@@ -623,13 +631,29 @@ const DiaryPage = () => {
                 defaultValue={boardInfo.title}
               />
               <div className="select-wrapper">
-                <input
+                <div
+                  onClick={() => setCalOpen(!calOpen)}
+                  className="diary dates"
+                >
+                  {format(selectedDate, 'yyyy.MM.dd')}📆
+                </div>
+                {/*  <input
                   type="date"
                   className="diary dates"
                   name="date"
                   onChange={handleBoardInputValue}
                   defaultValue={boardInput.date}
-                />
+                /> */}
+                {calOpen ? (
+                  <CalWrapper>
+                    <Calendar
+                      selectedDate={selectedDate}
+                      setSelectedDate={setSelectedDate}
+                      calOpen={calOpen}
+                      setCalOpen={setCalOpen}
+                    />
+                  </CalWrapper>
+                ) : null}
                 <select className="moods" onClick={boardMoodHandler}>
                   <option value="0">행복</option>
                   <option value="1">좋음</option>
@@ -638,7 +662,16 @@ const DiaryPage = () => {
                   <option value="4">화남</option>
                 </select>
                 <div className="diary lock" onClick={boardLockHandler}>
-                  {boardInput.lock === 'UNLOCK' ? <GrUnlock /> : <GrLock />}
+                  {boardInput.lock === 'UNLOCK' ? (
+                    <>
+                      <GrUnlock />
+                      🔓
+                    </>
+                  ) : (
+                    <>
+                      🔒 <GrLock />
+                    </>
+                  )}
                 </div>
               </div>
               <textarea
@@ -682,11 +715,11 @@ const DiaryPage = () => {
           )}
         </RightWrapper>
       </Container>
-      <FooterDiv>
-        <Footer />
-      </FooterDiv>
     </>
   );
 };
 
 export default DiaryPage;
+const CalWrapper = styled.div`
+  position: absolute;
+`;

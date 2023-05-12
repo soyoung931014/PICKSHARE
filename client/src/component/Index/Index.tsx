@@ -59,13 +59,13 @@ function Index() {
         }}
       ></TagHome>
       <TagSignin
-        src={signinIndex}
+        src="https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/signinIndex.png"
         onClick={() => {
           navigate('/login', { replace: true });
         }}
       ></TagSignin>
       <TagSignup
-        src={signupIndex}
+        src="https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/signupIndex.png"
         onClick={() => {
           navigate('/signup', { replace: true });
         }}
