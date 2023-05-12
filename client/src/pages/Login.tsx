@@ -179,7 +179,6 @@ const Wrapper = styled.div`
   background-image: url(${background});
 `;
 const Book = styled.div`
-  border: solid red 2px;
   height: 100%;
   flex: 1 0 auto;
   width: 90vw;

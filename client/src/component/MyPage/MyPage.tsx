@@ -476,7 +476,7 @@ export default MyPage;
 const Wrapper = styled.div`
   width: 100%;
   height: 60rem;
-  background-image: url(${background});
+  background-image: url('https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/feedBG.jpg');
 `;
 
 const Book = styled.div`
@@ -499,8 +499,6 @@ const Left = styled.div<{ Visible?: boolean }>`
   border-radius: 30px 20px 20px 30px;
   box-shadow: 10px 10px 30px #3c4a5645;
   border-right: #b1b0b0 solid 2px;
-  background-image: url(${background});
-  background-size: cover;
   @media screen and (max-width: 1200px) {
     position: relative;
     left: 260px;
@@ -520,8 +518,6 @@ const Right = styled.div`
   border-radius: 20px 30px 30px 20px;
   box-shadow: 30px 10px 10px #3c4a5645;
   border-left: #b1b0b0 solid 2px;
-  background-image: url(${background});
-  background-size: cover;
 `;
 const Index = styled.div`
   display: flex;

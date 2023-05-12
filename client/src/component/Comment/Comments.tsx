@@ -76,9 +76,13 @@ function CommentSection({ boardId }: CommentSectionProps) {
           name="text"
           placeholder="댓글을 작성하세요"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setSendComment({ ...sendComment, [e.target.name]: e.target.value });
+            setSendComment({
+              ...sendComment,
+              [e.target.name]: e.target.value,
+            });
           }}
         />
+
         {isLogin ? (
           <Button onClick={send}>send</Button>
         ) : (
@@ -101,14 +105,25 @@ export default CommentSection;
 const Wrapper = styled.div`
   padding: 1rem;
   box-shadow: 10px 5px 8px #3c4a5645;
-  border: solid red 2px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 `;
 const CommentsListBox = styled.div`
-  height: 65%;
+  height: 90%;
+  width: 100%;
+  overflow-y: scroll;
+  border: solid 2px #e7dbdb;
+  padding: 10px;
+  margin-bottom: 10px;
 `;
 const CommentBox = styled.div`
   height: 2.2rem;
-  margin-top: 4rem;
+  padding: 1px;
+  width: 32rem;
+  display: flex;
 `;
 
 const Input = styled.input`
@@ -117,8 +132,12 @@ const Input = styled.input`
   height: 1rem;
   font-size: 1rem;
   padding: 0.8rem;
-  width: 27rem;
   color: #3a3939;
+  margin-left: 5px;
+  width: 87%;
+  @media screen and (max-width: 607px) {
+    flex: 1 auto;
+  }
 `;
 const Button = styled.button`
   font-size: 1rem;

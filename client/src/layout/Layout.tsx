@@ -12,10 +12,10 @@ const Layout = () => {
       </Header>
       <Main>
         <Outlet />
-        <FooterDiv>
-          <Footer />
-        </FooterDiv>
       </Main>
+      <FooterDiv>
+        <Footer />
+      </FooterDiv>
     </Container>
   );
 };
@@ -23,10 +23,10 @@ const Layout = () => {
 export default Layout;
 
 const Container = styled.div`
-  background-color: #ffff;
+  background-image: url('https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/feedBG.jpg');
+  background-size: cover;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 `;
 const Header = styled.div`
   height: 70px;
@@ -35,4 +35,7 @@ const Main = styled.div`
   overflow: auto;
   height: 100vh;
 `;
-const FooterDiv = styled.div``;
+const FooterDiv = styled.div`
+  background: #f5f5f5;
+  overflow: auto;
+`;

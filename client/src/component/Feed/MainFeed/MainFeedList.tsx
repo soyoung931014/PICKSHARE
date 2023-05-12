@@ -11,17 +11,32 @@ import { useDispatch } from 'react-redux';
 import boardApi from '../../../api/board';
 import { board } from '../../../redux/reducers/boardReducer/boardReducer';
 import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
-import profileImg from '../../../img/profileImg.png'
+import profileImg from '../../../img/profileImg.png';
+import theme from '../../../styles/theme';
 
 const Div = styled.div`
-  border: solid 1px red;
-  width: 20rem;
-  aspect-ratio: 262 / 302;
+  // 카드 크기
+  flex: 1 1 auto;
   background-color: white;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
-  display: grid;
-  grid-template-rows: 262fr 48fr; 
   border-radius: 1rem;
+  margin-bottom: 10px;
+  &:hover {
+    scale: 1.1;
+    cursor: pointer;
+    border: solid violet 2px;
+  }
+  @media screen and (min-width: 840px) {
+    width: 48%;
+    flex: 0 auto;
+    margin: 1%;
+  }
+  @media screen and (min-width: 900px) {
+    width: 31%;
+  }
+  @media screen and (min-width: 1400px) {
+    width: 23%;
+  }
 `;
 const ImgDiv = styled.div`
   box-sizing: border-box;
@@ -65,7 +80,9 @@ const Title = styled.div`
   font-size: 20px;
   font-weight: 500;
 `;
-const DateDiv = styled.div``;
+const DateDiv = styled.div`
+  width: 90px;
+`;
 const ContentLeftDiv = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -182,27 +199,24 @@ export default function MainFeedList({
       </ImgDiv>
       <ContentDiv>
         <ContentRightDiv>
-          {
-            userImage === 'nothing'
-            ? <UserImg src={profileImg} />
-            : <UserImg src={userImage} />
-          }
+          {userImage === 'nothing' ? (
+            <UserImg src={profileImg} />
+          ) : (
+            <UserImg src={userImage} />
+          )}
           <UserDiv>
-            {
-              isLogin &&
-              userInfo.nickname === urlSlice ? (
+            {isLogin && userInfo.nickname === urlSlice ? (
               //로그인 상태인지 아닌지
               //내 피드일 때 타이틀 아닐 때 닉네임
-                <Title>{title}</Title>
-              ) : (
-                <UserNickname
-                  className="nickname"
-                  onClick={() => moveToUsersFeed(nickname)}
-                >
-                  {nickname}
-                </UserNickname>
-              )
-            }
+              <Title>{title}</Title>
+            ) : (
+              <UserNickname
+                className="nickname"
+                onClick={() => moveToUsersFeed(nickname)}
+              >
+                {nickname}
+              </UserNickname>
+            )}
             <DateDiv>{date}</DateDiv>
           </UserDiv>
         </ContentRightDiv>

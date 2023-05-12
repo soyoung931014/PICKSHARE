@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import styled from 'styled-components';
-import landing from '../../img/landing.jpg';
 import { TbPhoto } from 'react-icons/tb';
 import { FaPaintBrush } from 'react-icons/fa';
 import { IoIosPeople } from 'react-icons/io';
@@ -40,7 +39,7 @@ const Landing = () => {
             </Line3>
           </Subsection>
           <Subsection>
-            <Img src={landing} />
+            <Img src="https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/landing.jpg" />
           </Subsection>
         </Section>
         <Section>
@@ -90,6 +89,7 @@ const Wrapper = styled.div`
   width: 100%;
   height: 175%;
   display: flex;
+  background: white;
   flex-direction: column;
   @media screen and (min-width: 900px) {
     height: 150%;
