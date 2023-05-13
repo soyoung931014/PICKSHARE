@@ -32,19 +32,17 @@ const Calendar = ({
   };
   return (
     <Container>
-      <div className="Wrapper">
-        <CalHeader
-          currentMonth={currentMonth}
-          preMonth={preMonth}
-          nextMonth={nextMonth}
-        />
-        <CalDays />
-        <CalCells
-          currentMonth={currentMonth}
-          selectedDate={selectedDate}
-          select={select}
-        />
-      </div>
+      <CalHeader
+        currentMonth={currentMonth}
+        preMonth={preMonth}
+        nextMonth={nextMonth}
+      />
+      <CalDays />
+      <CalCells
+        currentMonth={currentMonth}
+        selectedDate={selectedDate}
+        select={select}
+      />
     </Container>
   );
 };
