@@ -6,9 +6,9 @@ import commentApi from '../../api/comment';
 import { BiPencil } from 'react-icons/bi';
 import { CgTrash } from 'react-icons/cg';
 import { FaCheck } from 'react-icons/fa';
-import defaultprofileImg from '../../img/profileImg.png';
 
 import { commentInfo, info } from '../../types/commentType';
+import { defaultProfile } from '../../img/Img';
 
 export interface CommentProps {
   comment: commentInfo;
@@ -57,7 +57,7 @@ function Comment({
       <UserInfo>
         {userImage === 'nothing' ? (
           <>
-            <Img src={defaultprofileImg} />
+            <Img src={defaultProfile} />
           </>
         ) : (
           <>

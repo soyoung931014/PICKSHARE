@@ -1,5 +1,4 @@
 /* eslint-disable */
-import background from '../img/feedBG.jpg';
 import styled from 'styled-components';
 import React, { useEffect, useRef, useState } from 'react';
 import {
@@ -10,9 +9,6 @@ import {
   editOnAction,
 } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
-import profileImg from '../img/profileImg.png';
-import bookmarkPink from '../img/bookmark-pink.png';
-import bookmarkYellow from '../img/bookmark-yellow.png';
 import Photo from '../component/Diary/Photo';
 import Drawing from '../component/Diary/Drawing';
 import { debounce } from 'debounce';
@@ -33,12 +29,19 @@ import {
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 import Nav from '../component/Nav/Nav';
 import Footer from '../component/Footer/Footer';
-import Calendar from '../component/Calendar/Calendar'; //✅
-import { format } from 'date-fns'; //✅
+import Calendar from '../component/Calendar/Calendar';
+import { format } from 'date-fns';
+
+import {
+  bookmarkPink,
+  bookmarkYellow,
+  defaultProfile,
+  feedBG,
+} from '../img/Img';
 
 const Container = styled.section`
   height: 100%;
-  background-image: url(${background});
+  background-image: url(${feedBG});
   background-size: cover;
   background-attachment: scroll;
   display: flex;
@@ -584,7 +587,7 @@ const DiaryPage = () => {
             <LeftSide>
               <LeftInfo>
                 {userImg === 'nothing' ? (
-                  <UserImg src={profileImg} />
+                  <UserImg src={defaultProfile} />
                 ) : (
                   <UserImg src={userImg} />
                 )}

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import Nav from '../component/Nav/Nav';
 import Footer from '../component/Footer/Footer';
+import { feedBG } from '../img/Img';
 
 const Layout = () => {
   return (
@@ -23,7 +24,7 @@ const Layout = () => {
 export default Layout;
 
 const Container = styled.div`
-  background-image: url('https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/feedBG.jpg');
+  background-image: url(${feedBG});
   background-size: cover;
   display: flex;
   flex-direction: column;

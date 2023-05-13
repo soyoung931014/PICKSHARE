@@ -8,7 +8,7 @@ import { deleteUserInfo } from '../../redux/actions';
 import theme from '../../styles/theme';
 import { BiHome } from 'react-icons/bi';
 import { FaBars } from 'react-icons/fa';
-import defaultprofileImg from '../../img/profileImg.png';
+import { defaultProfile } from '../../img/Img';
 
 import { RootState } from '../../redux';
 
@@ -50,7 +50,7 @@ const Nav = () => {
                   >
                     <FeedDiv>
                       {userInfo.userImage === 'nothing' ? (
-                        <Img src={defaultprofileImg} />
+                        <Img src={defaultProfile} />
                       ) : (
                         <Img src={userInfo.userImage} />
                       )}

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import CalHeader from './CalHeader';
-import { addMonths, subMonths, format } from 'date-fns';
+import { addMonths, subMonths } from 'date-fns';
 import CalDays from './CalDays';
 import CalCells from './CalCells';
 import styled from 'styled-components';
+import { feedBG } from '../../img/Img';
 
 export interface CalendarProps {
   selectedDate: Date | number;
@@ -49,7 +50,7 @@ const Calendar = ({
 };
 export default Calendar;
 const Container = styled.div`
-  background-image: url('https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/feedBG.jpg');
+  background-image: url(${feedBG});
   width: 20rem;
   display: flex;
   flex-direction: column;
@@ -57,4 +58,5 @@ const Container = styled.div`
   border-left: #b1b0b0 solid 2px;
   border-right: #b1b0b0 solid 3px;
   border-radius: 10px;
+  z-index: 1;
 `;

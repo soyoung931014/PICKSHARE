@@ -3,8 +3,7 @@ import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import styled from 'styled-components';
-import background from '../img/feedBG.jpg';
-import pickshareLogo from '../img/pickshare.png';
+import { feedBG, pickshare } from '../img/Img';
 
 import signupApi from '../api/signup';
 
@@ -207,7 +206,7 @@ function Signup() {
         <Wrapper>
           <Book>
             <Left>
-              <Img src={pickshareLogo} />
+              <Img src={pickshare} />
             </Left>
             <Right>
               <SubIndex />
@@ -304,7 +303,7 @@ export default Signup;
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
-  background-image: url(${background});
+  background-image: url(${feedBG});
 `;
 const Book = styled.div`
   height: 100vh;
