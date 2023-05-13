@@ -71,9 +71,10 @@ const UserDiv = styled.div`
 const UserNickname = styled.div`
   font-size: 28px;
   font-weight: normal;
-  width: 100%;
+  width: 80%;
   &:hover {
     cursor: pointer;
+    color: violet;
   }
 `;
 const Title = styled.div`
@@ -107,7 +108,6 @@ const Num = styled.div`
   font-size: 25px;
   margin-left: 2px;
 `;
-
 export type MainFeedListProps = {
   id: number;
   contentImg: string | undefined;
