@@ -11,13 +11,12 @@ import signupApi from '../../api/signup';
 import mypageApi from '../../api/mypage';
 
 import styled from 'styled-components';
-import background from '../../img/feedBG.jpg';
 import homeIndex from '../../img/homeIndex.png';
 import edit from '../../img/edit.jpg';
-import nothing from '../../img/profileImg.png';
 
 import { RootState } from '../../redux';
 import { IMyPageData } from '../../types/mypageType';
+import { defaultProfile } from '../../img/Img';
 
 const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 
@@ -272,7 +271,7 @@ function MyPage() {
                       <Profile>
                         {userImage === 'nothing' ? (
                           <>
-                            <Img src={nothing} />
+                            <Img src={defaultProfile} />
                           </>
                         ) : userImage !== preUserImage ? (
                           <Img src={preUserImage} />
@@ -312,7 +311,7 @@ function MyPage() {
                       <Profile>
                         {userImage === 'nothing' ? (
                           <>
-                            <Img src={nothing} />
+                            <Img src={defaultProfile} />
                           </>
                         ) : (
                           <>

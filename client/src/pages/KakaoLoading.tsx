@@ -7,8 +7,8 @@ import { useDispatch } from 'react-redux';
 import loginApi from '../api/login';
 
 import styled from 'styled-components';
-import background from '../img/feedBG.jpg';
 import { IKakaoData } from '../types/userType';
+import { feedBG } from '../img/Img';
 
 function kakaoLoading() {
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export default kakaoLoading;
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
-  background-image: url(${background});
+  background-image: url(${feedBG});
   display: flex;
   flex-direction: column;
   justify-content: center;

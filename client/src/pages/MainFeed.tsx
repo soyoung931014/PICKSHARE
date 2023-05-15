@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import Nav from '../component/Nav/Nav';
-import feedBG from '../img/feedBG.jpg';
 import { BiSearch } from 'react-icons/bi';
 import { debounce } from 'debounce';
 import { useSelector } from 'react-redux';
@@ -12,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { deleteBoardInfo, diaryOnAction } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 import theme from '../styles/theme';
+import { feedBG } from '../img/Img';
 const Con = styled.div`
   background-image: url(${feedBG});
   background-size: cover;
@@ -24,13 +24,11 @@ const Wrapper = styled.div`
 const Div = styled.div`
   width: 100%;
   margin-top: 3em;
- 
 `;
 const UpperDiv = styled.div`
   display: flex;
-  padding:  0 1%;
+  padding: 0 1%;
   justify-content: space-evenly;
-  
 `;
 const ButtonDiv = styled.div`
   display: flex;
@@ -41,21 +39,21 @@ const ButtonDiv = styled.div`
 `;
 
 const Button = styled.button`
-  font-family:sans-serif ;
-  border-radius:10px ;
+  font-family: sans-serif;
+  border-radius: 10px;
   flex-shrink: 0;
   margin-right: 0.5rem;
   font-size: 1rem;
   padding: 5px 7px;
   text-align: center;
   font-weight: 650;
-  opacity:0.8 ;
+  opacity: 0.8;
   background: linear-gradient(to right, #ee64c7, #8272eb, #d06be0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   &:hover {
     cursor: pointer;
-    border-bottom: solid gray 2px ;
+    border-bottom: solid gray 2px;
   }
 `;
 const UpperRightDiv = styled.div`
@@ -106,7 +104,8 @@ const PlusButton = styled.button`
     background-color: #fee9f7;
   }
 `;
-const Feed = styled.div` // 전체피드 
+const Feed = styled.div`
+  // 전체피드
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -117,15 +116,15 @@ const Feed = styled.div` // 전체피드
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: center;
-  } 
+  }
 `;
 const Line = styled.div`
   border: solid gray 1px;
-  height:2rem ;
-  margin-top:8px ;
+  height: 2rem;
+  margin-top: 8px;
   margin-right: 7px;
-  opacity:0.6 ;
-`
+  opacity: 0.6;
+`;
 
 export interface Feed {
   commentNum: string | undefined;
@@ -142,14 +141,14 @@ export default function MainFeed() {
   const navigate = useNavigate();
 
   const [render, setRender] = useState(false);
-  useState<Feed|null>
-  const [feedlist, setFeedlist] = useState<Feed[]|null>([]);
+  useState<Feed | null>;
+  const [feedlist, setFeedlist] = useState<Feed[] | null>([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchOn, setSearchOn] = useState(false);
   const [orderingH, setOrderingH] = useState(false);
   const [target, setTarget] = useState(null);
   const [isLoaded, setIsloaded] = useState(false);
-  const [list, setList] = useState<Feed[]|null>([]);
+  const [list, setList] = useState<Feed[] | null>([]);
   let page = 0;
   const { userInfo } = useSelector((userReducer: any) => userReducer.userInfo);
   const handleSearchInput = debounce(async (e: any) => {
@@ -206,12 +205,11 @@ export default function MainFeed() {
       setFeedlist((prev) => prev.concat(result.data));
       // setFeedlist(result.data);
       // console.log(typeof feedlist, Array.isArray(feedlist))
-
     });
   };
   useEffect(() => {
     const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           if (orderingH === false && searchOn === false) {
             getMainFeed();
@@ -224,13 +222,13 @@ export default function MainFeed() {
           }
         }
         page += 8;
-      })
-    })
+      });
+    });
     if (target) {
       io.observe(target);
-      console.log('콘솔을 해보자',page)
+      console.log('콘솔을 해보자', page);
     }
-    
+
     // if (orderingH === false && searchOn === false) {
     //   getMainFeed();
     // } else if (orderingH === true && searchOn === false) {
@@ -249,7 +247,7 @@ export default function MainFeed() {
   // const onKeyDown = (e: any) => {
   //   console.log(e.key);
   // };
-  
+
   return (
     <Con>
       <Wrapper>
@@ -257,7 +255,7 @@ export default function MainFeed() {
           <UpperDiv>
             <ButtonDiv>
               <Button onClick={sortFeedByRecent} className="left">
-                최신순 
+                최신순
               </Button>
               <Line></Line>
               <Button onClick={sortFeedByHeart}>인기순</Button>
@@ -289,8 +287,8 @@ export default function MainFeed() {
                     render={render}
                     setRender={setRender}
                   />
-              ))}
-            <div ref={setTarget} className='Target-Element'></div>
+                ))}
+            <div ref={setTarget} className="Target-Element"></div>
           </Feed>
         </Div>
       </Wrapper>

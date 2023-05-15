@@ -11,8 +11,8 @@ import { useDispatch } from 'react-redux';
 import boardApi from '../../../api/board';
 import { board } from '../../../redux/reducers/boardReducer/boardReducer';
 import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
-import profileImg from '../../../img/profileImg.png';
 import theme from '../../../styles/theme';
+import { defaultProfile } from '../../../img/Img';
 
 const Div = styled.div`
   // 카드 크기
@@ -71,9 +71,10 @@ const UserDiv = styled.div`
 const UserNickname = styled.div`
   font-size: 28px;
   font-weight: normal;
-  width: 100%;
+  width: 80%;
   &:hover {
     cursor: pointer;
+    color: violet;
   }
 `;
 const Title = styled.div`
@@ -107,7 +108,6 @@ const Num = styled.div`
   font-size: 25px;
   margin-left: 2px;
 `;
-
 export type MainFeedListProps = {
   id: number;
   contentImg: string | undefined;
@@ -200,7 +200,7 @@ export default function MainFeedList({
       <ContentDiv>
         <ContentRightDiv>
           {userImage === 'nothing' ? (
-            <UserImg src={profileImg} />
+            <UserImg src={defaultProfile} />
           ) : (
             <UserImg src={userImage} />
           )}

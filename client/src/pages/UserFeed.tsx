@@ -2,9 +2,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import Nav from '../component/Nav/Nav';
-import feedBG from '../img/feedBG.jpg';
-import profileImg from '../img/profileImg.png';
 import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { useDispatch } from 'react-redux';
@@ -15,6 +12,7 @@ import {
   modalOnAction,
 } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
+import { defaultProfile } from '../img/Img';
 
 const UserWapper = styled.div`
   width: 100%;
@@ -303,7 +301,7 @@ export default function UserFeed() {
             <UserDiv>
               <>
                 {userlist.userImage === 'nothing' ? (
-                  <UserImg src={profileImg} />
+                  <UserImg src={defaultProfile} />
                 ) : (
                   <UserImg src={userlist.userImage} />
                 )}
