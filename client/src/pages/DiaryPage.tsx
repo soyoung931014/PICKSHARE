@@ -12,7 +12,6 @@ import { useNavigate } from 'react-router-dom';
 import Photo from '../component/Diary/Photo';
 import Drawing from '../component/Diary/Drawing';
 import { debounce } from 'debounce';
-// import { GrLock, GrUnlock } from 'react-icons/gr';
 import { useSelector } from 'react-redux';
 import boardApi from '../api/board';
 import feedApi from '../api/feed';
@@ -265,12 +264,15 @@ const ImoInfo = styled.div`
   div {
     display: flex;
     justify-content: center;
+    align-items: center;
+    align-content: center;
     border-radius: 1rem;
     padding: 0.5rem;
     box-shadow: 1px 1px 4px var(--color-shadow);
     background-color: #fbedfa;
-    font-size: 20px;
+    font-size: 22px;
   }
+  <div><span></div>
 `;
 const RightSide = styled.div`
   width: 100%;
@@ -324,10 +326,6 @@ const SubBookMarkContent = styled.button<{ Picture?: any }>`
     transform: scale(1.05);
   }
 `;
-const FooterDiv = styled.div`
-  margin-left: 2rem;
-  margin-top: 2rem;
-`;
 
 export interface FormValues {
   title: string;
@@ -340,8 +338,8 @@ export interface FormValues {
 }
 
 const DiaryPage = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date()); //✅
-  const [calOpen, setCalOpen] = useState(false); //✅
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [calOpen, setCalOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [rendering, setRendering] = useState(false);
@@ -630,19 +628,13 @@ const DiaryPage = () => {
                 defaultValue={boardInfo.title}
               />
               <div className="select-wrapper">
-                <div
+                <SelectedDay
+                  className="diary dates"
                   onClick={() => setCalOpen(!calOpen)}
-                  className="diary dates"
                 >
-                  {format(selectedDate, 'yyyy.MM.dd')}📆
-                </div>
-                {/*  <input
-                  type="date"
-                  className="diary dates"
-                  name="date"
-                  onChange={handleBoardInputValue}
-                  defaultValue={boardInput.date}
-                /> */}
+                  {format(selectedDate, 'yyyy.MM.dd')}
+                  {` `}📆
+                </SelectedDay>
                 {calOpen ? (
                   <CalWrapper>
                     <Calendar
@@ -662,13 +654,9 @@ const DiaryPage = () => {
                 </select>
                 <div className="diary lock" onClick={boardLockHandler}>
                   {boardInput.lock === 'UNLOCK' ? (
-                    <>
-                      🔓
-                    </>
+                    <Lock>🔓</Lock>
                   ) : (
-                    <>
-                      🔒
-                    </>
+                    <Lock>🔒</Lock>
                   )}
                 </div>
               </div>
@@ -720,4 +708,21 @@ const DiaryPage = () => {
 export default DiaryPage;
 const CalWrapper = styled.div`
   position: absolute;
+`;
+
+const SelectedDay = styled.div`
+  width: 400px;
+  height: 3.1rem;
+  text-align: center;
+  box-shadow: 1px 1px 4px var(--color-shadow);
+  background-color: var(--color-input);
+  border-radius: 1rem;
+  font-size: 20px;
+  padding: 1rem;
+  margin-top: 10px;
+`;
+const Lock = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
