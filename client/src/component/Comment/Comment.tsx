@@ -125,10 +125,17 @@ const Update = styled.div`
   &:hover {
     cursor: pointer;
   }
+  @media screen and (max-width: 607px) {
+    flex-shrink: 2;
+  }
 `;
 const Delete = styled.div`
   &:hover {
     cursor: pointer;
+  }
+  @media screen and (max-width: 607px) {
+    flex-shrink: 2;
+    margin-right: 10px;
   }
 `;
 
@@ -139,21 +146,25 @@ const Img = styled.img<{ User?: boolean }>`
   border-radius: 100%;
 `;
 const Nickname = styled.div`
+  width: 100px;
   font-size: 0.9rem;
   font-weight: bolder;
-  margin-top: 1px;
+  margin-top: 2px;
   opacity: 0.7;
 `;
 
 const Time = styled.div`
   font-size: 0.6rem;
+  @media screen and (max-width: 607px) {
+    flex-shrink: 0;
+  }
 `;
 const Div = styled.div`
+  border-radius: 0.1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin-left: 8px;
-  margin-right: 5px;
 `;
 const Input = styled.input`
   width: 50%;

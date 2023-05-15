@@ -31,8 +31,8 @@ import {
 } from 'react-icons/bs';
 
 // const AWS = require('aws-sdk/dist/aws-sdk-react-native');
-import Nav from '../component/Nav/Nav';
-import Footer from '../component/Footer/Footer';
+import Calendar from '../component/Calendar/Calendar'; //✅
+import { format } from 'date-fns'; //✅
 import { RootState } from '../redux';
 import { boardI } from '../redux/reducers/boardReducer/boardReducer';
 import { edit } from '../redux/reducers/editReducer/editReducer';
@@ -51,13 +51,13 @@ export interface FormValues {
 }
 
 const DiaryPage = () => {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [calOpen, setCalOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const [rendering, setRendering] = useState(false);
   const [pickWay, setPickWay] = useState(0); //책갈피 선택 0: 그림 / 1: 사진
   const [lockBtn, setLockBtn] = useState(false);
   const file: any = useRef();
-  // console.log('파일이뭐지', file);
   const { boardInfo } = useSelector((boardReducer: boardI) => boardReducer);
   console.log('보드인포', boardInfo);
   const { userInfo, accessToken } = useSelector(
@@ -155,8 +155,8 @@ const DiaryPage = () => {
       // dispatch(addBoardInfo(boardInput));
       await boardApi.createBoard(boardInput, accessToken).then((result) => {
         console.log('다이어리페이지 핸들세이브보드', result);
-        // dispatch(addBoardInfo(result.data));
-        // dispatch(diaryOffAction);
+        dispatch(addBoardInfo(result.data));
+        dispatch(diaryOffAction);
       });
     }
   };
@@ -184,34 +184,35 @@ const DiaryPage = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     console.log('이벤트', e, '이벤트 타겟', e.target);
-    // const text = e.target.name;
-    // const result = confirm(`게시글을 ${text} 하시겠습니끼?`);
+    const target = e.target as HTMLButtonElement;
+    const text = target.name;
+    const result = confirm(`게시글을 ${text} 하시겠습니끼?`);
 
-    // if (text === '삭제') {
-    //   if (result) {
-    //     alert(`${text}되었습니다.`);
-    //     return deleteWriting();
-    //   }
-    //   {
-    //     alert('취소되었습니다.');
-    //   }
-    // } else if (text === '저장') {
-    //   if (result) {
-    //     alert(`${text}되었습니다.`);
-    //     return handleSaveBoard();
-    //   }
-    //   {
-    //     alert('취소되었습니다.');
-    //   }
-    // } else {
-    //   if (result) {
-    //     alert(`${text}되었습니다.`);
-    //     return handleEditBoard();
-    //   }
-    //   {
-    //     alert('취소되었습니다.');
-    //   }
-    // }
+    if (text === '삭제') {
+      if (result) {
+        alert(`${text}되었습니다.`);
+        return deleteWriting();
+      }
+      {
+        alert('취소되었습니다.');
+      }
+    } else if (text === '저장') {
+      if (result) {
+        alert(`${text}되었습니다.`);
+        return handleSaveBoard();
+      }
+      {
+        alert('취소되었습니다.');
+      }
+    } else {
+      if (result) {
+        alert(`${text}되었습니다.`);
+        return handleEditBoard();
+      }
+      {
+        alert('취소되었습니다.');
+      }
+    }
   };
 
   const getImgByName = async () => {
@@ -238,7 +239,6 @@ const DiaryPage = () => {
 
   return (
     <>
-      <Nav />
       <Container>
         {
           //새로 만들기
@@ -315,13 +315,9 @@ const DiaryPage = () => {
                 <ImoInfo>
                   {userInfo.nickname === boardInfo.nickname ? (
                     boardInput.lock === 'UNLOCK' ? (
-                      <div onClick={changeLock}>
-                        <GrUnlock />
-                      </div>
+                      <div onClick={changeLock}>{/*  <GrUnlock /> */}🔓</div>
                     ) : (
-                      <div onClick={changeLock}>
-                        <GrLock />
-                      </div>
+                      <div onClick={changeLock}>{/*  <GrLock /> */}🔒</div>
                     )
                   ) : null}
                   <div>
@@ -355,13 +351,29 @@ const DiaryPage = () => {
                 defaultValue={boardInfo.title}
               />
               <div className="select-wrapper">
-                <input
-                  type="date"
+                <div
+                  onClick={() => setCalOpen(!calOpen)}
+                  className="diary dates"
+                >
+                  {format(selectedDate, 'yyyy.MM.dd')}📆
+                </div>
+                {/*  <input
+                  type="date"CalWrapper
                   className="diary dates"
                   name="date"
                   onChange={handleBoardInputValue}
                   defaultValue={boardInput.date}
-                />
+                /> */}
+                {calOpen ? (
+                  <CalWrapper>
+                    <Calendar
+                      selectedDate={selectedDate}
+                      setSelectedDate={setSelectedDate}
+                      calOpen={calOpen}
+                      setCalOpen={setCalOpen}
+                    />
+                  </CalWrapper>
+                ) : null}
                 <select className="moods" onClick={() => boardMoodHandler}>
                   <option value="0">행복</option>
                   <option value="1">좋음</option>
@@ -370,18 +382,27 @@ const DiaryPage = () => {
                   <option value="4">화남</option>
                 </select>
                 <div className="diary lock" onClick={boardLockHandler}>
-                  {boardInput.lock === 'UNLOCK' ? <GrUnlock /> : <GrLock />}
+                  {boardInput.lock === 'UNLOCK' ? (
+                    <>
+                      <GrUnlock />
+                      🔓
+                    </>
+                  ) : (
+                    <>
+                      🔒 <GrLock />
+                    </>
+                  )}
                 </div>
               </div>
               <textarea
                 name="content"
                 className="diary diary-content"
                 placeholder="내용을 입력해 주세요."
-                onChange={() => handleBoardInputValue}
+                onChange={() =>handleBoardInputValue}
                 defaultValue={boardInput.content}
               />
               <div className="save-btns">
-                <button className="diary save-btn" onClick={() => cancelButton}>
+                <button className="diary save-btn" onClick={cancelButton}>
                   취소
                 </button>
                 {isDiaryOn ? (
@@ -414,14 +435,9 @@ const DiaryPage = () => {
           )}
         </RightWrapper>
       </Container>
-      <FooterDiv>
-        <Footer />
-      </FooterDiv>
     </>
   );
 };
-
-export default DiaryPage;
 
 const Container = styled.section`
   height: 100%;
@@ -438,6 +454,8 @@ const Container = styled.section`
     flex-direction: column;
     padding-top: 4rem;
     padding-bottom: 4rem;
+    justify-content: flex-start;
+    height: 160vh;
   }
 `;
 
@@ -449,6 +467,9 @@ const wrapperStyle = styled.div`
   padding: 3.8rem 2rem;
   border-radius: 1.5rem;
   background-color: var(--color-white);
+  @media screen and (max-width: 620px) {
+    width: 100%;
+  }
 `;
 // ---- ----
 const BookMark = styled.div`
@@ -539,6 +560,7 @@ const RightWrapper = styled(wrapperStyle)`
     display: flex;
     flex-direction: row;
     gap: 1.2rem;
+    position: relative;
 
     input.dates {
       &:hover {
@@ -664,10 +686,12 @@ const RightSide = styled.div`
   div {
     border-radius: 1rem;
     background-color: #fbedfa;
-    text-indent: 10px;
-    padding-left: 5px;
+    @media screen and (max-width: 607px) {
+      width: 100%;
+    }
   }
   div.write_content {
+    text-indent: 10px;
     box-shadow: 0px 5px 8px #3c4a5645;
     padding-top: 1.2rem;
     font-weight: 500;
@@ -678,6 +702,7 @@ const RightSide = styled.div`
     font-weight: 700;
     color: black;
     opacity: 0.7;
+    padding-bottom: 12px;
   }
 `;
 const SubBookMark = styled.div`
@@ -707,3 +732,8 @@ const FooterDiv = styled.div`
   margin-left: 2rem;
   margin-top: 2rem;
 `;
+const CalWrapper = styled.div`
+  position: absolute;
+`;
+
+export default DiaryPage;

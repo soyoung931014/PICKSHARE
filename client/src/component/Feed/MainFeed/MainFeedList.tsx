@@ -17,6 +17,7 @@ import {
 import profileImg from '../../../img/profileImg.png';
 import { RootState } from '../../../redux';
 import { MainFeedListProps } from '../../../types/feedType';
+import theme from '../../../styles/theme';
 
 export default function MainFeedList({
   id,
@@ -27,28 +28,31 @@ export default function MainFeedList({
   heartNum,
   commentNum,
   title,
+  isRender,
 }: MainFeedListProps) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: RootState) => userReducer.userInfo
   );
-  const { isRender } = useSelector(
-    (renderReducer: RootState) => renderReducer.renderInfo
-  );
+
   const { boardInfo } = useSelector((boardReducer: boardI) => boardReducer);
   const [heart, setHeart] = useState(false);
   const postHeart = async () => {
+    console.log(heart, '하트');
     return await feedApi.postHeart(userInfo, id, accessToken).then(() => {
       setHeart(true);
       dispatch(renderAction);
+      console.log(isRender, '랜더');
     });
   };
 
   const deleteHeart = async () => {
+    console.log(heart, '하트');
     return await feedApi.deleteHeart(userInfo, id, accessToken).then(() => {
       setHeart(false);
       dispatch(renderAction);
+      console.log(isRender, '랜더');
     });
   };
 
@@ -68,7 +72,6 @@ export default function MainFeedList({
     const target = e.target as HTMLImageElement;
 
     const targetId = target.id;
-    console.log('이이이잉', targetId, typeof targetId);
     await boardApi.getBoardById(Number(targetId)).then((result) => {
       dispatch(addBoardInfo(result.data));
       navigate('/diary');
@@ -79,13 +82,13 @@ export default function MainFeedList({
     if (isLogin) {
       const getHeart = async () => {
         //하트 기록이 있는지 서치, 하트가 있으면, 하트 트루, 없 false
-        return await feedApi.getHeart(id, accessToken).then((result) => {
+        await feedApi.getHeart(id, accessToken).then((result) => {
           result.data === 1 ? setHeart(true) : setHeart(false);
         });
       };
       getHeart().catch((err) => console.log(err));
     }
-  }, []);
+  }, [isRender]);
 
   const urlSlice = window.location.pathname.split('/')[2];
 
@@ -95,8 +98,12 @@ export default function MainFeedList({
 
   return (
     <Div>
-      <ImgDiv id={`${id}`} onClick={(e) => moveToViewBoard(e)}>
-        <Img id={`${id}`} src={contentImg} />
+      <ImgDiv>
+        <Img
+          src={contentImg}
+          id={`${id}`}
+          onClick={(e) => moveToViewBoard(e)}
+        />
       </ImgDiv>
       <ContentDiv>
         <ContentRightDiv>
@@ -155,14 +162,28 @@ export default function MainFeedList({
 }
 
 const Div = styled.div`
-  border: solid 1px red;
-  width: 20rem;
-  aspect-ratio: 262 / 302;
+  // 카드 크기
+  flex: 1 1 auto;
   background-color: white;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
-  display: grid;
-  grid-template-rows: 262fr 48fr;
   border-radius: 1rem;
+  margin-bottom: 10px;
+  &:hover {
+    scale: 1.1;
+    cursor: pointer;
+    border: solid violet 2px;
+  }
+  @media screen and (min-width: 840px) {
+    width: 48%;
+    flex: 0 auto;
+    margin: 1%;
+  }
+  @media screen and (min-width: 900px) {
+    width: 31%;
+  }
+  @media screen and (min-width: 1400px) {
+    width: 23%;
+  }
 `;
 const ImgDiv = styled.div`
   box-sizing: border-box;
@@ -206,7 +227,9 @@ const Title = styled.div`
   font-size: 20px;
   font-weight: 500;
 `;
-const DateDiv = styled.div``;
+const DateDiv = styled.div`
+  width: 90px;
+`;
 const ContentLeftDiv = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;

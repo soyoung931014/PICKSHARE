@@ -1,9 +1,6 @@
-// /*eslint-disable*/
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import Nav from '../component/Nav/Nav';
-import feedBG from '../img/feedBG.jpg';
 import profileImg from '../img/profileImg.png';
 import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
@@ -15,7 +12,6 @@ import {
   modalOnAction,
 } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
-import Footer from '../component/Footer/Footer';
 
 import { RootState } from '../redux';
 import {
@@ -37,6 +33,8 @@ export default function UserFeed() {
     userImage: '',
     statusMessage: '',
   });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const [target, setTarget] = useState(null);
   let start = 0;
   let end = 8;
   const [follow, setFollow] = useState(false); //팔로우
@@ -121,60 +119,70 @@ export default function UserFeed() {
     getFollowerList().catch((err) => console.log(err));
   }, [follow]);
 
+  //내 피드가져오기
+  const myFeed = async () => {
+    await feedApi.getMyFeed(accessToken, start, end).then((result) => {
+      setUserFeedlist((prev) => prev.concat(result.data));
+      start += 8;
+      end += 8;
+    });
+  };
+
+  //유저들의 피드
+  const userPage = async () => {
+    await feedApi.getUserFeed(path, start, end).then((result) => {
+      setUserFeedlist((prev) => prev.concat(result.data));
+      start += 8;
+      end += 8;
+    });
+  };
+
   useEffect(() => {
-    //내 피드가져오기
-    const myFeed = async () => {
-      await feedApi.getMyFeed(accessToken, start, end).then((result) => {
-        setUserFeedlist((prev) => prev.concat(result.data));
-        start += 8;
-        end += 8;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (userInfo.nickname === path) {
+            myFeed().catch((err) => console.log(err));
+          } else {
+            userPage().catch((err) => console.log(err));
+          }
+        }
       });
-    };
+    });
 
-    //유저들의 피드
-    const userPage = async () => {
-      await feedApi.getUserFeed(path, start, end).then((result) => {
-        setUserFeedlist((prev) => prev.concat(result.data));
-        start += 8;
-        end += 8;
-      });
-    };
-    if (userInfo.nickname === path) {
-      myFeed().catch((err) => console.log(err));
-    } else {
-      userPage().catch((err) => console.log(err));
+    if (target) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      io.observe(target);
     }
-  }, [path, isRender]);
-
+  }, [path, isRender, target]);
   return (
     <UserWapper>
-      <Nav />
       <Div>
         <User>
           <div>
             <UserDiv>
               <>
-                {!userlist || userlist.userImage === 'nothing' ? (
+                {userlist.userImage === 'nothing' ? (
                   <UserImg src={profileImg} />
                 ) : (
                   <UserImg src={userlist.userImage} />
                 )}
               </>
-              <>
-                {isLogin === true ? (
-                  //내 피드이면 안보이기
-                  userInfo.nickname === path ? null : follow === true ? (
-                    //로그인o 팔로우o
-                    <UserFollow onClick={handleUnFollow}>unfollow</UserFollow>
-                  ) : (
-                    //로그인o 팔로우x
-                    <UserFollow onClick={handleFollow}>follow</UserFollow>
-                  )
+              {isLogin === true ? (
+                //내 피드이면 안보이기
+                userInfo.nickname === path ? (
+                  <Block></Block>
+                ) : follow === true ? (
+                  //로그인o 팔로우o
+                  <UserFollow onClick={handleUnFollow}>unfollow</UserFollow>
                 ) : (
-                  //로그인x
+                  //로그인o 팔로우x
                   <UserFollow onClick={handleFollow}>follow</UserFollow>
-                )}
-              </>
+                )
+              ) : (
+                //로그인x
+                <UserFollow onClick={handleFollow}>follow</UserFollow>
+              )}
             </UserDiv>
           </div>
           <UserInfo>
@@ -189,14 +197,18 @@ export default function UserFeed() {
                 <UserFollowInfo>게시물</UserFollowInfo>
                 <UserFollowInfo>{userfeedlist.length}</UserFollowInfo>
               </div>
-              <div>
-                <UserFollowInfo onClick={handleModalOn}>팔로잉</UserFollowInfo>
+              <FolWrapper onClick={handleModalOn}>
+                <UserFollowInfo /* onClick={handleModalOn} */>
+                  팔로잉
+                </UserFollowInfo>
                 <UserFollowInfo>{following.length}</UserFollowInfo>
-              </div>
-              <div>
-                <UserFollowInfo onClick={handleModalOn}>팔로워</UserFollowInfo>
+              </FolWrapper>
+              <FolWrapper onClick={handleModalOn}>
+                <UserFollowInfo /* onClick={handleModalOn} */>
+                  팔로워
+                </UserFollowInfo>
                 <UserFollowInfo>{follower.length}</UserFollowInfo>
-              </div>
+              </FolWrapper>
             </UserDescribe>
           </UserInfo>
         </User>
@@ -212,7 +224,10 @@ export default function UserFeed() {
         <Feed>
           {userfeedlist.length === 0
             ? `${userlist.nickname}님의 피드가 없습니다`
-            : userfeedlist.map((el) => <MainFeedList {...el} key={el.id} />)}
+            : userfeedlist.map((el) => (
+                <MainFeedList {...el} key={el.id} isRender />
+              ))}
+          <div ref={setTarget} className="Target-Element"></div>
         </Feed>
         {isModalOn ? (
           <Modal
@@ -223,27 +238,25 @@ export default function UserFeed() {
           />
         ) : null}
       </Div>
-      <FooterDiv>
-        <Footer />
-      </FooterDiv>
     </UserWapper>
   );
 }
-
 const UserWapper = styled.div`
   width: 100%;
   height: 100%;
-  background-image: url(${feedBG});
-  background-size: cover;
-  background-attachment: scroll;
+  /* @media screen and (max-width: 947px) {
+    min-height: 300vh;
+  } */
 `;
 const Div = styled.div`
-  margin: 150px;
-  min-width: 21rem;
+  padding: 10rem;
+  @media screen and (max-width: 947px) {
+    padding: 10rem 2rem;
+  }
 `;
 const User = styled.div`
   display: flex;
-  column-gap: 7rem;
+  column-gap: 6rem;
 
   @media screen and (max-width: 947px) {
     flex-direction: column;
@@ -252,9 +265,12 @@ const User = styled.div`
 `;
 
 const UserDiv = styled.div`
+  margin-left: 15px;
   @media screen and (max-width: 947px) {
+    margin-left: 0px;
     display: flex;
     justify-content: center;
+    align-items: center;
   }
 `;
 
@@ -264,10 +280,20 @@ const UserImg = styled.img`
   width: 178px;
   height: 178px;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
+  @media screen and (max-width: 947px) {
+    margin-bottom: 30px;
+    width: 200px;
+    height: 200px;
+    left: 30px;
+    flex-shrink: 0;
+  }
+  @media screen and (max-width: 370px) {
+    left: 10px;
+  }
 `;
 const UserFollow = styled.button`
   background-color: white;
-  position: absolute;
+  position: relative;
   border-radius: 20px;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
   width: 94px;
@@ -277,13 +303,15 @@ const UserFollow = styled.button`
   align-items: center;
   font-size: 20px;
   font-weight: 600;
-  left: 17rem;
-  top: 23.7rem;
+  top: -50px;
+  left: 6em;
   &:hover {
     cursor: pointer;
+    background: #fee7f4;
   }
   @media screen and (max-width: 947px) {
-    left: 21rem;
+    top: 4rem;
+    left: -3rem;
   }
 `;
 const UserInfo = styled.div`
@@ -323,11 +351,14 @@ const UserFollowInfo = styled.div`
   }
 `;
 const Feed = styled.div`
-  display: grid;
-  column-gap: 5rem;
-  row-gap: 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
-  justify-content: start;
+  display: flex;
+  flex-direction: column;
+  @media screen and (min-width: 840px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+  }
 `;
 const PlusButton = styled.div<{ Hidden?: any }>`
   visibility: ${(props) => (props.Hidden ? 'hidden' : 'visible')};
@@ -345,11 +376,20 @@ const PlusButton = styled.div<{ Hidden?: any }>`
     font-weight: 400;
     &:hover {
       cursor: pointer;
+      background: #fee7f4;
     }
   }
 `;
-const FooterDiv = styled.div`
-  padding-left: 25px;
-  padding-top: 10px;
-  border-top: solid gray 1px;
+const FolWrapper = styled.div`
+  &:hover {
+    background: #fee7f4;
+    cursor: pointer;
+    border-radius: 20px;
+    scale: 1.1;
+  }
+`;
+const Block = styled.div`
+  @media screen and (max-width: 947px) {
+    width: 57px;
+  }
 `;

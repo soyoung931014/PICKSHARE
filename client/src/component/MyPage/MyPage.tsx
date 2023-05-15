@@ -264,7 +264,7 @@ function MyPage() {
       ) : (
         <Wrapper>
           <Book>
-            <Left>
+            <Left Visible={withdraw}>
               {updateProfile === true && withdraw === false ? (
                 <>
                   <Form Left>
@@ -286,7 +286,9 @@ function MyPage() {
                         <Edit src={edit} />
                       </label>
                     </Div>
+                    <Message Left>상태메세지</Message>
                     <Input
+                      Status
                       type="text"
                       ref={statusmessage}
                       name="statusMessage"
@@ -297,7 +299,7 @@ function MyPage() {
                       type="file"
                       id="imgUpload"
                       ref={file}
-                      accept="image/*"
+                      accept="image"
                       onChange={firstImgHandle}
                       name="userImage"
                     ></InputProfile>
@@ -329,7 +331,7 @@ function MyPage() {
                 {updateProfile === true && withdraw === false ? (
                   <>
                     <Title>프로필 수정</Title>
-                    <Form>
+                    <Form UpdateProfile>
                       <BoxMessage>
                         <Message UpdateProfile>이메일</Message>
                       </BoxMessage>
@@ -433,7 +435,7 @@ function MyPage() {
                 ) : (
                   <>
                     <Title>마이페이지</Title>
-                    <Form>
+                    <Form MyPageMenu>
                       <Box>
                         <Button
                           MyPageButton
@@ -472,37 +474,45 @@ function MyPage() {
 export default MyPage;
 
 const Wrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background-image: url(${background});
+  width: 100%;
+  height: 60rem;
+  background-image: url('https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/feedBG.jpg');
 `;
 
 const Book = styled.div`
   height: 100vh;
-  width: 90vw;
+  width: 100%;
   display: flex;
+  padding-top: 70px;
   justify-content: center;
-  align-items: center;
-  padding-left: 1em;
   position: relative;
-  left: 8rem;
+  flex-shrink: 0;
 `;
-const Left = styled.div`
+const Left = styled.div<{ Visible?: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 32vw;
-  height: 85vh;
+  width: 511px;
+  height: 800px;
   padding-left: 1em;
   background-color: white;
   border-radius: 30px 20px 20px 30px;
   box-shadow: 10px 10px 30px #3c4a5645;
   border-right: #b1b0b0 solid 2px;
+  @media screen and (max-width: 1200px) {
+    position: relative;
+    left: 260px;
+    top: 20rem;
+    width: 0px;
+    height: 0px;
+    display: ${(props) => (props.Visible ? 'none' : 'flex')};
+  }
 `;
 
 const Right = styled.div`
-  width: 32vw;
-  height: 85vh;
+  height: 800px;
+  width: 511px;
+  flex-shrink: 0;
   background-color: white;
   padding-left: 1em;
   border-radius: 20px 30px 30px 20px;
@@ -513,6 +523,7 @@ const Index = styled.div`
   display: flex;
   flex-direction: column;
   height: 80vh;
+  margin-top: 10px;
 `;
 const TagHome = styled.img`
   width: 7rem;
@@ -530,12 +541,12 @@ const Img = styled.img`
   border: solid #bbbabe 3px;
   padding: 0.5rem;
   box-sizing: border-box;
-  width: 15vw;
-  height: 28vh;
+  flex: 1 0 auto;
+  height: 16rem;
   border-radius: 100%;
 `;
 const UpdateProfileBox = styled.div`
-  height: 80vh;
+  height: 750px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -550,37 +561,49 @@ const Title = styled.div`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `;
-const Form = styled.form<{ Left?: any }>`
+const Form = styled.form<{
+  Left?: boolean;
+  UpdateProfile?: boolean;
+  MyPageMenu?: boolean;
+}>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: ${(props) => (props.Left ? 'center' : null)};
-  width: 30vw;
-  height: ${(props) => (props.Left ? '60vh' : '50vh')};
-  box-sizing: border-box;
+  width: 359px;
+  height: 472px;
+  @media screen and (max-width: 1200px) {
+    margin-top: ${(props) => (props.Left ? '120px' : '0px')};
+    position: relative;
+    top: ${(props) =>
+      props.UpdateProfile ? '200px' : props.MyPageMenu ? '160px' : '10px'};
+  }
 `;
 const InputBox = styled.div<{ button?: any }>`
   height: 3.3rem;
-  margin-top: ${(props) => (props.button ? '2rem' : '0')};
-  box-sizing: border-box;
-`;
-const Message = styled.div<{ UpdateProfile?: any }>`
-  height: 1.7rem;
-  padding-top: 3px;
-  box-sizing: border-box;
-  font-size: 15px;
-  text-align: left;
-  opacity: 0.5;
-  margin-top: ${(props) => (props.UpdateProfile ? '1rem' : '0')};
-  margin-bottom: ${(props) => (props.UpdateProfile ? '0.2rem' : '0')};
+  margin-top: ${(props) => (props.button ? '1rem' : '0')};
   position: relative;
-  right: 15px;
+  top: ${(props) => (props.button ? '-10px' : '-11px')};
 `;
-const Input = styled.input<{ Check?: any }>`
+const Message = styled.div<{ UpdateProfile?: boolean; Left?: boolean }>`
+  height: 1.7rem;
+  width: 100px;
+  padding: 15px 0;
+  font-size: 15px;
+  opacity: 0.5;
+  margin-bottom: 20px;
+  position: relative;
+  right: ${(props) => (props.Left ? '115px' : '105px')};
+
+  @media screen and (max-width: 1200px) {
+    top: ${(props) => (props.Left ? '-91px' : '-15px')};
+    margin-bottom: 10px;
+  }
+`;
+const Input = styled.input<{ Check?: boolean; Status?: boolean }>`
   height: 3rem;
-  width: ${(props) => (props.Check ? '65%' : '77%')};
+  width: ${(props) => (props.Check ? '82%' : props.Status ? '350px' : '98%')};
   border-radius: 30px;
-  box-sizing: border-box;
   box-shadow: 0 3px 5px #3c4a5645;
   text-decoration: none;
   font-size: large;
@@ -589,6 +612,13 @@ const Input = styled.input<{ Check?: any }>`
   border: 0;
   opacity: 0.6;
   font-weight: bolder;
+  margin-bottom: 10px;
+  @media screen and (max-width: 1200px) {
+    position: relative;
+    right: ${(props) => (props.Status ? '-6px' : '0px')};
+    top: ${(props) =>
+      props.Status ? '-89px' : props.Check ? '-155px' : '-153px'};
+  }
 `;
 const Button = styled.button<{ MyPageButton?: any; Return?: any }>`
   width: ${(props) => (props.MyPageButton ? '20rem' : '12rem')};
@@ -606,9 +636,14 @@ const Button = styled.button<{ MyPageButton?: any; Return?: any }>`
   font-weight: bold;
   color: white;
   margin: 0.1rem;
+  @media screen and (max-width: 1200px) {
+    position: relative;
+    top: -150px;
+  }
 `;
 
 const CheckButton = styled.button`
+  height: 3rem;
   background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
   box-shadow: 0 5px 14px #3c4a5645;
   box-sizing: border-box;
@@ -617,31 +652,40 @@ const CheckButton = styled.button`
   margin: 0.1rem;
   margin-left: 0.2rem;
   padding: 0.1rem;
+  @media screen and (max-width: 1200px) {
+    position: relative;
+    top: -154px;
+  }
 `;
 
 const Div = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
   width: 20rem;
-  height: 50%;
+  height: 22rem;
 `;
 
 const Box = styled.div`
   display: flex;
   justify-content: center;
   text-align: center;
+  @media screen and (max-width: 1200px) {
+    position: relative;
+    top: 150px;
+  }
 `;
 const BoxMessage = styled.div`
   display: flex;
   margin-left: 5.3rem;
+  align-items: center;
   text-align: center;
   padding-right: 7rem;
 `;
 const Profile = styled.div`
-  width: 19vw;
-  height: 28vh;
+  width: 15rem;
+  height: 20rem;
   border-radius: 100%;
   display: flex;
   justify-content: center;
@@ -664,9 +708,12 @@ const Edit = styled.img`
 `;
 const StatusMessage = styled.div`
   font-weight: bolder;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: #5f5e5e;
-  margin-top: 1rem;
+  @media screen and (max-width: 1200px) {
+    position: relative;
+    top: -40px;
+  }
 `;
 
 // input file(프로필 변경태그, 이 부분 숨김)

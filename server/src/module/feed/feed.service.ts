@@ -41,6 +41,36 @@ export class FeedService {
     return data;
   }
 
+  async getAllFeedH(start: number, end: number): Promise<Board[]> {
+    const result =  await this.boardRepository.createQueryBuilder('board')
+      .select([
+        'board.id AS id',
+        'board.picture AS contentImg',
+        'board.date AS date',
+        'board.createdAt AS createdAt',
+        'board.lock AS locked',
+        'user.nickname AS nickname',
+        'user.userImage As userImage',
+        'COUNT(heart.user_id) AS heartNum',
+        'COUNT(comment.board_id) AS commentNum',
+      ])
+      .innerJoin(
+        'board.user', 'user'
+        )
+      .leftJoin(
+        'board.hearts', 'heart'
+      )
+      .leftJoin(
+        'board.comments', 'comment'
+      )
+      .where('board.Lock = :lock', {lock: 'UNLOCK'})
+      .groupBy('board.id')
+      .orderBy('heartNum', 'DESC')
+      .getRawMany()
+  const data = result.slice(start, end);
+  return data;
+}
+
   async getUserFeed(nickname: string, start:number, end: number): Promise<Board[]> {
     const board = await this.getAllFeed(start, end);
     return board.filter((el) => el.nickname === nickname);
@@ -74,7 +104,8 @@ export class FeedService {
     .orderBy('board.date', 'DESC')
     .getRawMany()
 
-  return result;
+    const data = result.slice(start, end);
+    return data;
   }
 
 }

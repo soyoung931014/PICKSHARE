@@ -37,6 +37,7 @@ export type MainFeedListProps = {
   heartNum?: number;
   commentNum?: number;
   title?: string;
+  isRender: boolean;
 };
 
 export type modalProps = {

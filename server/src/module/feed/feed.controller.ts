@@ -16,6 +16,14 @@ export class FeedController {
     ): Promise<Board[]> {
         return this.feedService.getAllFeed(start, end);
     }
+  
+    @Get('/heart')
+    getAllFeedH(
+      @Query('start') start: number,
+      @Query('end') end: number,
+    ): Promise<Board[]> {
+      return this.feedService.getAllFeedH(start, end);
+  }
 
     @Get('/mainfeed')
     getUserFeed(

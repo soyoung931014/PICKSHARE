@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import styled from 'styled-components';
-import landing from '../../img/landing.jpg';
 import { TbPhoto } from 'react-icons/tb';
 import { FaPaintBrush } from 'react-icons/fa';
 import { IoIosPeople } from 'react-icons/io';
@@ -40,7 +39,7 @@ const Landing = () => {
             </Line3>
           </Subsection>
           <Subsection>
-            <Img src={landing} />
+            <Img src="https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/landing.jpg" />
           </Subsection>
         </Section>
         <Section>
@@ -88,35 +87,47 @@ export default Landing;
 const Wrapper = styled.div`
   padding: 10px;
   width: 100%;
-  height: 140%;
+  height: 175%;
+  display: flex;
+  background: white;
+  flex-direction: column;
+  @media screen and (min-width: 900px) {
+    height: 150%;
+  }
 `;
 const Section = styled.section`
-  border-bottom: solid 0.8px #bbbbbb;
   width: 100%;
-  height: 70vh;
+  height: 48rem;
   display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
   padding: 1rem;
-  @media ${() => theme.deviceSize.middle} {
-    flex-direction: column;
+  flex: 1 0 auto;
+  border-bottom: solid 0.8px #bbbbbb;
+  @media screen and (min-width: 900px) {
+    flex-direction: row;
+    height: 40rem;
     flex: 1 0 auto;
-    height: 90vh;
   }
 `;
 const Img = styled.img`
   width: 100%;
-  height: 100%;
-  @media ${() => theme.deviceSize.middle} {
+  height: 90%;
+  @media ${() => theme.deviceSize.tablet} {
     margin-top: 1rem;
-    flex-shrink: 0;
   }
 `;
 const Subsection = styled.section`
   width: 100%;
-  height: 100%;
+  height: 60vh;
   display: flex;
   justify-content: center;
   align-items: flex-end;
   flex-direction: column;
+  flex: 1 auto;
+  @media screen and (min-width: 900px) {
+    height: 37rem;
+  }
 `;
 const Line0 = styled.div`
   font-weight: 600;
@@ -228,38 +239,31 @@ const Icon3 = styled(IoIosPeople)`
 `;
 const Subsection3 = styled.div`
   width: 100%;
-  height: 100%;
+  height: 37rem;
   display: flex;
+  flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  @media ${() => theme.deviceSize.middle} {
-    flex-direction: column;
+  @media screen and (min-width: 900px) {
+    flex-direction: row;
+    height: 30rem;
   }
 `;
 const Subsection2 = styled.div`
   width: 100%;
-  height: 50vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex: 1 auto;
   align-items: center;
-  @media ${() => theme.deviceSize.middle} {
-    flex-direction: column;
-    margin-top: 8rem;
-    justify-content: flex-start;
-    position: relative;
-    top: 70px;
-  }
 `;
 const SubTitle = styled.div`
-  margin-top: 3rem;
+  margin-top: 20px;
+  width: 8.5rem;
+  margin-bottom: 37px;
   font-size: 2.5rem;
   font-weight: 800;
   opacity: 0.6;
-  @media ${() => theme.deviceSize.middle} {
-    position: absolute;
-    top: -220px;
-  }
 `;
 const ServiceWrapper = styled.div`
   margin-top: 10px;
@@ -275,10 +279,6 @@ const ServiceTitle = styled.div`
   text-align: center;
   margin-bottom: 6px;
   opacity: 0.8;
-  @media ${() => theme.deviceSize.middle} {
-    margin-bottom: 10px;
-    margin-top: 10px;
-  }
 `;
 const ServiceContent = styled.div`
   font-size: 0.9rem;
@@ -286,11 +286,15 @@ const ServiceContent = styled.div`
 `;
 
 const Div = styled.div`
+  height: 15rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  @media ${() => theme.deviceSize.middle} {
-    margin-top: 1.2rem;
+  flex: 1 1 auto;
+  @media screen and (min-width: 900px) {
+    height: 22rem;
+    width: 25rem;
+    flex: 0 auto;
   }
 `;

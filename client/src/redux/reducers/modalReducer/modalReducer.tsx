@@ -14,7 +14,7 @@ const modalReducer = (
     type: string;
     isModalOn: boolean;
   }
-): modalI => {
+) => {
   let state;
   switch (action.type) {
     case MODAL_ON:

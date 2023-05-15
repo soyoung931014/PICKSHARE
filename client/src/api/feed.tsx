@@ -7,6 +7,9 @@ const feedApi = {
   getMainFeed: (start: number, end: number):AxiosPromise<Feedlist[]> => {
     return api.get(`/feed?start=${start}&end=${end}`);
   },
+  getMainFeedH: (start: number, end: number):AxiosPromise<Feedlist[]> => {
+    return api.get(`/feed/heart?start=${start}&end=${end}`);
+  },
   getHeart: (board_id: number, accessToken: string) => {
     return api.get(
       `/heart?board_id=${board_id}`,
