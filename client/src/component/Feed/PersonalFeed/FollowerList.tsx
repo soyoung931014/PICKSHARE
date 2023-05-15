@@ -1,4 +1,3 @@
-// /*eslint-disable*/
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import feedApi from '../../../api/feed';
@@ -35,15 +34,19 @@ export default function FollowerList({
 }
 
 const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-content: center;
-  justify-content: center;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 10px;
 `;
 const UserImage = styled.img`
-  width: 46px;
+  width: 50px;
   height: 46px;
   border-radius: 100%;
-  overflow: hidden;
+  overflow: auto;
 `;
-const UserNick = styled.div``;
+const UserNick = styled.div`
+  width: 100px;
+  font-size: 1rem;
+  text-align: left;
+`;

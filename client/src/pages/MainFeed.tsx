@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
-import feedBG from '../img/feedBG.jpg';
 import { BiSearch } from 'react-icons/bi';
 import { debounce } from 'debounce';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteBoardInfo, diaryOnAction, renderAction } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
+import { feedBG } from '../img/Img';
 import { RootState } from '../redux';
-import { Feedlist } from '../types/feedType';
+import { Feedlist, IOptions } from '../types/feedType';
 
 export default function MainFeed() {
   const dispatch = useDispatch();
@@ -18,8 +18,7 @@ export default function MainFeed() {
   const [searchInput, setSearchInput] = useState('');
   const [searchOn, setSearchOn] = useState(false);
   const [orderingH, setOrderingH] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const [target, setTarget] = useState(null);
+  const target = useRef<HTMLDivElement>(null);
   let start = 0;
   let end = 8;
   const { userInfo } = useSelector(
@@ -86,9 +85,7 @@ export default function MainFeed() {
   };
 
   const getMainFeedH = async () => {
-    console.log('인기순');
     await feedApi.getMainFeedH(start, end).then((result) => {
-      console.log('인기순으로좀..', result);
       setFeedlist((prev) => prev.concat(result.data));
       start += 8;
       end += 8;
@@ -103,24 +100,32 @@ export default function MainFeed() {
     });
   };
   useEffect(() => {
+    const options: IOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.5,
+    };
+
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          if (orderingH === false && searchOn === false) {
-            getMainFeed().catch((err) => console.log(err));
-          } else if (orderingH === true && searchOn === false) {
-            getMainFeedH().catch((err) => console.log(err));
-          } else if (orderingH === false && searchOn === true) {
-            getUserFeed(searchInput).catch((err) => console.log(err));
-          } else {
-            getUserFeedH(searchInput).catch((err) => console.log(err));
-          }
+          setTimeout(() => {
+            if (orderingH === false && searchOn === false) {
+              getMainFeed().catch((err) => console.log(err));
+            } else if (orderingH === true && searchOn === false) {
+              getMainFeedH().catch((err) => console.log(err));
+            } else if (orderingH === false && searchOn === true) {
+              getUserFeed(searchInput).catch((err) => console.log(err));
+            } else {
+              getUserFeedH(searchInput).catch((err) => console.log(err));
+            }
+          }, 1000);
         }
       });
-    });
-    if (target) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      io.observe(target);
+    }, options);
+
+    if (target.current) {
+      io.observe(target.current);
     }
 
     if (userInfo.nickname === 'nothing') {
@@ -130,7 +135,7 @@ export default function MainFeed() {
   }, [isRender, target]);
 
   return (
-    <Con>
+    <Container>
       <Wrapper>
         <Div>
           <UpperDiv>
@@ -164,14 +169,15 @@ export default function MainFeed() {
               : feedlist.map((el) => (
                   <MainFeedList {...el} key={el.id} isRender />
                 ))}
-            <div ref={setTarget} className="Target-Element"></div>
+            <div ref={target} className="Target-Element"></div>
           </Feed>
         </Div>
       </Wrapper>
-    </Con>
+    </Container>
   );
 }
-const Con = styled.div`
+
+const Container = styled.div`
   background-image: url(${feedBG});
   background-size: cover;
 `;

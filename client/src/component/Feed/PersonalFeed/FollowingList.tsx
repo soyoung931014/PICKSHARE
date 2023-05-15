@@ -1,4 +1,3 @@
-// /*eslint-disable*/
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -38,7 +37,7 @@ export default function FollowingList({
     };
     findFollow().catch((err) => console.log(err));
   }, []);
-  //useMemo()
+
   return (
     <Wrapper>
       <UserImage src={userlist.userImage} />

@@ -18,6 +18,7 @@ import profileImg from '../../../img/profileImg.png';
 import { RootState } from '../../../redux';
 import { MainFeedListProps } from '../../../types/feedType';
 import theme from '../../../styles/theme';
+import { defaultProfile } from '../../../img/Img';
 
 export default function MainFeedList({
   id,
@@ -108,7 +109,7 @@ export default function MainFeedList({
       <ContentDiv>
         <ContentRightDiv>
           {userImage === 'nothing' ? (
-            <UserImg src={profileImg} />
+            <UserImg src={defaultProfile} />
           ) : (
             <UserImg src={userImage} />
           )}
@@ -218,9 +219,10 @@ const UserDiv = styled.div`
 const UserNickname = styled.div`
   font-size: 28px;
   font-weight: normal;
-  width: 100%;
+  width: 80%;
   &:hover {
     cursor: pointer;
+    color: violet;
   }
 `;
 const Title = styled.div`

@@ -12,7 +12,7 @@ import {
 import theme from '../../styles/theme';
 import { BiHome } from 'react-icons/bi';
 import { FaBars } from 'react-icons/fa';
-import defaultprofileImg from '../../img/profileImg.png';
+import { defaultProfile } from '../../img/Img';
 
 import { RootState } from '../../redux';
 
@@ -26,14 +26,6 @@ const Nav = () => {
 
   const [menu, setMenu] = useState(false);
 
-  const path = window.location.pathname.split('/')[2];
-  const navToMyPage = () => {
-    if (userInfo.nickname !== path) {
-      dispatch(deleteBoardInfo());
-      dispatch(renderAction);
-      navigate(`/feed/${userInfo.nickname}`);
-    }
-  };
   return (
     <>
       <Wrapper>
@@ -54,21 +46,18 @@ const Nav = () => {
               </Div>
               <Div>
                 <Info>
-                  <div
-                    onClick={() => {
-                      navToMyPage();
-                    }}
-                    // to={`/feed/${userInfo.nickname}`}
+                  <NavLink
+                    to={`/feed/${userInfo.nickname}`}
                     style={{ ...menuStyle }}
                   >
                     <FeedDiv>
                       {userInfo.userImage === 'nothing' ? (
-                        <Img src={defaultprofileImg} />
+                        <Img src={defaultProfile} />
                       ) : (
                         <Img src={userInfo.userImage} />
                       )}
                     </FeedDiv>
-                  </div>
+                  </NavLink>
                   <FeedDiv>피드</FeedDiv>
                 </Info>
               </Div>

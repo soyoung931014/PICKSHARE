@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import profileImg from '../img/profileImg.png';
 import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { useDispatch } from 'react-redux';
@@ -12,17 +11,17 @@ import {
   modalOnAction,
 } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
+import { defaultProfile } from '../img/Img';
 
 import { RootState } from '../redux';
 import {
   Feedlist,
   FollowerListType,
   FollowingListType,
+  IOptions,
   UserInfoData,
 } from '../types/feedType';
 import { renderAction } from '../redux/actions';
-// import { renderI } from '../redux/reducers/renderReducer/renderReducer';
-
 export default function UserFeed() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,8 +32,7 @@ export default function UserFeed() {
     userImage: '',
     statusMessage: '',
   });
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const [target, setTarget] = useState(null);
+  const target = useRef<HTMLDivElement>(null);
   let start = 0;
   let end = 8;
   const [follow, setFollow] = useState(false); //팔로우
@@ -138,21 +136,27 @@ export default function UserFeed() {
   };
 
   useEffect(() => {
+    const options: IOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.5,
+    };
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          if (userInfo.nickname === path) {
-            myFeed().catch((err) => console.log(err));
-          } else {
-            userPage().catch((err) => console.log(err));
-          }
+          setTimeout(() => {
+            if (userInfo.nickname === path) {
+              myFeed().catch((err) => console.log(err));
+            } else {
+              userPage().catch((err) => console.log(err));
+            }
+          }, 1000);
         }
       });
-    });
+    }, options);
 
-    if (target) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      io.observe(target);
+    if (target.current) {
+      io.observe(target.current);
     }
   }, [path, isRender, target]);
   return (
@@ -163,7 +167,7 @@ export default function UserFeed() {
             <UserDiv>
               <>
                 {userlist.userImage === 'nothing' ? (
-                  <UserImg src={profileImg} />
+                  <UserImg src={defaultProfile} />
                 ) : (
                   <UserImg src={userlist.userImage} />
                 )}
@@ -198,15 +202,11 @@ export default function UserFeed() {
                 <UserFollowInfo>{userfeedlist.length}</UserFollowInfo>
               </div>
               <FolWrapper onClick={handleModalOn}>
-                <UserFollowInfo /* onClick={handleModalOn} */>
-                  팔로잉
-                </UserFollowInfo>
+                <UserFollowInfo>팔로잉</UserFollowInfo>
                 <UserFollowInfo>{following.length}</UserFollowInfo>
               </FolWrapper>
               <FolWrapper onClick={handleModalOn}>
-                <UserFollowInfo /* onClick={handleModalOn} */>
-                  팔로워
-                </UserFollowInfo>
+                <UserFollowInfo>팔로워</UserFollowInfo>
                 <UserFollowInfo>{follower.length}</UserFollowInfo>
               </FolWrapper>
             </UserDescribe>
@@ -227,7 +227,7 @@ export default function UserFeed() {
             : userfeedlist.map((el) => (
                 <MainFeedList {...el} key={el.id} isRender />
               ))}
-          <div ref={setTarget} className="Target-Element"></div>
+          <div ref={target} className="Target-Element"></div>
         </Feed>
         {isModalOn ? (
           <Modal

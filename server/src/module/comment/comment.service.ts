@@ -36,7 +36,6 @@ export class CommentService {
   async getBoardComments(id: number): Promise<object> {
     try {
       const comments = await this.commentRepository.find({ where:{board_id: id} });
-      console.log(comments);
       if (comments) {
         const user = await Promise.all(
           comments.map(async (el) => {

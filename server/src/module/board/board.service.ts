@@ -63,10 +63,8 @@ export class BoardService {
 
   // DELETE(/:id)
   async deleteBoard(user: User, id: number): Promise<void> {
-    const deleteHeart = await this.heartRepository.delete({board_id: id});
-    console.log('하트삭제',deleteHeart)
-    const deleteComment = await this.commentRepository.delete({board_id: id});
-    console.log('코멘트 삭제',deleteComment)
+    await this.heartRepository.delete({board_id: id});
+    await this.commentRepository.delete({board_id: id});
     
     const result = await this.boardRepository.delete({ id });
     if (result.affected === 0) {

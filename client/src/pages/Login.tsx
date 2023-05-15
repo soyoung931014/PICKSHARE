@@ -12,8 +12,7 @@ import Index from '../component/Index/Index';
 import SubIndex from '../component/Index/SubIndex';
 
 import styled from 'styled-components';
-import background from '../img/feedBG.jpg';
-import pickshareLogo from '../img/pickshare.png';
+import { feedBG, pickshare } from '../img/Img';
 
 import { ITokenData, IUserData } from '../types/userType';
 import theme from '../styles/theme';
@@ -112,7 +111,7 @@ function Login() {
     <Wrapper>
       <Book>
         <Left>
-          <Img src={pickshareLogo} />
+          <Img src={pickshare} />
         </Left>
         <Right>
           <SubIndex />
@@ -176,7 +175,7 @@ const Wrapper = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-image: url(${background});
+  background-image: url(${feedBG});
 `;
 const Book = styled.div`
   height: 100%;

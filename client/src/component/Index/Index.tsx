@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import homeIndex from '../../img/homeIndex.png';
-import signupIndex from '../../img/signupIndex.png';
-import signinIndex from '../../img/signinIndex.png';
 import { useNavigate } from 'react-router-dom';
+import { signinIndex, signupIndex } from '../../img/Img';
 
 const BookMark = styled.div`
   display: flex;
@@ -59,13 +58,13 @@ function Index() {
         }}
       ></TagHome>
       <TagSignin
-        src="https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/signinIndex.png"
+        src={signinIndex}
         onClick={() => {
           navigate('/login', { replace: true });
         }}
       ></TagSignin>
       <TagSignup
-        src="https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/signupIndex.png"
+        src={signupIndex}
         onClick={() => {
           navigate('/signup', { replace: true });
         }}

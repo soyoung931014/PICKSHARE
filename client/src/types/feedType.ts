@@ -74,3 +74,9 @@ export type followerListProps = {
   follow: boolean;
   setFollow: (follow: boolean) => boolean | void;
 };
+
+export interface IOptions {
+  root: null;
+  rootMargin: string;
+  threshold: number;
+}

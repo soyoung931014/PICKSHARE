@@ -38,11 +38,13 @@ export default function Modal({
         <ModalBackdrop>
           <ModalContainer>
             <ListBtn>
-              <button onClick={followerClick}>팔로워 {follower.length}</button>
-              <button onClick={followingClick}>
+              <Button Selected={!fClicked} onClick={followerClick}>
+                팔로워 {follower.length}
+              </Button>
+              <Button Selected={fClicked} onClick={followingClick}>
                 팔로잉 {following.length}
-              </button>
-              <IoIosCloseCircleOutline onClick={handleClose} />
+              </Button>
+              <Close onClick={handleClose} />
             </ListBtn>
             <List className="follower">
               {fClicked ? (
@@ -97,12 +99,34 @@ const ModalContainer = styled.div`
   height: 30rem;
   background-color: #ebf1f1;
   opacity: 0.8;
-  border-radius: 12%;
+  border-radius: 1rem;
   padding: 2rem 0.5rem;
 `;
 const ListBtn = styled.div`
-  display: grid;
-  grid-template-columns: 5fr 5fr 1fr;
-  font-size: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
-const List = styled.button``;
+const List = styled.button`
+  padding-top: 10px;
+  width: 300px;
+`;
+const Button = styled.button<{ Selected: boolean }>`
+  flex: 1 0 auto;
+  font-size: 1rem;
+  font-weight: 600;
+  color: ${(props) => (props.Selected ? 'violet' : 'black')};
+  background-color: ${(props) => (props.Selected ? 'white' : 'null')};
+  height: 2rem;
+  border-radius: 1rem;
+  :hover {
+    cursor: pointer;
+    background-color: white;
+    border-radius: 1rem;
+  }
+`;
+const Close = styled(IoIosCloseCircleOutline)`
+  position: relative;
+  top: -27px;
+  right: 3px;
+`;

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import background from '../img/feedBG.jpg';
+import { feedBG } from '../img/Img';
 
 export interface ErLoadProps {
   text?: string;
@@ -29,7 +29,7 @@ export default ErrorLoadingPage;
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
-  background-image: url(${background});
+  background-image: url(${feedBG});
   display: flex;
   flex-direction: column;
   justify-content: center;
