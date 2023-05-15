@@ -16,3 +16,5 @@ export const DIARY_OFF = 'DIARY_OFF';
 
 export const EDIT_MODE_ON = 'EDIT_MODE_ON';
 export const EDIT_MODE_OFF = 'EDIT_MODE_OFF';
+
+export const RENDER = 'RENDER';

@@ -3,7 +3,11 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteUserInfo } from '../../redux/actions';
+import {
+  deleteBoardInfo,
+  deleteUserInfo,
+  renderAction,
+} from '../../redux/actions';
 
 import theme from '../../styles/theme';
 import { BiHome } from 'react-icons/bi';
@@ -17,7 +21,6 @@ const Nav = () => {
   const { isLogin, userInfo } = useSelector(
     (selector: RootState) => selector.userInfo
   );
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -45,7 +48,6 @@ const Nav = () => {
                 <Info>
                   <NavLink
                     to={`/feed/${userInfo.nickname}`}
-                    /*   onClick={() => props.setRender(!props.render)} */
                     style={{ ...menuStyle }}
                   >
                     <FeedDiv>

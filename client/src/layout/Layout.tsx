@@ -28,6 +28,7 @@ const Container = styled.div`
   background-size: cover;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `;
 const Header = styled.div`
   height: 70px;

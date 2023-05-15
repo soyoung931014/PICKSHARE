@@ -8,8 +8,7 @@ import { UserRepository } from '../user/user.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([FollowRepository]),
-    TypeOrmModule.forFeature([UserRepository]),
+    TypeOrmModule.forFeature([FollowRepository, UserRepository]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   providers: [FollowService],

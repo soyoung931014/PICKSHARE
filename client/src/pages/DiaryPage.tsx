@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import Photo from '../component/Diary/Photo';
 import Drawing from '../component/Diary/Drawing';
 import { debounce } from 'debounce';
-import { GrLock, GrUnlock } from 'react-icons/gr';
+// import { GrLock, GrUnlock } from 'react-icons/gr';
 import { useSelector } from 'react-redux';
 import boardApi from '../api/board';
 import feedApi from '../api/feed';
@@ -26,12 +26,8 @@ import {
   BsEmojiSmile,
 } from 'react-icons/bs';
 
-const AWS = require('aws-sdk/dist/aws-sdk-react-native');
-import Nav from '../component/Nav/Nav';
-import Footer from '../component/Footer/Footer';
 import Calendar from '../component/Calendar/Calendar';
 import { format } from 'date-fns';
-
 import {
   bookmarkPink,
   bookmarkYellow,
@@ -315,7 +311,7 @@ const SubBookMark = styled.div`
     display: none;
   }
 `;
-const SubBookMarkContent = styled.div<{ Picture?: any }>`
+const SubBookMarkContent = styled.button<{ Picture?: any }>`
   width: 50%;
   padding-top: 10px;
   font-size: 1.5rem;
@@ -373,7 +369,7 @@ const DiaryPage = () => {
     mood: 0,
     lock: 'UNLOCK',
     content: '',
-    date: '',
+    date: format(selectedDate, 'yyyy.MM.dd'),
   });
 
   const editModeHandler = () => {
@@ -598,9 +594,9 @@ const DiaryPage = () => {
                 <ImoInfo>
                   {userInfo.nickname === boardInfo.nickname ? (
                     boardInput.lock === 'UNLOCK' ? (
-                      <div onClick={changeLock}>{/*  <GrUnlock /> */}🔓</div>
+                      <div onClick={changeLock}>🔓</div>
                     ) : (
-                      <div onClick={changeLock}>{/*  <GrLock /> */}🔒</div>
+                      <div onClick={changeLock}>🔒</div>
                     )
                   ) : null}
                   <div>
@@ -667,12 +663,11 @@ const DiaryPage = () => {
                 <div className="diary lock" onClick={boardLockHandler}>
                   {boardInput.lock === 'UNLOCK' ? (
                     <>
-                      <GrUnlock />
                       🔓
                     </>
                   ) : (
                     <>
-                      🔒 <GrLock />
+                      🔒
                     </>
                   )}
                 </div>

@@ -1,10 +1,10 @@
 import { MODAL_ON, MODAL_OFF } from '../../actions/actionTypes';
 
-export interface modal {
+export interface modalI {
   isModalOn: boolean;
 }
 
-const initialState: modal = {
+const initialState: modalI = {
   isModalOn: false,
 };
 
@@ -14,7 +14,7 @@ const modalReducer = (
     type: string;
     isModalOn: boolean;
   }
-): modal => {
+) => {
   let state;
   switch (action.type) {
     case MODAL_ON:
