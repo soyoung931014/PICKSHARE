@@ -8,23 +8,16 @@ import { FaRegCommentDots } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import boardApi from '../../../api/board';
-import { board } from '../../../redux/reducers/boardReducer/boardReducer';
-import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
+import { boardI } from '../../../redux/reducers/boardReducer/boardReducer';
+import {
+  addBoardInfo,
+  deleteBoardInfo,
+  renderAction,
+} from '../../../redux/actions';
 import profileImg from '../../../img/profileImg.png';
 import { RootState } from '../../../redux';
+import { MainFeedListProps } from '../../../types/feedType';
 
-export type MainFeedListProps = {
-  id: number;
-  contentImg: string | undefined;
-  userImage: string | undefined;
-  nickname: string | undefined;
-  date: string | undefined;
-  heartNum: number;
-  commentNum: number;
-  title: string;
-  render: boolean;
-  setRender: (render: boolean) => boolean;
-};
 export default function MainFeedList({
   id,
   contentImg,
@@ -34,28 +27,28 @@ export default function MainFeedList({
   heartNum,
   commentNum,
   title,
-  render,
-  setRender,
 }: MainFeedListProps) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLogin, accessToken, userInfo } = useSelector(
     (userReducer: RootState) => userReducer.userInfo
   );
-  const { boardInfo } = useSelector((boardReducer: board) => boardReducer);
+  const { isRender } = useSelector(
+    (renderReducer: RootState) => renderReducer.renderInfo
+  );
+  const { boardInfo } = useSelector((boardReducer: boardI) => boardReducer);
   const [heart, setHeart] = useState(false);
-
   const postHeart = async () => {
     return await feedApi.postHeart(userInfo, id, accessToken).then(() => {
       setHeart(true);
-      setRender(!render);
+      dispatch(renderAction);
     });
   };
 
   const deleteHeart = async () => {
     return await feedApi.deleteHeart(userInfo, id, accessToken).then(() => {
       setHeart(false);
-      setRender(!render);
+      dispatch(renderAction);
     });
   };
 
@@ -68,13 +61,18 @@ export default function MainFeedList({
     navigate('/login');
   };
 
-  const moveToViewBoard = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const moveToViewBoard = async (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
     dispatch(deleteBoardInfo());
-    const target  = (e.target as HTMLImageElement);
-    const id = Number(target.id);
-    const result = await boardApi.getBoardById(id);
-    dispatch(addBoardInfo(result.data));
-    navigate('/diary');
+    const target = e.target as HTMLImageElement;
+
+    const targetId = target.id;
+    console.log('이이이잉', targetId, typeof targetId);
+    await boardApi.getBoardById(Number(targetId)).then((result) => {
+      dispatch(addBoardInfo(result.data));
+      navigate('/diary');
+    });
   };
 
   useMemo(() => {
@@ -85,7 +83,7 @@ export default function MainFeedList({
           result.data === 1 ? setHeart(true) : setHeart(false);
         });
       };
-      getHeart();
+      getHeart().catch((err) => console.log(err));
     }
   }, []);
 
@@ -93,16 +91,12 @@ export default function MainFeedList({
 
   useEffect(() => {
     return;
-  }, [render]);
+  }, [isRender]);
 
   return (
     <Div>
-      <ImgDiv
-        id={`${id}`}
-        onClick={(e) => moveToViewBoard(e)}>
-        <Img
-          src={contentImg}
-        />
+      <ImgDiv id={`${id}`} onClick={(e) => moveToViewBoard(e)}>
+        <Img id={`${id}`} src={contentImg} />
       </ImgDiv>
       <ContentDiv>
         <ContentRightDiv>

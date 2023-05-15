@@ -33,7 +33,7 @@ export class FeedController {
       @Query('start') start: number,
       @Query('end') end: number,
     ): Promise<Board[]>{
-        return this.feedService.getMyFeed(user, start, end);
+      return this.feedService.getMyFeed(user, start, end);
     }
 
 }

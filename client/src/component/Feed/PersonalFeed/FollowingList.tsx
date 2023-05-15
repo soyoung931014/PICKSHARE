@@ -1,36 +1,42 @@
+// /*eslint-disable*/
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import feedApi from '../../../api/feed';
 import { RootState } from '../../../redux';
+import { UserInfoData, followingListProps } from '../../../types/feedType';
 
-export default function FollowingList(props: any) {
+export default function FollowingList({
+  followingNickname,
+  setFollow,
+}: followingListProps) {
   const { isLogin, accessToken } = useSelector(
     (userReducer: RootState) => userReducer.userInfo
   );
-  const [userlist, setUserlist]: any[] = useState({
+  const [userlist, setUserlist] = useState({
+    id: 0,
     nickname: '',
     userImage: '',
+    statusMessage: '',
   });
   const handleUnFollow = async () => {
     if (isLogin === false) {
       alert('로그인이 필요한 서비스입니다');
     }
-    return await feedApi
-      .deleteFollow(userlist.nickname, accessToken)
-      .then(() => {
-        props.setFollow(false);
-      });
+    await feedApi.deleteFollow(followingNickname, accessToken).then(() => {
+      setFollow(false);
+    });
   };
 
   useEffect(() => {
     const findFollow = async () => {
-      await feedApi.userInfo(props.followingNickname).then((result) => {
-        setUserlist(result.data.data);
-        return;
-      });
+      await feedApi
+        .userInfo(followingNickname)
+        .then(({ data }: UserInfoData) => {
+          setUserlist(data.data);
+        });
     };
-    findFollow();
+    findFollow().catch((err) => console.log(err));
   }, []);
   //useMemo()
   return (

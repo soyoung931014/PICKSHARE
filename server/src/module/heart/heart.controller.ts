@@ -24,7 +24,7 @@ export class HeartController {
 
 	@Get()
 	@UseGuards(AuthGuard())
-	searchHeart(@GetUser() user: User, @Query('board_id', HeartStatusPipe) board_id: number): Promise<number>{
+  searchHeart(@GetUser() user: User, @Query('board_id', HeartStatusPipe) board_id: number): Promise<number>{
 		return this.heartService.searchHeart(user, board_id);
 	}
 }

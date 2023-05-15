@@ -12,6 +12,7 @@ import {
   DIARY_OFF,
   EDIT_MODE_ON,
   EDIT_MODE_OFF,
+  RENDER,
 } from './actionTypes';
 
 export const addUserInfo = (userInfo: IUser | IKakaoUser, token: string) => {
@@ -69,4 +70,8 @@ export const editOnAction = {
 
 export const editOffAction = {
   type: EDIT_MODE_OFF,
+};
+
+export const renderAction = {
+  type: RENDER,
 };

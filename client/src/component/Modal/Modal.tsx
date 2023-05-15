@@ -6,14 +6,9 @@ import styled from 'styled-components';
 import { modalOffAction } from '../../redux/actions';
 import FollowerList from '../Feed/PersonalFeed/FollowerList';
 import FollowingList from '../Feed/PersonalFeed/FollowingList';
-import FollowList from '../Feed/PersonalFeed/FollowerList';
+import { modalProps } from '../../types/feedType';
+import { RootState } from '../../redux';
 
-export interface modalProps {
-  follower: any;
-  following: any;
-  follow: boolean;
-  setFollow: (follow: boolean) => boolean | void;
-}
 export default function Modal({
   follower,
   following,
@@ -22,20 +17,20 @@ export default function Modal({
 }: modalProps) {
   const dispatch = useDispatch();
   const { isModalOn } = useSelector(
-    (modalReducer: any) => modalReducer.modalInfo
+    (modalReducer: RootState) => modalReducer.modalInfo
   );
-  const [ fClicked, setFClicked ] = useState(false);
+  const [fClicked, setFClicked] = useState(false);
 
-  const handleClose = (e: any) => {
+  const handleClose = () => {
     dispatch(modalOffAction);
   };
 
   const followerClick = () => {
-    setFClicked(false)
-  }
+    setFClicked(false);
+  };
   const followingClick = () => {
-    setFClicked(true)
-  }
+    setFClicked(true);
+  };
 
   return (
     <>
@@ -44,44 +39,39 @@ export default function Modal({
           <ModalContainer>
             <ListBtn>
               <button onClick={followerClick}>팔로워 {follower.length}</button>
-              <button onClick={followingClick}>팔로잉 {following.length}</button>
+              <button onClick={followingClick}>
+                팔로잉 {following.length}
+              </button>
               <IoIosCloseCircleOutline onClick={handleClose} />
             </ListBtn>
             <List className="follower">
-              {
-                fClicked ? (
-                  <div>
-                    {following.id === ''
-                      ? `${following}이 없습니다`
-                      : following.map((el: any) => (
-                          <FollowingList
-                            {...el}
-                            key={el.id}
-                            follow={follow}
-                            setFollow={setFollow}
-                          />
-                        )
-                      )
-                    }
-                  </div>
-                ) : (
-                  <div>
-                    {follower.id === '' ? (
-                      <>팔로워가 없습니다</>
-                      ) : (
-                        follower.map((el: any) => (
-                          <FollowerList
-                            {...el}
-                            key={el.id}
-                            follow={follow}
-                            setFollow={setFollow}
-                          />
-                        ))
-                      )
-                    }
-                  </div>
-                )
-              }
+              {fClicked ? (
+                <div>
+                  {following.length === 0
+                    ? '팔로잉 목록이 없습니다'
+                    : following.map((el) => (
+                        <FollowingList
+                          {...el}
+                          key={el.id}
+                          follow={follow}
+                          setFollow={setFollow}
+                        />
+                      ))}
+                </div>
+              ) : (
+                <div>
+                  {follower.length === 0
+                    ? '팔로워가 없습니다'
+                    : follower.map((el) => (
+                        <FollowerList
+                          {...el}
+                          key={el.id}
+                          follow={follow}
+                          setFollow={setFollow}
+                        />
+                      ))}
+                </div>
+              )}
             </List>
           </ModalContainer>
         </ModalBackdrop>
@@ -114,6 +104,5 @@ const ListBtn = styled.div`
   display: grid;
   grid-template-columns: 5fr 5fr 1fr;
   font-size: 17px;
-`
-const List = styled.button`
 `;
+const List = styled.button``;

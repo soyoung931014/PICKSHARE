@@ -12,17 +12,9 @@ import { deleteBoardInfo, diaryOnAction } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../component/Footer/Footer';
 import { RootState } from '../redux';
+import renderReducer, { renderI } from '../redux/reducers/renderReducer/renderReducer';
+import { Feedlist } from '../types/feedType';
 
-export interface Feedlist {
-  commentNum: string | undefined;
-  contentImg: string | undefined;
-  createdAt: string | undefined;
-  date: string | undefined;
-  heartNum: string | undefined;
-  id: number | undefined;
-  locked: boolean | undefined;
-  nickname: string | undefined;
-}
 export default function MainFeed() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,6 +24,7 @@ export default function MainFeed() {
   const [searchInput, setSearchInput] = useState('');
   const [searchOn, setSearchOn] = useState(false);
   const [orderingH, setOrderingH] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const [target, setTarget] = useState(null);
   // const [isLoaded, setIsloaded] = useState(false);
   let start = 0;
@@ -39,6 +32,7 @@ export default function MainFeed() {
   const { userInfo } = useSelector(
     (userReducer: RootState) => userReducer.userInfo
   );
+  const { isRender } = useSelector((renderReducer: renderI) => renderReducer);
   const handleSearchInput = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchOn(true);
@@ -63,17 +57,16 @@ export default function MainFeed() {
   };
 
   const sortFeedByHeart = () => {
-    console.log('인기순')
+    console.log('인기순');
     setOrderingH(true);
     setRender(!render);
-    console.log(orderingH, render)
+    console.log(orderingH, render);
   };
 
   const getUserFeed = async (searchNickname: string) => {
     return await feedApi
       .getUserFeed(searchNickname, start, end)
       .then((result) => {
-        console.log(result);
         setFeedlist((prev) => prev.concat(result.data));
         start += 8;
         end += 8;
@@ -84,8 +77,8 @@ export default function MainFeed() {
     return await feedApi
       .getUserFeed(searchNickname, start, end)
       .then((result) => {
-        console.log('겟유저피드H', result)
-        result.data.sort((a: any, b: any) => {
+        console.log('겟유저피드H', result);
+        result.data.sort((a, b) => {
           return b.heartNum - a.heartNum;
         });
         // setFeedlist(result.data);
@@ -96,9 +89,9 @@ export default function MainFeed() {
   };
 
   const getMainFeedH = async () => {
-    return await feedApi.getMainFeed(start, end).then((result) => {
-      console.log('인기순으로좀..', result)
-      result.data.sort((a: any, b: any) => {
+    await feedApi.getMainFeed(start, end).then((result) => {
+      console.log('인기순으로좀..', result);
+      result.data.sort((a, b) => {
         return b.heartNum - a.heartNum;
       });
       // setFeedlist(result.data);
@@ -110,8 +103,6 @@ export default function MainFeed() {
 
   const getMainFeed = async () => {
     return await feedApi.getMainFeed(start, end).then((result) => {
-      console.log('페이지는?', start, end);
-      console.log(result)
       setFeedlist((prev) => prev.concat(result.data));
       start += 8;
       end += 8;
@@ -125,7 +116,7 @@ export default function MainFeed() {
             getMainFeed();
           } else if (orderingH === true && searchOn === false) {
             getMainFeedH();
-            console.log('잘 왔냐')
+            console.log('잘 왔냐');
           } else if (orderingH === false && searchOn === true) {
             getUserFeed(searchInput);
           } else {

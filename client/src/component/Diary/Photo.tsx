@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import { useRef } from 'react';
 import styled from 'styled-components';
 import { FormValues } from '../../pages/DiaryPage';

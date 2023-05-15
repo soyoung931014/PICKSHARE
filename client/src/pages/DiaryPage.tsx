@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import background from '../img/feedBG.jpg';
 import styled from 'styled-components';
 import React, { useEffect, useRef, useState } from 'react';
@@ -29,9 +30,15 @@ import {
   BsEmojiSmile,
 } from 'react-icons/bs';
 
-const AWS = require('aws-sdk/dist/aws-sdk-react-native');
+// const AWS = require('aws-sdk/dist/aws-sdk-react-native');
 import Nav from '../component/Nav/Nav';
 import Footer from '../component/Footer/Footer';
+import { RootState } from '../redux';
+import { boardI } from '../redux/reducers/boardReducer/boardReducer';
+import { edit } from '../redux/reducers/editReducer/editReducer';
+import { diary } from '../redux/reducers/diaryReducer/diaryReducer';
+import { modalI } from '../redux/reducers/modalReducer/modalReducer';
+import { renderI } from '../redux/reducers/renderReducer/renderReducer';
 
 export interface FormValues {
   title: string;
@@ -46,25 +53,22 @@ export interface FormValues {
 const DiaryPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [rendering, setRendering] = useState(false);
+  // const [rendering, setRendering] = useState(false);
   const [pickWay, setPickWay] = useState(0); //책갈피 선택 0: 그림 / 1: 사진
   const [lockBtn, setLockBtn] = useState(false);
   const file: any = useRef();
-  const { boardInfo } = useSelector(
-    (boardReducer: any) => boardReducer.boardInfo
-  );
+  // console.log('파일이뭐지', file);
+  const { boardInfo } = useSelector((boardReducer: boardI) => boardReducer);
+  console.log('보드인포', boardInfo);
   const { userInfo, accessToken } = useSelector(
-    (userReducer: any) => userReducer.userInfo
+    (userReducer: RootState) => userReducer.userInfo
   );
-  const { isEditOn } = useSelector((editReducer: any) => editReducer.editInfo);
-  const { isDiaryOn } = useSelector(
-    (diaryReducer: any) => diaryReducer.diaryInfo
-  );
-  const { isModalOn } = useSelector(
-    (modalReducer: any) => modalReducer.modalInfo
-  );
+  const { isRender } = useSelector((renderReducer: renderI) => renderReducer);
+  const { isEditOn } = useSelector((editReducer: edit) => editReducer);
+  const { isDiaryOn } = useSelector((diaryReducer: diary) => diaryReducer);
+  const { isModalOn } = useSelector((modalReducer: modalI) => modalReducer);
   const [userImg, setUserImg] = useState('');
-  const [boardInput, setBoardInput] = useState<FormValues>({
+  const [boardInput, setBoardInput] = useState({
     title: '',
     picture: '',
     pictureMethod: 0,
@@ -102,10 +106,11 @@ const DiaryPage = () => {
     navigate('/mainfeed');
   };
 
-  const handleBoardInputValue = debounce(async (e: any) => {
-    const { name, value } = e.target;
-    setBoardInput({ ...boardInput, [name]: value });
-  });
+  const handleBoardInputValue = debounce(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setBoardInput({ ...boardInput, [e.target.name]: e.target.value });
+    }
+  );
 
   const boardLockHandler = () => {
     setLockBtn(!lockBtn);
@@ -116,89 +121,104 @@ const DiaryPage = () => {
     }
   };
 
-  const boardMoodHandler = (e: any) => {
-    setBoardInput({ ...boardInput, ['mood']: e.target.value });
+  const boardMoodHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBoardInput({ ...boardInput, ['mood']: Number(e.target.value) });
   };
 
-  const changeLock = () => {
+  const changeLock = async () => {
     setLockBtn(!lockBtn);
 
     if (lockBtn) {
       setBoardInput({ ...boardInput, ['lock']: 'LOCK' });
-      boardApi.lockBoard(boardInfo.id, 'LOCK', accessToken).then((result) => {
-        dispatch(addBoardInfo(result.data));
-      });
+      await boardApi
+        .lockBoard(boardInfo.id, 'LOCK', accessToken)
+        .then((result) => {
+          console.log('락하자', result);
+          // dispatch(addBoardInfo(result.data));
+        });
     } else {
       setBoardInput({ ...boardInput, ['lock']: 'UNLOCK' });
-      boardApi.lockBoard(boardInfo.id, 'UNLOCK', accessToken).then((result) => {
-        dispatch(addBoardInfo(result.data));
-      });
+      await boardApi
+        .lockBoard(boardInfo.id, 'UNLOCK', accessToken)
+        .then((result) => {
+          console.log('언락하자', result);
+          dispatch(addBoardInfo(result.data));
+        });
     }
   };
 
-  const handleSaveBoard = () => {
+  const handleSaveBoard = async () => {
     const { title, picture, content, date } = boardInput;
     if (title === '' || picture === '' || content === '' || date === '') {
       return alert('내용을 작성해주세요');
     } else {
-      dispatch(addBoardInfo(boardInput));
-      boardApi.createBoard(boardInput, accessToken).then((result) => {
-        dispatch(addBoardInfo(result.data));
-        dispatch(diaryOffAction);
+      // dispatch(addBoardInfo(boardInput));
+      await boardApi.createBoard(boardInput, accessToken).then((result) => {
+        console.log('다이어리페이지 핸들세이브보드', result);
+        // dispatch(addBoardInfo(result.data));
+        // dispatch(diaryOffAction);
       });
     }
   };
 
-  const handleEditBoard = () => {
+  const handleEditBoard = async () => {
     const { title, picture, content, date } = boardInput;
     if (title === '' || picture === '' || content === '' || date === '') {
       return alert('내용을 작성해주세요');
     } else {
-      boardApi
+      await boardApi
         .editBoard(boardInfo.id, boardInput, accessToken)
         .then((result) => {
           dispatch(addBoardInfo(result.data));
           dispatch(editOffAction);
         });
-      }
-  };
-
-  const deleteWriting = () => {
-    boardApi.deleteBoard(boardInfo.id, accessToken);
-    window.history.back();
-  };
-
-  const handleConfirm = (e: any) => {
-    const text = e.target.name;
-    const result: any = confirm(`게시글을 ${text} 하시겠습니끼?`);
-    
-    if (text === '삭제') {
-      if (result) {
-        alert(`${text}되었습니다.`);
-        return deleteWriting();
-      }
-      {
-        alert('취소되었습니다.');
-      }
-    } else if (text === '저장') {
-      if (result) {
-        alert(`${text}되었습니다.`);
-        return handleSaveBoard();
-      }
-      {
-        alert('취소되었습니다.');
-      }
-    } else {
-      if (result) {
-        alert(`${text}되었습니다.`);
-        return handleEditBoard();
-      }
-      {
-        alert('취소되었습니다.');
-      }
     }
   };
 
+  const deleteWriting = async () => {
+    await boardApi.deleteBoard(boardInfo.id, accessToken);
+    window.history.back();
+  };
+
+  const handleConfirm = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    console.log('이벤트', e, '이벤트 타겟', e.target);
+    // const text = e.target.name;
+    // const result = confirm(`게시글을 ${text} 하시겠습니끼?`);
+
+    // if (text === '삭제') {
+    //   if (result) {
+    //     alert(`${text}되었습니다.`);
+    //     return deleteWriting();
+    //   }
+    //   {
+    //     alert('취소되었습니다.');
+    //   }
+    // } else if (text === '저장') {
+    //   if (result) {
+    //     alert(`${text}되었습니다.`);
+    //     return handleSaveBoard();
+    //   }
+    //   {
+    //     alert('취소되었습니다.');
+    //   }
+    // } else {
+    //   if (result) {
+    //     alert(`${text}되었습니다.`);
+    //     return handleEditBoard();
+    //   }
+    //   {
+    //     alert('취소되었습니다.');
+    //   }
+    // }
+  };
+
+  const getImgByName = async () => {
+    await feedApi.userInfo(boardInfo.nickname).then((result) => {
+      setUserImg(result.data.data.userImage);
+    });
+  }
   useEffect(() => {
     if (boardInfo.title !== undefined || '') {
       setPickWay(boardInfo.pictureMethod);
@@ -212,12 +232,10 @@ const DiaryPage = () => {
         date: boardInfo.date,
       });
 
-      feedApi.userInfo(boardInfo.nickname).then((result) => {
-        setUserImg(result.data.data.userImage);
-      });
+      getImgByName().catch((err) => console.log(err));
     }
-  }, [rendering]);
-  
+  }, [isRender]);
+
   return (
     <>
       <Nav />
@@ -317,7 +335,7 @@ const DiaryPage = () => {
                       <BsEmojiFrown />
                     ) : (
                       <BsEmojiAngry />
-                      )}
+                    )}
                   </div>
                 </ImoInfo>
               </LeftInfo>
@@ -344,7 +362,7 @@ const DiaryPage = () => {
                   onChange={handleBoardInputValue}
                   defaultValue={boardInput.date}
                 />
-                <select className="moods" onClick={boardMoodHandler}>
+                <select className="moods" onClick={() => boardMoodHandler}>
                   <option value="0">행복</option>
                   <option value="1">좋음</option>
                   <option value="2">보통</option>
@@ -359,11 +377,11 @@ const DiaryPage = () => {
                 name="content"
                 className="diary diary-content"
                 placeholder="내용을 입력해 주세요."
-                onChange={handleBoardInputValue}
+                onChange={() => handleBoardInputValue}
                 defaultValue={boardInput.content}
               />
               <div className="save-btns">
-                <button className="diary save-btn" onClick={cancelButton}>
+                <button className="diary save-btn" onClick={() => cancelButton}>
                   취소
                 </button>
                 {isDiaryOn ? (
@@ -521,7 +539,7 @@ const RightWrapper = styled(wrapperStyle)`
     display: flex;
     flex-direction: row;
     gap: 1.2rem;
-    
+
     input.dates {
       &:hover {
         cursor: pointer;
@@ -535,8 +553,8 @@ const RightWrapper = styled(wrapperStyle)`
     }
   }
   div.lock {
-      width: 5rem;
-      padding-left: -16px;
+    width: 5rem;
+    padding-left: -16px;
     &:hover {
       cursor: pointer;
     }
@@ -672,7 +690,7 @@ const SubBookMark = styled.div`
     display: none;
   }
 `;
-const SubBookMarkContent = styled.div<{ Picture?: any }>`
+const SubBookMarkContent = styled.button<{ Picture?: any }>`
   width: 50%;
   padding-top: 10px;
   font-size: 1.5rem;

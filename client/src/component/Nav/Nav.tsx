@@ -3,7 +3,11 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteUserInfo } from '../../redux/actions';
+import {
+  deleteBoardInfo,
+  deleteUserInfo,
+  renderAction,
+} from '../../redux/actions';
 
 import theme from '../../styles/theme';
 import { BiHome } from 'react-icons/bi';
@@ -17,12 +21,19 @@ const Nav = () => {
   const { isLogin, userInfo } = useSelector(
     (selector: RootState) => selector.userInfo
   );
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [menu, setMenu] = useState(false);
 
+  const path = window.location.pathname.split('/')[2];
+  const navToMyPage = () => {
+    if (userInfo.nickname !== path) {
+      dispatch(deleteBoardInfo());
+      dispatch(renderAction);
+      navigate(`/feed/${userInfo.nickname}`);
+    }
+  };
   return (
     <>
       <Wrapper>
@@ -43,9 +54,11 @@ const Nav = () => {
               </Div>
               <Div>
                 <Info>
-                  <NavLink
-                    to={`/feed/${userInfo.nickname}`}
-                    // onClick={() => setRender(!render)}
+                  <div
+                    onClick={() => {
+                      navToMyPage();
+                    }}
+                    // to={`/feed/${userInfo.nickname}`}
                     style={{ ...menuStyle }}
                   >
                     <FeedDiv>
@@ -55,7 +68,7 @@ const Nav = () => {
                         <Img src={userInfo.userImage} />
                       )}
                     </FeedDiv>
-                  </NavLink>
+                  </div>
                   <FeedDiv>피드</FeedDiv>
                 </Info>
               </Div>

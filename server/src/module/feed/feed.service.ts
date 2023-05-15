@@ -38,8 +38,6 @@ export class FeedService {
         .orderBy('board.date', 'DESC')
         .getRawMany()
     const data = result.slice(start, end);
-
-    console.log('데이터 길이', data.length, 'start:',start,'end:', end)
     return data;
   }
 

@@ -175,7 +175,6 @@ export class UserService {
     if(!info){
       throw new NotFoundException(`Can't find user nickname ${userNickname}`); 
     }
-
     return {
       data: {
         id: info.id,
