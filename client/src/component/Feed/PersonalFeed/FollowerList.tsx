@@ -38,6 +38,7 @@ const Wrapper = styled.div`
   justify-content: space-around;
   align-items: center;
   padding: 0 10px;
+  margin: 7px 0;
 `;
 const UserImage = styled.img`
   width: 50px;

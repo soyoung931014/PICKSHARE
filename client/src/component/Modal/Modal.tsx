@@ -119,6 +119,7 @@ const Button = styled.button<{ Selected: boolean }>`
   background-color: ${(props) => (props.Selected ? 'white' : 'null')};
   height: 2rem;
   border-radius: 1rem;
+  margin-left: 12px;
   :hover {
     cursor: pointer;
     background-color: white;

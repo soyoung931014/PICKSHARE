@@ -48,17 +48,22 @@ export default function FollowingList({
 }
 
 const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
+  justify-content: space-evenly;
+  width: 300px;
+  margin: 7px 0;
 `;
 const UserImage = styled.img`
   width: 46px;
   height: 46px;
   border-radius: 100%;
-  overflow: hidden;
+  overflow: auto;
 `;
-const UserNick = styled.div``;
+const UserNick = styled.div`
+  width: 30px;
+`;
 const FollowButton = styled.button`
+  width: 10px;
   background-color: white;
   border-radius: 20px;
   width: 94px;
