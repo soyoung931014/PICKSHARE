@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import homeIndex from '../../img/homeIndex.png';
-import signupIndex from '../../img/signupIndex.png';
-import signinIndex from '../../img/signinIndex.png';
 import { useNavigate } from 'react-router-dom';
+import { signinIndex, signupIndex } from '../../img/Img';
 
 const BookMark = styled.div`
   display: flex;

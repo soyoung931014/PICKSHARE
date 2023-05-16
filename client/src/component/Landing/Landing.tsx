@@ -1,54 +1,132 @@
-import styled from 'styled-components';
-import landing from '../../img/landing.jpg';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import styled from 'styled-components';
 import { TbPhoto } from 'react-icons/tb';
 import { FaPaintBrush } from 'react-icons/fa';
 import { IoIosPeople } from 'react-icons/io';
-import { useEffect } from 'react';
-import Footer from '../Footer/Footer';
+import theme from '../../styles/theme';
+
+const Landing = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    document.documentElement.scrollTop = 0;
+  }, []);
+
+  return (
+    <>
+      <Wrapper>
+        <Section>
+          <Subsection>
+            <Line0>사진과 그림으로 일상을 공유하는 SNS</Line0>
+            <Line1>오늘의 순간 포착</Line1>
+            <Line2>PICKSHARE</Line2>
+            <Line3>
+              <Button
+                onClick={() => {
+                  navigate('/mainfeed');
+                }}
+              >
+                둘러볼래요
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate('/signup');
+                }}
+              >
+                회원가입
+              </Button>
+            </Line3>
+          </Subsection>
+          <Subsection>
+            <Img src="https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/landing.jpg" />
+          </Subsection>
+        </Section>
+        <Section>
+          <Subsection2>
+            <SubTitle>Service</SubTitle>
+            <Subsection3>
+              <Div>
+                <Icon1 />
+                <ServiceWrapper>
+                  <ServiceTitle>사진</ServiceTitle>
+                  <ServiceContent>기존의 SNS보다 더 많은 내용을</ServiceContent>
+                  <ServiceContent>
+                    사진과 함께 기록할 수 있습니다.
+                  </ServiceContent>
+                </ServiceWrapper>
+              </Div>
+              <Div>
+                <Icon2 />
+                <ServiceWrapper>
+                  <ServiceTitle>그림</ServiceTitle>
+                  <ServiceContent>사진이 아닌 그림으로도</ServiceContent>
+                  <ServiceContent>기록할 수 있습니다.</ServiceContent>
+                </ServiceWrapper>
+              </Div>
+              <Div>
+                <Icon3 />
+                <ServiceWrapper>
+                  <ServiceTitle>공유</ServiceTitle>
+                  <ServiceContent>주변인들과 공유하고,</ServiceContent>
+                  <ServiceContent>
+                    댓글을 통해 소통할 수 있습니다.
+                  </ServiceContent>
+                </ServiceWrapper>
+              </Div>
+            </Subsection3>
+          </Subsection2>
+        </Section>
+      </Wrapper>
+    </>
+  );
+};
+
+export default Landing;
 
 const Wrapper = styled.div`
   padding: 10px;
   width: 100%;
-  height: 100vh;
-`;
-const Section = styled.section<{ Footer?: any }>`
-  border-bottom: solid 0.8px #bbbbbb;
-  width: 100%;
-  height: ${(props) => (props.Footer ? '40%' : '80%')};
+  height: 175%;
   display: flex;
+  background: white;
+  flex-direction: column;
+  @media screen and (min-width: 900px) {
+    height: 150%;
+  }
+`;
+const Section = styled.section`
+  width: 100%;
+  height: 48rem;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
   padding: 1rem;
-  @media screen and (max-width: 840px) {
-    height: 140%;
-    display: flex;
-    flex-direction: column;
+  flex: 1 0 auto;
+  border-bottom: solid 0.8px #bbbbbb;
+  @media screen and (min-width: 900px) {
+    flex-direction: row;
+    height: 40rem;
+    flex: 1 0 auto;
   }
 `;
 const Img = styled.img`
   width: 100%;
-  height: 100%;
-  @media screen and (max-width: 412px) {
-    width: 100%;
-    height: 80%;
-    position: relative;
-    top: -40px;
+  height: 90%;
+  @media ${() => theme.deviceSize.tablet} {
+    margin-top: 1rem;
   }
 `;
 const Subsection = styled.section`
   width: 100%;
-  height: 100%;
-  box-sizing: border-box;
+  height: 60vh;
   display: flex;
   justify-content: center;
   align-items: flex-end;
   flex-direction: column;
-  @media screen and (max-width: 840px) {
-    position: relative;
-    top: -60px;
-  }
-  @media screen and (max-width: 412px) {
-    position: relative;
-    top: -90px;
+  flex: 1 auto;
+  @media screen and (min-width: 900px) {
+    height: 37rem;
   }
 `;
 const Line0 = styled.div`
@@ -65,6 +143,15 @@ const Line0 = styled.div`
   @media screen and (max-width: 412px) {
     font-size: 1rem;
   }
+  animation: slide 3s ease-in;
+  @keyframes slide {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 0.4;
+    }
+  }
 `;
 const Line1 = styled.div`
   font-weight: 700;
@@ -73,6 +160,15 @@ const Line1 = styled.div`
   opacity: 0.7;
   @media screen and (max-width: 412px) {
     font-size: 2rem;
+  }
+  animation: slide 4s ease-in;
+  @keyframes slide {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 0.7;
+    }
   }
 `;
 const Line2 = styled.div`
@@ -83,6 +179,15 @@ const Line2 = styled.div`
   -webkit-text-fill-color: transparent;
   @media screen and (max-width: 412px) {
     font-size: 2.4rem;
+  }
+  animation: slide 5s ease-in;
+  @keyframes slide {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 `;
 const Line3 = styled.div`
@@ -134,12 +239,14 @@ const Icon3 = styled(IoIosPeople)`
 `;
 const Subsection3 = styled.div`
   width: 100%;
-  height: 100%;
+  height: 37rem;
   display: flex;
+  flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  @media screen and (max-width: 840px) {
-    flex-direction: column;
+  @media screen and (min-width: 900px) {
+    flex-direction: row;
+    height: 30rem;
   }
 `;
 const Subsection2 = styled.div`
@@ -147,16 +254,16 @@ const Subsection2 = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex: 1 auto;
   align-items: center;
 `;
 const SubTitle = styled.div`
-  margin-top: 3rem;
+  margin-top: 20px;
+  width: 8.5rem;
+  margin-bottom: 37px;
   font-size: 2.5rem;
   font-weight: 800;
   opacity: 0.6;
-  @media screen and (max-width: 840px) {
-    margin-bottom: 1rem;
-  }
 `;
 const ServiceWrapper = styled.div`
   margin-top: 10px;
@@ -165,19 +272,13 @@ const ServiceWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  @media screen and (max-width: 840px) {
-    margin-bottom: 2rem;
-  }
+  margin-bottom: 2rem;
 `;
 const ServiceTitle = styled.div`
   font-weight: bold;
   text-align: center;
   margin-bottom: 6px;
   opacity: 0.8;
-  @media screen and (max-width: 840px) {
-    margin-bottom: 10px;
-    margin-top: 10px;
-  }
 `;
 const ServiceContent = styled.div`
   font-size: 0.9rem;
@@ -185,90 +286,15 @@ const ServiceContent = styled.div`
 `;
 
 const Div = styled.div`
+  height: 15rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  @media screen and (max-width: 840px) {
-    margin-top: 1.2rem;
+  flex: 1 1 auto;
+  @media screen and (min-width: 900px) {
+    height: 22rem;
+    width: 25rem;
+    flex: 0 auto;
   }
 `;
-const Landing = () => {
-  const navigate = useNavigate();
-  useEffect(() => {
-    document.documentElement.scrollTop = 0;
-  }, []);
-
-  return (
-    <>
-      <Wrapper>
-        <Section>
-          <Subsection>
-            <Line0>사진과 그림으로 일상을 공유하는 SNS</Line0>
-            <Line1>오늘의 순간 포착</Line1>
-            <Line2>PICKSHARE</Line2>
-            <Line3>
-              <Button
-                onClick={() => {
-                  navigate('/mainfeed');
-                }}
-              >
-                둘러볼래요
-              </Button>
-              <Button
-                onClick={() => {
-                  navigate('/signup');
-                }}
-              >
-                회원가입
-              </Button>
-            </Line3>
-          </Subsection>
-          <Subsection>
-            <Img src={landing} />
-          </Subsection>
-        </Section>
-        <Section>
-          <Subsection2>
-            <SubTitle>Service</SubTitle>
-            <Subsection3>
-              <Div>
-                <Icon1 />
-                <ServiceWrapper>
-                  <ServiceTitle>사진</ServiceTitle>
-                  <ServiceContent>기존의 SNS보다 더 많은 내용을</ServiceContent>
-                  <ServiceContent>
-                    사진과 함께 기록할 수 있습니다.
-                  </ServiceContent>
-                </ServiceWrapper>
-              </Div>
-              <Div>
-                <Icon2 />
-                <ServiceWrapper>
-                  <ServiceTitle>그림</ServiceTitle>
-                  <ServiceContent>사진이 아닌 그림으로도</ServiceContent>
-                  <ServiceContent>기록할 수 있습니다.</ServiceContent>
-                </ServiceWrapper>
-              </Div>
-              <Div>
-                <Icon3 />
-                <ServiceWrapper>
-                  <ServiceTitle>공유</ServiceTitle>
-                  <ServiceContent>주변인들과 공유하고,</ServiceContent>
-                  <ServiceContent>
-                    댓글을 통해 소통할 수 있습니다.
-                  </ServiceContent>
-                </ServiceWrapper>
-              </Div>
-            </Subsection3>
-          </Subsection2>
-        </Section>
-        <Section Footer>
-          <Footer />
-        </Section>
-      </Wrapper>
-    </>
-  );
-};
-
-export default Landing;

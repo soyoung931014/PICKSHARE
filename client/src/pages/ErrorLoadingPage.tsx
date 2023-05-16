@@ -1,12 +1,35 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import React from 'react';
 import styled from 'styled-components';
-import background from '../img/feedBG.jpg';
+import { feedBG } from '../img/Img';
+
+export interface ErLoadProps {
+  text?: string;
+}
+function ErrorLoadingPage({ text }: ErLoadProps) {
+  return (
+    <>
+      <Wrapper>
+        {text ? (
+          <>
+            <Pickshare>{text}</Pickshare>
+            <LoadingBox>
+              <Img src={process.env.PUBLIC_URL + 'favicon.ico'} />
+            </LoadingBox>
+          </>
+        ) : (
+          <Pickshare>404Error</Pickshare>
+        )}
+      </Wrapper>
+    </>
+  );
+}
+
+export default ErrorLoadingPage;
 
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
-  background-image: url(${background});
+  background-image: url(${feedBG});
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -52,23 +75,3 @@ const LoadingBox = styled.div`
   width: 26%;
   height: 4.5vh;
 `;
-function ErrorLoadingPage(props: any) {
-  return (
-    <>
-      <Wrapper>
-        {props.text ? (
-          <>
-            <Pickshare>{props.text}</Pickshare>
-            <LoadingBox>
-              <Img src={process.env.PUBLIC_URL + 'favicon.ico'} />
-            </LoadingBox>
-          </>
-        ) : (
-          <Pickshare>404Error</Pickshare>
-        )}
-      </Wrapper>
-    </>
-  );
-}
-
-export default ErrorLoadingPage;

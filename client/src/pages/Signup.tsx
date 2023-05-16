@@ -1,285 +1,26 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-import React, { useState } from 'react';
+import React, { useState, Ref } from 'react';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import styled from 'styled-components';
-import background from '../img/feedBG.jpg';
-import pickshareLogo from '../img/pickshare.png';
+import { feedBG, pickshare } from '../img/Img';
+
 import signupApi from '../api/signup';
+
 import ErrorLoadingPage from './ErrorLoadingPage';
 import Index from '../component/Index/Index';
 import SubIndex from '../component/Index/SubIndex';
+
 import { emailRegExp, passwordRegExp } from '../common/validation';
-
-const Wrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background-image: url(${background});
-`;
-const Book = styled.div`
-  height: 100vh;
-  width: 90vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-left: 1em;
-  position: relative;
-  left: 8rem;
-  @media screen and (max-width: 891px) {
-    width: 100vw;
-    position: none;
-    left: 0rem;
-    padding-left: 0em;
-  }
-`;
-const Left = styled.div`
-  display: flex;
-  align-items: flex-end;
-  width: 32rem;
-  height: 85vh;
-  padding-left: 1em;
-  background-color: white;
-  border-radius: 30px 20px 20px 30px;
-  box-shadow: 10px 10px 30px #3c4a5645;
-  border-right: #b1b0b0 solid 2px;
-  @media screen and (max-width: 1272px) {
-    display: none;
-  }
-`;
-
-const Right = styled.div`
-  width: 32rem;
-  height: 85vh;
-  background-color: white;
-  padding-left: 1em;
-  border-radius: 20px 30px 30px 20px;
-  box-shadow: 30px 10px 10px #3c4a5645;
-  border-left: #b1b0b0 solid 2px;
-  @media screen and (max-width: 1190px) {
-    width: 32rem;
-  }
-  @media screen and (max-width: 891px) {
-    width: 100vw;
-    height: 100vh;
-    border-radius: 0px;
-    padding-left: 0em;
-  }
-`;
-
-/// 세부사항
-
-const Img = styled.img`
-  width: 8em;
-  height: 23em;
-  position: relative;
-  left: -15px;
-  bottom: 10px;
-`;
-const LoginBox = styled.div`
-  height: 80vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  box-sizing: border-box;
-`;
-const Title = styled.div`
-  font-size: 2rem;
-  font-weight: 900;
-  margin-top: 2.5rem;
-  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  @media screen and (max-width: 359px) {
-    font-size: 2rem;
-  }
-  @media screen and (max-width: 323px) {
-    font-size: 1.7rem;
-  }
-`;
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 45vw;
-  height: 50vh;
-  box-sizing: border-box;
-  @media screen and (max-width: 891px) {
-    width: 60vw;
-  }
-  @media screen and (max-width: 513px) {
-    width: 100vw;
-  }
-`;
-const InputBox = styled.div<{ button?: any }>`
-  height: 3.4rem;
-  margin-top: ${(props) => (props.button ? '0' : '0')};
-  box-sizing: border-box;
-`;
-const Message = styled.div<{ PasswordCheck?: any }>`
-  width: 100vw;
-  height: 1.7rem;
-  padding-top: 3px;
-  box-sizing: border-box;
-  font-size: 15px;
-  text-align: flex-start;
-  color: #ff8686;
-  @media screen and (max-width: 1194px) {
-    font-size: ${(props) => (props.PasswordCheck ? '14px' : '15px')};
-  }
-`;
-const Input = styled.input<{ Password?: any }>`
-  height: 3rem;
-  width: ${(props) => (props.Password ? '17rem' : '12rem')};
-  border-radius: 30px;
-  box-sizing: border-box;
-  box-shadow: 0 3px 5px #3c4a5645;
-  text-decoration: none;
-  font-size: large;
-  outline: none;
-  padding: 0 1em;
-  border: 0;
-  opacity: 0.6;
-`;
-
-const Button = styled.button`
-  width: 17rem;
-  height: 3rem;
-  border-radius: 30px;
-  box-sizing: border-box;
-  border: 0;
-  box-shadow: 0 5px 14px #3c4a5645;
-  text-decoration: none;
-  font-size: large;
-  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
-  cursor: pointer;
-  font-size: large;
-  font-weight: bold;
-  color: white;
-  margin-top: 0.8rem;
-`;
-
-const TwinCheckButton = styled.button`
-  width: 4.2rem;
-  height: 3rem;
-  margin-left: 2%;
-  border-radius: 5px;
-  box-sizing: border-box;
-  border: 0;
-  box-shadow: 0 5px 14px #3c4a5645;
-  text-decoration: none;
-  font-size: large;
-  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
-  cursor: pointer;
-  font-weight: bold;
-  color: white;
-`;
-const ButtonKakao = styled.button`
-  width: 17rem;
-  height: 3rem;
-  border-radius: 30px;
-  box-sizing: border-box;
-  border: 0;
-  box-shadow: 0 5px 14px #3c4a5645;
-  text-decoration: none;
-  font-size: large;
-  font-weight: bold;
-  color: #4e4d4d;
-  background-color: #fdf772;
-  cursor: pointer;
-  margin-top: 0.7rem;
-`;
-
-const Box = styled.div`
-  margin: 3px 0;
-  display: flex;
-  justify-content: center;
-  text-align: center;
-`;
-const BoxMessage = styled.div`
-  display: flex;
-  margin-left: 5.3rem;
-  padding-right: 7rem;
-  width: 50vw;
-  margin-left: 12rem;
-  padding-left: 100px;
-
-  @media screen and (max-width: 1750px) {
-    margin-left: 10rem;
-  }
-
-  @media screen and (max-width: 1670px) {
-    margin-left: 8.4rem;
-  }
-  @media screen and (max-width: 1545px) {
-    margin-left: 7rem;
-  }
-  @media screen and (max-width: 1400px) {
-    margin-left: 6rem;
-  }
-  @media screen and (max-width: 1330px) {
-    margin-left: 5rem;
-  }
-  @media screen and (max-width: 1240px) {
-    margin-left: 3.5rem;
-  }
-  @media screen and (max-width: 1160px) {
-    margin-left: 3rem;
-  }
-  @media screen and (max-width: 1091px) {
-    margin-left: 2rem;
-  }
-  @media screen and (max-width: 959px) {
-    margin-left: 0.5rem;
-    width: 80vw;
-  }
-  @media screen and (max-width: 924px) {
-    margin-left: 0;
-    width: 80vw;
-  }
-  @media screen and (max-width: 891px) {
-    margin-left: 2rem;
-  }
-  @media screen and (max-width: 800px) {
-    margin-left: 1rem;
-    width: 70vw;
-  }
-
-  @media screen and (max-width: 710px) {
-    margin-left: 0rem;
-    padding-left: 90px;
-  }
-  @media screen and (max-width: 620px) {
-    padding-left: 60px;
-  }
-  @media screen and (max-width: 530px) {
-    padding-left: 30px;
-  }
-  @media screen and (max-width: 515px) {
-    padding-left: 8rem;
-    width: 100vw;
-  }
-  @media screen and (max-width: 449px) {
-    padding-left: 6rem;
-  }
-  @media screen and (max-width: 380px) {
-    padding-left: 3rem;
-  }
-`;
+import theme from '../styles/theme';
 
 function Signup() {
   const navigate = useNavigate();
-  const inputEmail: any = useRef();
-  const inputNickname: any = useRef();
-  const inputPassword: any = useRef();
-  const inputPasswordCheck: any = useRef();
-  //가입할 회원정보
+  const inputEmail: Ref<HTMLInputElement> = useRef();
+  const inputNickname: Ref<HTMLInputElement> = useRef();
+  const inputPassword: Ref<HTMLInputElement> = useRef();
+  const inputPasswordCheck: Ref<HTMLInputElement> = useRef();
+
   const [signupInfo, setSignupInfo] = useState({
     email: '',
     nickname: '',
@@ -298,11 +39,11 @@ function Signup() {
   // 닉네임 중복검사 실행가능 여부
   const [nicknamevalidation, setNicknameValidation] = useState(false);
 
-  const handleChangeState = (e: any) => {
+  const handleChangeState = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSignupInfo({ ...signupInfo, [e.target.name]: e.target.value });
   };
 
-  const handleEmailValidation = (e: any) => {
+  const handleEmailValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleChangeState(e);
     if (emailRegExp.test(e.target.value) === false) {
       setEmailCheckMessage('알맞은 형식의 이메일을 입력해주세요.');
@@ -312,9 +53,7 @@ function Signup() {
   };
 
   //이메일 중복검사
-  const emailCheck = async (e: any) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const emailCheck = async (e: React.MouseEvent) => {
     e.preventDefault();
     const { email } = signupInfo;
     if (email === '') {
@@ -339,7 +78,7 @@ function Signup() {
   };
 
   // 닉네임 유효성검사
-  const handleNicknameValidation = (e: any) => {
+  const handleNicknameValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleChangeState(e);
 
     if (e.target.value.length >= 2 && e.target.value.length < 21) {
@@ -353,7 +92,7 @@ function Signup() {
   };
 
   //닉네임 중복검사
-  const nicknameCheck = async (e: any) => {
+  const nicknameCheck = async (e: React.MouseEvent) => {
     const { nickname } = signupInfo;
 
     e.preventDefault();
@@ -367,7 +106,7 @@ function Signup() {
         await signupApi.nicknamecheck(nickname).then((res) => {
           if (res.data === false) {
             setNicknameCheckMessage('사용할 수 있는 닉네임입니다.');
-            setNicknameCheck(nickname); // 나중에 회원가입 버튼을 누를 시  signupInfo.nickname과 nicknamecheck의 정보가 일치하는지를 확인
+            setNicknameCheck(nickname);
           } else {
             setNicknameCheckMessage('이미 사용중인 닉네임입니다');
           }
@@ -378,7 +117,7 @@ function Signup() {
     }
   };
   // 비밀번호 유효성 검사
-  const passwordValidation = (e: any) => {
+  const passwordValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleChangeState(e);
     const { passwordcheck } = signupInfo;
 
@@ -392,7 +131,7 @@ function Signup() {
       setPasswordMessage('사용할 수 있는 비밀번호입니다.');
     }
   };
-  const passwordCheck = (e: any) => {
+  const passwordCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleChangeState(e);
     const { password } = signupInfo;
     if (password === '' && e.target.value === '') {
@@ -411,7 +150,7 @@ function Signup() {
   };
 
   // 회원가입완료
-  const signupcheck = async (e: any) => {
+  const signupcheck = async (e: React.MouseEvent) => {
     e.preventDefault();
     const { email, nickname, password, passwordcheck } = signupInfo;
     if (
@@ -440,7 +179,7 @@ function Signup() {
     const userInfo = { email, nickname, password };
     if (userInfo) {
       try {
-        await signupApi.signup(userInfo).then((res) => {
+        await signupApi.signup(userInfo).then(() => {
           setLoading(!loading);
           setTimeout(() => {
             alert('회원가입이 완료되었습니다. 로그인을 시도해주세요');
@@ -454,10 +193,11 @@ function Signup() {
     }
   };
 
-  const handleKakaoSignup = (e: any) => {
+  const handleKakaoSignup = (e: React.MouseEvent) => {
     e.preventDefault();
     window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CODE}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT}&response_type=code&state=kakao`;
   };
+
   return (
     <>
       {loading ? (
@@ -466,7 +206,7 @@ function Signup() {
         <Wrapper>
           <Book>
             <Left>
-              <Img src={pickshareLogo} />
+              <Img src={pickshare} />
             </Left>
             <Right>
               <SubIndex />
@@ -560,3 +300,186 @@ function Signup() {
 }
 
 export default Signup;
+const Wrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+  background-image: url(${feedBG});
+`;
+const Book = styled.div`
+  height: 100vh;
+  width: 90vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 1em;
+  position: relative;
+  left: 8rem;
+  @media ${() => theme.deviceSize.tablet} {
+    width: 100vw;
+    position: none;
+    left: 0rem;
+    padding-left: 0em;
+  }
+`;
+const Left = styled.div`
+  display: flex;
+  align-items: flex-end;
+  width: 32rem;
+  height: 85vh;
+  padding-left: 1em;
+  background-color: white;
+  border-radius: 30px 20px 20px 30px;
+  box-shadow: 10px 10px 30px #3c4a5645;
+  border-right: #b1b0b0 solid 2px;
+  @media screen and (max-width: 1272px) {
+    display: none;
+  }
+`;
+
+const Right = styled.div`
+  width: 32rem;
+  height: 85vh;
+  background-color: white;
+  padding-left: 1em;
+  border-radius: 20px 30px 30px 20px;
+  box-shadow: 30px 10px 10px #3c4a5645;
+  border-left: #b1b0b0 solid 2px;
+  @media screen and (max-width: 1190px) {
+    width: 32rem;
+  }
+  @media ${() => theme.deviceSize.tablet} {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0px;
+    padding-left: 0em;
+  }
+`;
+
+/// 세부사항
+
+const Img = styled.img`
+  width: 8em;
+  height: 23em;
+  position: relative;
+  left: -15px;
+  bottom: 10px;
+`;
+const LoginBox = styled.div`
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  box-sizing: border-box;
+`;
+const Title = styled.div`
+  font-size: 2rem;
+  font-weight: 900;
+  margin-top: 2.5rem;
+  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+`;
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 18rem;
+  height: 50vh;
+  box-sizing: border-box;
+  @media ${() => theme.deviceSize.tablet} {
+    width: 18rem;
+  }
+`;
+const InputBox = styled.div<{ button?: boolean }>`
+  height: 3.4rem;
+  margin-top: ${(props) => (props.button ? '0' : '0')};
+  box-sizing: border-box;
+`;
+const Message = styled.div<{ PasswordCheck?: boolean }>`
+  width: 100vw;
+  height: 1.7rem;
+  padding-top: 3px;
+  box-sizing: border-box;
+  font-size: 15px;
+  text-align: flex-start;
+  color: #ff8686;
+`;
+const Input = styled.input<{ Password?: boolean }>`
+  height: 3rem;
+  width: ${(props) => (props.Password ? '17rem' : '12rem')};
+  border-radius: 30px;
+  box-sizing: border-box;
+  box-shadow: 0 3px 5px #3c4a5645;
+  text-decoration: none;
+  font-size: large;
+  outline: none;
+  padding: 0 1em;
+  border: 0;
+  opacity: 0.6;
+`;
+
+const Button = styled.button`
+  width: 17rem;
+  height: 3rem;
+  border-radius: 30px;
+  box-sizing: border-box;
+  border: 0;
+  box-shadow: 0 5px 14px #3c4a5645;
+  text-decoration: none;
+  font-size: large;
+  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
+  font-size: large;
+  font-weight: bold;
+  color: white;
+  margin-top: 0.8rem;
+  :hover {
+    cursor: pointer;
+    background: #f7a3db;
+  }
+`;
+
+const TwinCheckButton = styled.button`
+  width: 4.2rem;
+  height: 3rem;
+  margin-left: 2%;
+  border-radius: 5px;
+  box-shadow: 0 5px 14px #3c4a5645;
+  text-decoration: none;
+  font-size: large;
+  background: linear-gradient(to right, #a396f8, #d06be0, #fd40c8);
+  font-weight: bold;
+  color: white;
+  :hover {
+    cursor: pointer;
+    background: #f7a3db;
+  }
+`;
+const ButtonKakao = styled.button`
+  width: 17rem;
+  height: 3rem;
+  border-radius: 30px;
+  box-shadow: 0 5px 14px #3c4a5645;
+  text-decoration: none;
+  font-size: large;
+  font-weight: bold;
+  color: #4e4d4d;
+  background-color: #fdf772;
+  margin-top: 0.7rem;
+  :hover {
+    cursor: pointer;
+    background: #f7a3db;
+  }
+`;
+
+const Box = styled.div`
+  margin: 3px 0;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+`;
+const BoxMessage = styled.div`
+  display: flex;
+  width: 17rem;
+  padding-left: 14px;
+`;

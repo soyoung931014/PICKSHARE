@@ -1,32 +1,262 @@
-/*eslint-disable*/
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import Nav from '../component/Nav/Nav';
-import feedBG from '../img/feedBG.jpg';
-import profileImg from '../img/profileImg.png'
 import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { useDispatch } from 'react-redux';
 import Modal from '../component/Modal/Modal';
-import { deleteBoardInfo, diaryOnAction, modalOnAction } from '../redux/actions';
+import {
+  deleteBoardInfo,
+  diaryOnAction,
+  modalOnAction,
+} from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
-import Footer from '../component/Footer/Footer';
+import { defaultProfile } from '../img/Img';
 
+import { RootState } from '../redux';
+import {
+  Feedlist,
+  FollowerListType,
+  FollowingListType,
+  IOptions,
+  UserInfoData,
+} from '../types/feedType';
+import { renderAction } from '../redux/actions';
+export default function UserFeed() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [userfeedlist, setUserFeedlist] = useState<Feedlist[] | null>([]);
+  const [userlist, setUserlist] = useState({
+    id: 0,
+    nickname: '',
+    userImage: '',
+    statusMessage: '',
+  });
+  const target = useRef<HTMLDivElement>(null);
+  let start = 0;
+  let end = 8;
+  const [follow, setFollow] = useState(false); //팔로우
+  const { isModalOn } = useSelector(
+    (modalReducer: RootState) => modalReducer.modalInfo
+  );
+  const { isRender } = useSelector(
+    (renderReducer: RootState) => renderReducer.renderInfo
+  );
+  const { isLogin, accessToken, userInfo } = useSelector(
+    (userReducer: RootState) => userReducer.userInfo
+  );
+  const path = window.location.pathname.split('/')[2];
+  const [following, setFollowing] = useState<FollowingListType[]>([]);
+  const [follower, setFollower] = useState<FollowerListType[]>([]);
+
+  const writeNewDiary = () => {
+    //새로 만들기
+    dispatch(deleteBoardInfo());
+    dispatch(diaryOnAction);
+    navigate('/diary');
+  };
+  const handleFollow = async () => {
+    if (isLogin === false) {
+      alert('로그인이 필요한 서비스입니다');
+    }
+    await feedApi.postFollow(userlist.nickname, accessToken).then(() => {
+      setFollow(true);
+      dispatch(renderAction);
+    });
+  };
+
+  const handleUnFollow = async () => {
+    if (isLogin === false) {
+      alert('로그인이 필요한 서비스입니다');
+    }
+    return await feedApi.deleteFollow(path, accessToken).then(() => {
+      setFollow(false);
+      dispatch(renderAction);
+    });
+  };
+
+  const handleModalOn = () => {
+    dispatch(modalOnAction);
+  };
+
+  const userfeedinfo = async () => {
+    return feedApi.userInfo(path).then(({ data }: UserInfoData) => {
+      setUserlist(data.data);
+    });
+  };
+
+  //유저가 팔로우하고 있는 다른 유저들의 목록 리턴
+  const getFollowingList = async () => {
+    await feedApi.getFollowingList(path).then((result) => {
+      setFollowing(result.data);
+    });
+  };
+
+  //유저를 팔로우하고 있는 다른 유저 목록 리턴
+  const getFollowerList = async () => {
+    await feedApi.getFollowerList(path).then((result) => {
+      setFollower(result.data);
+    });
+  };
+
+  //유저가 특정 닉네임을 팔로우하고있는지 아닌지 판별
+  const searchFollower = async () => {
+    await feedApi.searchFollow(path, accessToken).then((result) => {
+      if (result.data) {
+        setFollow(true);
+      }
+    });
+  };
+
+  useMemo(() => {
+    userfeedinfo().catch((err) => console.log(err));
+    if (isLogin === true) {
+      searchFollower().catch((err) => console.log(err));
+    }
+    getFollowingList().catch((err) => console.log(err));
+    getFollowerList().catch((err) => console.log(err));
+  }, [follow]);
+
+  //내 피드가져오기
+  const myFeed = async () => {
+    await feedApi.getMyFeed(accessToken, start, end).then((result) => {
+      setUserFeedlist((prev) => prev.concat(result.data));
+      start += 8;
+      end += 8;
+    });
+  };
+
+  //유저들의 피드
+  const userPage = async () => {
+    await feedApi.getUserFeed(path, start, end).then((result) => {
+      setUserFeedlist((prev) => prev.concat(result.data));
+      start += 8;
+      end += 8;
+    });
+  };
+
+  useEffect(() => {
+    const options: IOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.5,
+    };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            if (userInfo.nickname === path) {
+              myFeed().catch((err) => console.log(err));
+            } else {
+              userPage().catch((err) => console.log(err));
+            }
+          }, 1000);
+        }
+      });
+    }, options);
+
+    if (target.current) {
+      io.observe(target.current);
+    }
+  }, [path, isRender, target]);
+  return (
+    <UserWapper>
+      <Div>
+        <User>
+          <div>
+            <UserDiv>
+              <>
+                {userlist.userImage === 'nothing' ? (
+                  <UserImg src={defaultProfile} />
+                ) : (
+                  <UserImg src={userlist.userImage} />
+                )}
+              </>
+              {isLogin === true ? (
+                //내 피드이면 안보이기
+                userInfo.nickname === path ? (
+                  <Block></Block>
+                ) : follow === true ? (
+                  //로그인o 팔로우o
+                  <UserFollow onClick={handleUnFollow}>unfollow</UserFollow>
+                ) : (
+                  //로그인o 팔로우x
+                  <UserFollow onClick={handleFollow}>follow</UserFollow>
+                )
+              ) : (
+                //로그인x
+                <UserFollow onClick={handleFollow}>follow</UserFollow>
+              )}
+            </UserDiv>
+          </div>
+          <UserInfo>
+            <UserDescribe>
+              <Content>{userlist.nickname}</Content>
+            </UserDescribe>
+            <UserDescribe>
+              <Content>{userlist.statusMessage}</Content>
+            </UserDescribe>
+            <UserDescribe>
+              <div>
+                <UserFollowInfo>게시물</UserFollowInfo>
+                <UserFollowInfo>{userfeedlist.length}</UserFollowInfo>
+              </div>
+              <FolWrapper onClick={handleModalOn}>
+                <UserFollowInfo>팔로잉</UserFollowInfo>
+                <UserFollowInfo>{following.length}</UserFollowInfo>
+              </FolWrapper>
+              <FolWrapper onClick={handleModalOn}>
+                <UserFollowInfo>팔로워</UserFollowInfo>
+                <UserFollowInfo>{follower.length}</UserFollowInfo>
+              </FolWrapper>
+            </UserDescribe>
+          </UserInfo>
+        </User>
+        {userInfo.nickname === path ? (
+          <PlusButton>
+            <button onClick={writeNewDiary}> + </button>
+          </PlusButton>
+        ) : (
+          <PlusButton Hidden>
+            <button> + </button>
+          </PlusButton>
+        )}
+        <Feed>
+          {userfeedlist.length === 0
+            ? `${userlist.nickname}님의 피드가 없습니다`
+            : userfeedlist.map((el) => (
+                <MainFeedList {...el} key={el.id} isRender />
+              ))}
+          <div ref={target} className="Target-Element"></div>
+        </Feed>
+        {isModalOn ? (
+          <Modal
+            follower={follower}
+            following={following}
+            follow={follow}
+            setFollow={setFollow}
+          />
+        ) : null}
+      </Div>
+    </UserWapper>
+  );
+}
 const UserWapper = styled.div`
   width: 100%;
   height: 100%;
-  background-image: url(${feedBG});
-  background-size: cover;
-  background-attachment: scroll;
+  /* @media screen and (max-width: 947px) {
+    min-height: 300vh;
+  } */
 `;
 const Div = styled.div`
-  margin: 150px;
-  min-width: 21rem;
+  padding: 10rem;
+  @media screen and (max-width: 947px) {
+    padding: 10rem 2rem;
+  }
 `;
 const User = styled.div`
   display: flex;
-  column-gap: 7rem;
+  column-gap: 6rem;
 
   @media screen and (max-width: 947px) {
     flex-direction: column;
@@ -35,9 +265,12 @@ const User = styled.div`
 `;
 
 const UserDiv = styled.div`
+  margin-left: 15px;
   @media screen and (max-width: 947px) {
+    margin-left: 0px;
     display: flex;
     justify-content: center;
+    align-items: center;
   }
 `;
 
@@ -47,10 +280,20 @@ const UserImg = styled.img`
   width: 178px;
   height: 178px;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
+  @media screen and (max-width: 947px) {
+    margin-bottom: 30px;
+    width: 200px;
+    height: 200px;
+    left: 30px;
+    flex-shrink: 0;
+  }
+  @media screen and (max-width: 370px) {
+    left: 10px;
+  }
 `;
 const UserFollow = styled.button`
   background-color: white;
-  position: absolute;
+  position: relative;
   border-radius: 20px;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
   width: 94px;
@@ -60,13 +303,15 @@ const UserFollow = styled.button`
   align-items: center;
   font-size: 20px;
   font-weight: 600;
-  left: 17rem;
-  top: 23.7rem;
+  top: -50px;
+  left: 6em;
   &:hover {
     cursor: pointer;
+    background: #fee7f4;
   }
   @media screen and (max-width: 947px) {
-    left: 21rem;
+    top: 4rem;
+    left: -3rem;
   }
 `;
 const UserInfo = styled.div`
@@ -106,16 +351,17 @@ const UserFollowInfo = styled.div`
   }
 `;
 const Feed = styled.div`
-  display: grid;
-  column-gap: 5rem;
-  row-gap: 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
-  justify-content: start;
+  display: flex;
+  flex-direction: column;
+  @media screen and (min-width: 840px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+  }
 `;
 const PlusButton = styled.div<{ Hidden?: any }>`
-  visibility: ${(props) => (
-    props.Hidden ? 'hidden' : 'visible'
-  )};
+  visibility: ${(props) => (props.Hidden ? 'hidden' : 'visible')};
   display: flex;
   justify-content: right;
   margin: 1rem 0;
@@ -130,240 +376,20 @@ const PlusButton = styled.div<{ Hidden?: any }>`
     font-weight: 400;
     &:hover {
       cursor: pointer;
+      background: #fee7f4;
     }
   }
 `;
-const FooterDiv = styled.div`
-  padding-left: 25px;
-  padding-top: 10px;
-  border-top: solid gray 1px;
+const FolWrapper = styled.div`
+  &:hover {
+    background: #fee7f4;
+    cursor: pointer;
+    border-radius: 20px;
+    scale: 1.1;
+  }
 `;
-
-export default function UserFeed() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [userfeedlist, setUserFeedlist]: any[] = useState({
-    id: '',
-    contentImg: '',
-    date: '',
-    nickname: '',
-    userImage: '',
-    heartNum: 0,
-    commentNum: 0,
-    lock: '',
-    title: '',
-  });
-
-  const [userlist, setUserlist]: any[] = useState({
-    nickname: '',
-    userImage: '',
-    statusMessage: '',
-  });
-  const [render, setRender] = useState(false);
-  const [orderingH, setOrderingH] = useState(false);
-  const [follow, setFollow] = useState(false); //팔로우
-  let page = 1;
-  const { isModalOn } = useSelector(
-    (modalReducer: any) => modalReducer.modalInfo
-  );
-  const { isLogin, accessToken, userInfo } = useSelector(
-    (userReducer: any) => userReducer.userInfo
-  );
-  const path = window.location.pathname.split('/')[2];
-  const [following, setFollowing]: any[] = useState({
-    id: '',
-    followingNickname: '',
-    followerNickname: '',
-  });
-  const [follower, setFollower]: any[] = useState({
-    id: '',
-    user_id: '',
-    followerNickname: '',
-  });
-
-  const searchShareHandler = (value: {}) => {
-    if (!value) {
-      setUserFeedlist([]);
-      return;
-    }
-  };
-  const writeNewDiary = () => {
-    //새로 만들기
-    dispatch(deleteBoardInfo());
-    dispatch(diaryOnAction);
-    navigate('/diary');
-  };
-  const handleFollow = async () => {
-    if (isLogin === false) {
-      alert('로그인이 필요한 서비스입니다');
-    }
-    return await feedApi.postFollow(userlist.nickname, accessToken).then(() => {
-      setFollow(true);
-      setRender(!render);
-    });
-  };
-
-  const handleUnFollow = async () => {
-    if (isLogin === false) {
-      alert('로그인이 필요한 서비스입니다');
-    }
-    return await feedApi
-      .deleteFollow(userlist.nickname, accessToken)
-      .then(() => {
-        setFollow(false);
-        setRender(!render);
-      });
-  };
-
-  const handleModalOn = () => {
-    dispatch(modalOnAction);
-  };
-
-  useMemo(async () => {
-    const userfeedinfo = async () => {
-      return await feedApi.userInfo(path).then((result) => {
-        setUserlist(result.data.data);
-      });
-    };
-
-    await userfeedinfo();
-
-    if (isLogin === true) {
-      feedApi.searchFollow(path, accessToken).then((result) => {
-        if (result.data) {
-          setFollow(true);
-        }
-      });
-    }
-
-    const getFollowingList = async () => {
-      return await feedApi.getFollowingList(path).then((result) => {
-        setFollowing(result.data);
-      });
-    };
-
-    await getFollowingList();
-
-    const getFollowerList = async () => {
-      return await feedApi.getFollowerList(path).then((result) => {
-        setFollower(result.data);
-      });
-    };
-    await getFollowerList();
-
-  }, [follow, render]);
-
-  useEffect(() => {
-    //내 피드가져오기
-    const myFeed = async () => {
-      return await feedApi.getMyFeed(accessToken, page).then((result) => {
-        setUserFeedlist(result.data);
-      });
-    };
-
-    //유저들의 피드
-    const userPage = async () => {
-      return await feedApi.getUserFeed(path, page).then((result) => {
-        setUserFeedlist(result.data);
-      });
-    };
-    if (userInfo.nickname === path) {
-      myFeed();
-    } else {
-      userPage();
-    }
-  }, [render]);
-
-  return (
-    <UserWapper>
-      <Nav setRender={setRender} render={render} />
-      <Div>
-        <User>
-          <div>
-            <UserDiv>
-              <>
-                {
-                  userlist.userImage === 'nothing' 
-                  ? <UserImg src={profileImg} />
-                  : <UserImg src={userlist.userImage} />
-                } 
-              </>
-              <>
-                {isLogin === true ? (
-                  //내 피드이면 안보이기
-                  userInfo.nickname === path ? null : follow === true ? (
-                    //로그인o 팔로우o
-                    <UserFollow onClick={handleUnFollow}>unfollow</UserFollow>
-                  ) : (
-                    //로그인o 팔로우x
-                    <UserFollow onClick={handleFollow}>follow</UserFollow>
-                  )
-                ) : (
-                  //로그인x
-                  <UserFollow onClick={handleFollow}>follow</UserFollow>
-                )}
-              </>
-            </UserDiv>
-          </div>
-          <UserInfo>
-            <UserDescribe>
-              <Content>{userlist.nickname}</Content>
-            </UserDescribe>
-            <UserDescribe>
-              <Content>{userlist.statusMessage}</Content>
-            </UserDescribe>
-            <UserDescribe>
-              <div>
-                <UserFollowInfo>게시물</UserFollowInfo>
-                <UserFollowInfo>{userfeedlist.length}</UserFollowInfo>
-              </div>
-              <div>
-                <UserFollowInfo onClick={handleModalOn}>팔로잉</UserFollowInfo>
-                <UserFollowInfo>{following.length}</UserFollowInfo>
-              </div>
-              <div>
-                <UserFollowInfo onClick={handleModalOn}>팔로워</UserFollowInfo>
-                <UserFollowInfo>{follower.length}</UserFollowInfo>
-              </div>
-            </UserDescribe>
-          </UserInfo>
-        </User>
-        {
-          userInfo.nickname === path
-          ?(
-            <PlusButton>
-              <button onClick={writeNewDiary}> + </button>
-            </PlusButton>
-          ) : (
-            <PlusButton Hidden >
-              <button > + </button>
-            </PlusButton>
-          )
-        }
-        <Feed>
-          {userfeedlist.id === ''
-            ? `${userlist.nickname}님의 피드가 없습니다`
-            : userfeedlist.map((el: any) => (
-                <MainFeedList
-                  {...el}
-                  key={el.id}
-                  render={render}
-                  setRender={setRender}
-                />
-              ))}
-        </Feed>
-        {isModalOn ? (
-          <Modal
-            follower={follower}
-            following={following}
-            follow={follow}
-            setFollow={setFollow}
-          />
-        ) : null}
-      </Div>
-      <FooterDiv>
-        <Footer />
-      </FooterDiv>
-    </UserWapper>
-  );
-}
+const Block = styled.div`
+  @media screen and (max-width: 947px) {
+    width: 57px;
+  }
+`;

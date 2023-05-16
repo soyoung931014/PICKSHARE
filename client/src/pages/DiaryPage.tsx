@@ -1,5 +1,4 @@
 /* eslint-disable */
-import background from '../img/feedBG.jpg';
 import styled from 'styled-components';
 import React, { useEffect, useRef, useState } from 'react';
 import {
@@ -10,13 +9,9 @@ import {
   editOnAction,
 } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
-import profileImg from '../img/profileImg.png';
-import bookmarkPink from '../img/bookmark-pink.png';
-import bookmarkYellow from '../img/bookmark-yellow.png';
 import Photo from '../component/Diary/Photo';
 import Drawing from '../component/Diary/Drawing';
 import { debounce } from 'debounce';
-import { GrLock, GrUnlock } from 'react-icons/gr';
 import { useSelector } from 'react-redux';
 import boardApi from '../api/board';
 import feedApi from '../api/feed';
@@ -30,294 +25,14 @@ import {
   BsEmojiSmile,
 } from 'react-icons/bs';
 
-const AWS = require('aws-sdk/dist/aws-sdk-react-native');
-import Nav from '../component/Nav/Nav';
-import Footer from '../component/Footer/Footer';
-
-const Container = styled.section`
-  height: 100%;
-  background-image: url(${background});
-  background-size: cover;
-  background-attachment: scroll;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 0;
-  padding-top: 4rem;
-  padding-bottom: 4rem;
-  @media screen and (max-width: 1374px) {
-    flex-direction: column;
-    padding-top: 4rem;
-    padding-bottom: 4rem;
-  }
-`;
-
-// ---- 일기장 Wrapper CSS ----
-const wrapperStyle = styled.div`
-  //border: purple 1px solid;
-  height: 699px;
-  width: 38rem;
-  padding: 3.8rem 2rem;
-  border-radius: 1.5rem;
-  background-color: var(--color-white);
-`;
-// ---- ----
-const BookMark = styled.div`
-  display: grid;
-  row-gap: 1rem;
-  position: relative;
-  top: -230px;
-
-  @media screen and (max-width: 1374px) {
-    display: none;
-  }
-`;
-const Book = styled.button<{ Yellow?: any }>`
-  background-image: ${(props) =>
-    props.Yellow ? `url(${bookmarkYellow})` : `url(${bookmarkPink})`};
-  background-color: transparent;
-  background-size: cover;
-  width: 83px;
-  height: 41px;
-  font-size: 1rem;
-  font-weight: 600;
-  padding-left: 11px;
-  color: #3d3c3c;
-  &:hover {
-    cursor: pointer;
-    transform: scale(1.05);
-  }
-`;
-const LeftWrapper = styled(wrapperStyle)`
-  box-shadow: 1px 4px 10px var(--color-shadow);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 10px 10px 30px #3c4a5645;
-  border-right: #b1b0b0 solid 2px;
-  @media screen and (max-width: 1374px) {
-    box-shadow: 30px 10px 10px #3c4a5645;
-    border-left: #b1b0b0 solid 2px;
-    border-right: #b1b0b0 solid 3px;
-    margin-bottom: 10px;
-  }
-`;
-const ImgDiv = styled.div`
-  border: #a396f8 solid 2px;
-  border-radius: 10px;
-  box-sizing: border-box;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 90%;
-  height: 90%;
-`;
-const Img = styled.img`
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-`;
-const RightWrapper = styled(wrapperStyle)`
-  box-shadow: 30px 10px 10px #3c4a5645;
-  border-left: #b1b0b0 solid 2px;
-  border-right: #b1b0b0 solid 3px;
-  form.form-wrapper {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-  }
-  /* input 기본 css / 감정 / 잠금 / 내용 / 저장 버튼 */
-  input.diary,
-  select.moods,
-  textarea.diary,
-  div.lock,
-  button.diary {
-    width: 100%;
-    height: 50px;
-    box-shadow: 1px 1px 4px var(--color-shadow);
-    background-color: var(--color-input);
-    border-radius: 1rem;
-    font-size: 18px;
-    padding: 1rem;
-    margin-top: 10px;
-  }
-  /* Wrapper (Date, Mood, Lock) */
-  div.select-wrapper {
-    display: flex;
-    flex-direction: row;
-    gap: 1.2rem;
-    
-    input.dates {
-      &:hover {
-        cursor: pointer;
-      }
-    }
-    select.moods {
-      width: 4rem;
-      &:hover {
-        cursor: pointer;
-      }
-    }
-  }
-  div.lock {
-      width: 5rem;
-      padding-left: -16px;
-    &:hover {
-      cursor: pointer;
-    }
-  }
-  /* 내용 */
-  textarea.diary-content {
-    height: 380px;
-  }
-  /* Wrapper 저장  */
-  div.save-btns {
-    display: flex;
-    flex-direction: row;
-    gap: 1.2rem;
-    /* 저장 버튼 */
-    button.save-btn {
-      padding: 0;
-      &:hover {
-        background-color: var(--color-hover);
-        transition: 0.4s;
-        cursor: pointer;
-      }
-    }
-  }
-`;
-const LeftSide = styled.div`
-  display: grid;
-  grid-template-rows: 1fr 4fr;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  row-gap: 0.4rem;
-  img {
-    // 프로필 이미지
-    box-sizing: border-box;
-
-    width: 90%;
-    height: 100%;
-    padding-top: 2px;
-    position: relative;
-    top: -5px;
-  }
-  img.board {
-    // 파일있는 이미지
-    box-sizing: border-box;
-    margin-left: 2rem;
-    margin-top: 3px;
-    width: 90%;
-    height: 100%;
-    border-radius: 10px;
-  }
-`;
-
-const LeftInfo = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 3fr 0.7fr;
-  padding-right: 25px;
-  padding-left: 25px;
-  margin-top: 10px;
-  justify-content: center;
-  align-items: center;
-  row-gap: 1rem;
-  column-gap: 0.3rem;
-`;
-const UserImg = styled.img`
-  width: 70px;
-  height: 75px;
-  border-radius: 100%;
-`;
-const WordInfo = styled.div`
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  row-gap: 1rem;
-  div {
-    text-align: center;
-
-    border-radius: 1rem;
-    padding: 0.5rem;
-    box-shadow: 1px 1px 4px var(--color-shadow);
-    background-color: #fbedfa;
-    font-size: 20px;
-    font-weight: 500;
-    color: #494848;
-  }
-`;
-const ImoInfo = styled.div`
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  row-gap: 1rem;
-  color: #494848;
-  div {
-    display: flex;
-    justify-content: center;
-    border-radius: 1rem;
-    padding: 0.5rem;
-    box-shadow: 1px 1px 4px var(--color-shadow);
-    background-color: #fbedfa;
-    font-size: 20px;
-  }
-`;
-const RightSide = styled.div`
-  width: 100%;
-  height: 100%;
-  display: grid;
-  grid-template-rows: 1fr 4fr 6fr;
-  row-gap: 1rem;
-
-  div {
-    border-radius: 1rem;
-    background-color: #fbedfa;
-    text-indent: 10px;
-    padding-left: 5px;
-  }
-  div.write_content {
-    box-shadow: 0px 5px 8px #3c4a5645;
-    padding-top: 1.2rem;
-    font-weight: 500;
-    color: #858282;
-  }
-  div.write_content.title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: black;
-    opacity: 0.7;
-  }
-`;
-const SubBookMark = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 90%;
-  height: 3rem;
-  @media screen and (min-width: 1374px) {
-    display: none;
-  }
-`;
-const SubBookMarkContent = styled.div<{ Picture?: any }>`
-  width: 50%;
-  padding-top: 10px;
-  font-size: 1.5rem;
-  height: 2.6rem;
-  border-radius: 10px;
-  text-align: center;
-  background-color: ${(props) => (props.Picture ? '#FFB7BC' : '#fdf5bd')};
-  &:hover {
-    cursor: pointer;
-    transform: scale(1.05);
-  }
-`;
-const FooterDiv = styled.div`
-  margin-left: 2rem;
-  margin-top: 2rem;
-`;
+import Calendar from '../component/Calendar/Calendar';
+import { format } from 'date-fns';
+import {
+  bookmarkPink,
+  bookmarkYellow,
+  defaultProfile,
+  feedBG,
+} from '../img/Img';
 
 export interface FormValues {
   title: string;
@@ -330,6 +45,8 @@ export interface FormValues {
 }
 
 const DiaryPage = () => {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [calOpen, setCalOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [rendering, setRendering] = useState(false);
@@ -357,7 +74,7 @@ const DiaryPage = () => {
     mood: 0,
     lock: 'UNLOCK',
     content: '',
-    date: '',
+    date: format(selectedDate, 'yyyy.MM.dd'),
   });
 
   const editModeHandler = () => {
@@ -506,7 +223,6 @@ const DiaryPage = () => {
 
   return (
     <>
-      <Nav />
       <Container>
         {
           //새로 만들기
@@ -572,7 +288,7 @@ const DiaryPage = () => {
             <LeftSide>
               <LeftInfo>
                 {userImg === 'nothing' ? (
-                  <UserImg src={profileImg} />
+                  <UserImg src={defaultProfile} />
                 ) : (
                   <UserImg src={userImg} />
                 )}
@@ -583,13 +299,9 @@ const DiaryPage = () => {
                 <ImoInfo>
                   {userInfo.nickname === boardInfo.nickname ? (
                     boardInput.lock === 'UNLOCK' ? (
-                      <div onClick={changeLock}>
-                        <GrUnlock />
-                      </div>
+                      <div onClick={changeLock}>🔓</div>
                     ) : (
-                      <div onClick={changeLock}>
-                        <GrLock />
-                      </div>
+                      <div onClick={changeLock}>🔒</div>
                     )
                   ) : null}
                   <div>
@@ -623,13 +335,23 @@ const DiaryPage = () => {
                 defaultValue={boardInfo.title}
               />
               <div className="select-wrapper">
-                <input
-                  type="date"
+                <SelectedDay
                   className="diary dates"
-                  name="date"
-                  onChange={handleBoardInputValue}
-                  defaultValue={boardInput.date}
-                />
+                  onClick={() => setCalOpen(!calOpen)}
+                >
+                  {format(selectedDate, 'yyyy.MM.dd')}
+                  {` `}📆
+                </SelectedDay>
+                {calOpen ? (
+                  <CalWrapper>
+                    <Calendar
+                      selectedDate={selectedDate}
+                      setSelectedDate={setSelectedDate}
+                      calOpen={calOpen}
+                      setCalOpen={setCalOpen}
+                    />
+                  </CalWrapper>
+                ) : null}
                 <select className="moods" onClick={boardMoodHandler}>
                   <option value="0">행복</option>
                   <option value="1">좋음</option>
@@ -638,7 +360,11 @@ const DiaryPage = () => {
                   <option value="4">화남</option>
                 </select>
                 <div className="diary lock" onClick={boardLockHandler}>
-                  {boardInput.lock === 'UNLOCK' ? <GrUnlock /> : <GrLock />}
+                  {boardInput.lock === 'UNLOCK' ? (
+                    <Lock>🔓</Lock>
+                  ) : (
+                    <Lock>🔒</Lock>
+                  )}
                 </div>
               </div>
               <textarea
@@ -682,11 +408,321 @@ const DiaryPage = () => {
           )}
         </RightWrapper>
       </Container>
-      <FooterDiv>
-        <Footer />
-      </FooterDiv>
     </>
   );
 };
 
 export default DiaryPage;
+
+const Container = styled.section`
+  height: 100%;
+  background-image: url(${feedBG});
+  background-size: cover;
+  background-attachment: scroll;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  @media screen and (max-width: 1374px) {
+    flex-direction: column;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    justify-content: flex-start;
+    height: 160vh;
+  }
+`;
+
+// ---- 일기장 Wrapper CSS ----
+const wrapperStyle = styled.div`
+  //border: purple 1px solid;
+  height: 699px;
+  width: 38rem;
+  padding: 3.8rem 2rem;
+  border-radius: 1.5rem;
+  background-color: var(--color-white);
+  @media screen and (max-width: 620px) {
+    width: 100%;
+  }
+`;
+// ---- ----
+const BookMark = styled.div`
+  display: grid;
+  row-gap: 1rem;
+  position: relative;
+  top: -230px;
+
+  @media screen and (max-width: 1374px) {
+    display: none;
+  }
+`;
+const Book = styled.button<{ Yellow?: any }>`
+  background-image: ${(props) =>
+    props.Yellow ? `url(${bookmarkYellow})` : `url(${bookmarkPink})`};
+  background-color: transparent;
+  background-size: cover;
+  width: 83px;
+  height: 41px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding-left: 11px;
+  color: #3d3c3c;
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+  }
+`;
+const LeftWrapper = styled(wrapperStyle)`
+  box-shadow: 1px 4px 10px var(--color-shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 10px 10px 30px #3c4a5645;
+  border-right: #b1b0b0 solid 2px;
+  @media screen and (max-width: 1374px) {
+    box-shadow: 30px 10px 10px #3c4a5645;
+    border-left: #b1b0b0 solid 2px;
+    border-right: #b1b0b0 solid 3px;
+    margin-bottom: 10px;
+  }
+`;
+const ImgDiv = styled.div`
+  border: #a396f8 solid 2px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: 90%;
+`;
+const Img = styled.img`
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+`;
+const RightWrapper = styled(wrapperStyle)`
+  box-shadow: 30px 10px 10px #3c4a5645;
+  border-left: #b1b0b0 solid 2px;
+  border-right: #b1b0b0 solid 3px;
+  form.form-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  /* input 기본 css / 감정 / 잠금 / 내용 / 저장 버튼 */
+  input.diary,
+  select.moods,
+  textarea.diary,
+  div.lock,
+  button.diary {
+    width: 100%;
+    height: 50px;
+    box-shadow: 1px 1px 4px var(--color-shadow);
+    background-color: var(--color-input);
+    border-radius: 1rem;
+    font-size: 18px;
+    padding: 1rem;
+    margin-top: 10px;
+  }
+  /* Wrapper (Date, Mood, Lock) */
+  div.select-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 1.2rem;
+    position: relative;
+
+    input.dates {
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    select.moods {
+      width: 4rem;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  div.lock {
+    width: 5rem;
+    padding-left: -16px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  /* 내용 */
+  textarea.diary-content {
+    height: 380px;
+  }
+  /* Wrapper 저장  */
+  div.save-btns {
+    display: flex;
+    flex-direction: row;
+    gap: 1.2rem;
+    /* 저장 버튼 */
+    button.save-btn {
+      padding: 0;
+      &:hover {
+        background-color: var(--color-hover);
+        transition: 0.4s;
+        cursor: pointer;
+      }
+    }
+  }
+`;
+const LeftSide = styled.div`
+  display: grid;
+  grid-template-rows: 1fr 4fr;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  row-gap: 0.4rem;
+  img {
+    // 프로필 이미지
+    box-sizing: border-box;
+
+    width: 90%;
+    height: 100%;
+    padding-top: 2px;
+    position: relative;
+    top: -5px;
+  }
+  img.board {
+    // 파일있는 이미지
+    box-sizing: border-box;
+    margin-left: 2rem;
+    margin-top: 3px;
+    width: 90%;
+    height: 100%;
+    border-radius: 10px;
+  }
+`;
+
+const LeftInfo = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 3fr 0.7fr;
+  padding-right: 25px;
+  padding-left: 25px;
+  margin-top: 10px;
+  justify-content: center;
+  align-items: center;
+  row-gap: 1rem;
+  column-gap: 0.3rem;
+`;
+const UserImg = styled.img`
+  width: 70px;
+  height: 75px;
+  border-radius: 100%;
+`;
+const WordInfo = styled.div`
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  row-gap: 1rem;
+  div {
+    text-align: center;
+
+    border-radius: 1rem;
+    padding: 0.5rem;
+    box-shadow: 1px 1px 4px var(--color-shadow);
+    background-color: #fbedfa;
+    font-size: 20px;
+    font-weight: 500;
+    color: #494848;
+  }
+`;
+const ImoInfo = styled.div`
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  row-gap: 1rem;
+  color: #494848;
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    border-radius: 1rem;
+    padding: 0.5rem;
+    box-shadow: 1px 1px 4px var(--color-shadow);
+    background-color: #fbedfa;
+    font-size: 22px;
+  }
+`;
+const RightSide = styled.div`
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr 4fr 6fr;
+  row-gap: 1rem;
+
+  div {
+    border-radius: 1rem;
+    background-color: #fbedfa;
+    @media screen and (max-width: 607px) {
+      width: 100%;
+    }
+  }
+  div.write_content {
+    text-indent: 10px;
+    box-shadow: 0px 5px 8px #3c4a5645;
+    padding-top: 1.2rem;
+    font-weight: 500;
+    color: #858282;
+  }
+  div.write_content.title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: black;
+    opacity: 0.7;
+    padding-bottom: 12px;
+  }
+`;
+const SubBookMark = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: 3rem;
+  @media screen and (min-width: 1374px) {
+    display: none;
+  }
+`;
+const SubBookMarkContent = styled.button<{ Picture?: any }>`
+  width: 50%;
+  padding-top: 10px;
+  font-size: 1.5rem;
+  height: 2.6rem;
+  border-radius: 10px;
+  text-align: center;
+  background-color: ${(props) => (props.Picture ? '#FFB7BC' : '#fdf5bd')};
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+  }
+`;
+
+const CalWrapper = styled.div`
+  position: absolute;
+`;
+
+const SelectedDay = styled.div`
+  width: 400px;
+  height: 3.1rem;
+  text-align: center;
+  box-shadow: 1px 1px 4px var(--color-shadow);
+  background-color: var(--color-input);
+  border-radius: 1rem;
+  font-size: 20px;
+  padding: 1rem;
+  margin-top: 10px;
+`;
+const Lock = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;

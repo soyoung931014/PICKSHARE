@@ -1,37 +1,13 @@
+import { IInitialUser, IUserAction } from '../../../types/reduxType/userReType';
 import { ADD_USER_INFO } from '../../actions/actionTypes';
 import { DELETE_USER_INFO } from '../../actions/actionTypes';
 
-export interface auth {
-  isLogin: boolean;
-  accessToken?: string;
-  refreshToken?: string;
-  userInfo: {
-    id?: number;
-    email?: string;
-    nickname?: string;
-    userImage?: string;
-    loginMethod?: number;
-    statusMessage?: string;
-    created_at?: string;
-    updated_at?: string;
-  };
-}
-
-const initialState: auth = {
+const initialState: IInitialUser = {
   isLogin: false,
   accessToken: '',
-  userInfo: {},
 };
 
-const userReducer = (
-  state = initialState,
-  action: {
-    type: string;
-    payload: object;
-    accessToken: string;
-    isLogin: boolean;
-  }
-) => {
+const userReducer = (state = initialState, action: IUserAction) => {
   switch (action.type) {
     case ADD_USER_INFO:
       return {

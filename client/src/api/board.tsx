@@ -1,5 +1,7 @@
+import { AxiosPromise } from 'axios';
 import { FormValues } from '../pages/DiaryPage';
 import api from './index';
+import { Feedlist } from '../types/feedType';
 
 const boardApi = {
   createBoard: (board: FormValues, accessToken: string) => {
@@ -10,7 +12,7 @@ const boardApi = {
     });
   },
 
-  getBoardById: (board_id: number) => {
+  getBoardById: (board_id: number): AxiosPromise<Feedlist> => {
     return api.get(`/board/${board_id}`);
   },
   editBoard: (board_id: number, board: FormValues, accessToken: string) => {
@@ -27,7 +29,11 @@ const boardApi = {
       },
     });
   },
-  lockBoard: (board_id: number, lock: string, accessToken: string) => {
+  lockBoard: (
+    board_id: number,
+    lock: string,
+    accessToken: string
+  ): AxiosPromise<Feedlist> => {
     return api.patch(
       `/board/${board_id}/lock`,
       {

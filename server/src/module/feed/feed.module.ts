@@ -7,14 +7,14 @@ import { PassportModule } from '@nestjs/passport';
 import { HeartRepository } from '../heart/heart.repository';
 import { CommentModule } from '../comment/comment.module';
 import { UserModule } from '../user/user.module';
+import { UserRepository } from '../user/user.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([BoardRepository]),
-    TypeOrmModule.forFeature([HeartRepository]),
+    TypeOrmModule.forFeature([BoardRepository, HeartRepository,UserRepository]),
     UserModule,
     CommentModule,
-    PassportModule.register({defaultStrategy: 'jwt'})
+    PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   providers: [FeedService],
   controllers: [FeedController],

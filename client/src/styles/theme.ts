@@ -1,20 +1,17 @@
-const size = {
+import { deviceSizeProps, sizeProps, themeProps } from '../types/themeType';
+
+const size: sizeProps = {
   mobile: '480px',
   middle: '820px',
   tablet: '900px',
 };
-
-const deviceSize = {
+const deviceSize: deviceSizeProps = {
   mobile: `(max-width : ${size.mobile})`,
   middle: `(max-width : ${size.middle})`,
   tablet: `(max-width : ${size.tablet})`,
 };
-
-// 중략
-
-const theme = {
+const theme: themeProps = {
   size,
   deviceSize,
 };
-
 export default theme;

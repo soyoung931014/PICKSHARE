@@ -9,6 +9,7 @@ import boardReducer from './reducers/boardReducer/boardReducer';
 import modalReducer from './reducers/modalReducer/modalReducer';
 import editReducer from './reducers/editReducer/editReducer';
 import diaryReducer from './reducers/diaryReducer/diaryReducer';
+import renderReducer from './reducers/renderReducer/renderReducer';
 
 const rootReducer = combineReducers({
   userInfo: userReducer,
@@ -16,11 +17,12 @@ const rootReducer = combineReducers({
   modalInfo: modalReducer,
   editInfo: editReducer,
   diaryInfo: diaryReducer,
+  renderInfo: renderReducer,
 });
 const persistConfig = {
   key: 'root',
   storage,
   whitelist: ['userInfo'],
 };
-
+export type RootState = ReturnType<typeof rootReducer>;
 export default persistReducer(persistConfig, rootReducer);

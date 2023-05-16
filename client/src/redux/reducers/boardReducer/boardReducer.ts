@@ -19,7 +19,7 @@ type Mood = 0 | 1 | 2 | 3 | 4;
 
 type Lock = 'UNLOCK' | 'LOCK';
 
-export interface board {
+export interface boardI {
   boardInfo: {
     title: string;
     picture: string;
@@ -34,7 +34,7 @@ export interface board {
   };
 }
 
-const initialState: board = {
+const initialState: boardI = {
   boardInfo: {
     title: '',
     picture: '',

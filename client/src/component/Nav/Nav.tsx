@@ -3,12 +3,16 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteUserInfo } from '../../redux/actions';
+import {
+  deleteBoardInfo,
+  deleteUserInfo,
+  renderAction,
+} from '../../redux/actions';
 
 import theme from '../../styles/theme';
 import { BiHome } from 'react-icons/bi';
 import { FaBars } from 'react-icons/fa';
-import defaultprofileImg from '../../img/profileImg.png';
+import { defaultProfile } from '../../img/Img';
 
 import { RootState } from '../../redux';
 
@@ -44,12 +48,11 @@ const Nav = () => {
                 <Info>
                   <NavLink
                     to={`/feed/${userInfo.nickname}`}
-                    /*   onClick={() => props.setRender(!props.render)} */
                     style={{ ...menuStyle }}
                   >
                     <FeedDiv>
                       {userInfo.userImage === 'nothing' ? (
-                        <Img src={defaultprofileImg} />
+                        <Img src={defaultProfile} />
                       ) : (
                         <Img src={userInfo.userImage} />
                       )}
@@ -144,7 +147,7 @@ const Logo = styled.section`
 
 const MenuFabar = styled.a`
   display: none;
-  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
+  @media ${() => theme.deviceSize.tablet} {
     display: block;
     width: 100%;
     text-align: end;
@@ -161,23 +164,40 @@ const NavList = styled.section<{
   Menu?: boolean;
   InitialNav?: boolean;
 }>`
-  display: ${(props) => (props.Menu ? 'block' : 'none')};
   width: 100%;
   height: 10vh;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   position: relative;
-  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
+  border-radius: 10px 0 0 10px;
+  @media ${() => theme.deviceSize.tablet} {
     width: 120px;
-    display: ${(props) => (props.Menu ? 'block' : 'none')};
-    height: ${(props) => (props.InitialNav ? '192px' : '258px')};
-    flex: 0 0 auto;
+    height: ${(props) => (props.InitialNav ? '220px' : '290px')};
+    flex: 0 auto;
     position: absolute;
     top: 4.7em;
     z-index: 1;
     flex-direction: column;
     background-color: #fffceb;
+    animation: ${(props) =>
+      props.Menu ? 'open 1s ease' : 'close 1s ease forwards'};
+    @keyframes open {
+      from {
+        right: -100px;
+      }
+      to {
+        right: 0px;
+      }
+    }
+    @keyframes close {
+      from {
+        right: 0px;
+      }
+      to {
+        right: -120px;
+      }
+    }
   }
 `;
 const Div = styled.div<{ Text?: boolean }>`
@@ -205,16 +225,10 @@ const Info = styled.div`
   justify-content: flex-start;
   height: 36px;
   padding-bottom: 5.6px;
-  @media ${({ theme: themeProps }) => theme.deviceSize.tablet} {
+  @media ${() => theme.deviceSize.tablet} {
     width: 5.1rem;
     padding-bottom: 0;
   }
 `;
 
 const FeedDiv = styled.div``;
-
-// export interface navProps {
-//   render: any;
-//   setRender: (render: boolean) => void;
-// }
-// const Nav = ({ render, setRender }: navProps) => {

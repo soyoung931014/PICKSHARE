@@ -17,45 +17,49 @@ import { FollowService } from './follow.service';
 export class FollowController {
   constructor(private followService: FollowService) {}
 
-  //팔로우 하기
   //팔로우 목록 가져오기
   //팔로우 삭제
-  //팔로잉 목록 가져오기
-
+  
+  //유저가 다른 닉네임을 팔로우 하기
   @Post()
   @UseGuards(AuthGuard())
   postFollowing(
     @GetUser() user: User,
-    @Body('followingNickname') followingNickname: string,
+    @Body('nickname') nickname: string,
   ): Promise<Follow[]> {
-    return this.followService.postFollowing(user, followingNickname);
+    return this.followService.postFollowing(user, nickname);
   }
-
+    
+  //유저가 팔로우하고 있는 다른 유저들의 목록 조회
   @Get('/following')
-  getFollowingList(@Query('nickname') nickname: string): Promise<Follow[]> {
+  getFollowingList(@Query('nickname') nickname: string): Promise<Follow[]>
+  {
     return this.followService.getFollowingList(nickname);
   }
 
+  //유저가 특정 닉네임의 팔로우 중지
   @Delete()
   @UseGuards(AuthGuard())
   cancelFollowing(
     @GetUser() user: User,
-    @Query('followingNickname') followingNickname: string,
+    @Query('nickname') nickname: string,
   ): Promise<void> {
-    return this.followService.cancelFollowing(user, followingNickname);
+    return this.followService.cancelFollowing(user, nickname);
   }
 
+  //
   @Get('/follower')
   getFollowerList(@Query('nickname') nickname: string): Promise<Follow[]> {
     return this.followService.getFollowerList(nickname);
   }
 
+  //유저가 특정 닉네임을 팔로우하고있는지 아닌지 판별
   @Get('/follow')
   @UseGuards(AuthGuard())
   getFollowOrNot(
     @GetUser() user: User,
-    @Query('userNickname') userNickname: string,
+    @Query('nickname') nickname: string,
   ): Promise<boolean> {
-    return this.followService.getFollowOrNot(user, userNickname);
+    return this.followService.getFollowOrNot(user, nickname);
   }
 }

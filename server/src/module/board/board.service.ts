@@ -23,14 +23,6 @@ export class BoardService {
     private commentRepository: CommentRepository,
   ) {}
 
-  // ALL READ (해당 유저의 게시물만 가져오기)
-  // async getAllBoards(user: User): Promise<Board[]> {
-  //   const query = this.boardRepository.createQueryBuilder('board');
-  //   query.where('board.userId = :userId', { userId: user.id });
-  //   const boards = await query.getMany();
-  //   return boards;
-  // }
-
   async findBoardByPic(picture: string): Promise<Board[]>{
     const query = await this.boardRepository.find({
       where: {
@@ -71,17 +63,13 @@ export class BoardService {
 
   // DELETE(/:id)
   async deleteBoard(user: User, id: number): Promise<void> {
-    const deleteHeart = await this.heartRepository.delete({board_id: id});
-    console.log('하트삭제',deleteHeart)
-    const deleteComment = await this.commentRepository.delete({board_id: id});
-    console.log('코멘트 삭제',deleteComment)
+    await this.heartRepository.delete({board_id: id});
+    await this.commentRepository.delete({board_id: id});
     
     const result = await this.boardRepository.delete({ id });
     if (result.affected === 0) {
       throw new NotFoundException(`Can't find Board-id ${id}`);
     }
-
-    console.log(result);
   }
 
   // UPDATE(/:id)
