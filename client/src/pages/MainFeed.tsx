@@ -127,7 +127,6 @@ export default function MainFeed() {
     if (target.current) {
       io.observe(target.current);
     }
-
     if (userInfo.nickname === 'nothing') {
       alert('닉네임을 변경해주세요');
       navigate('/mystart');
