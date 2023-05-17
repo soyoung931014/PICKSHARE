@@ -45,11 +45,14 @@ export interface FormValues {
 }
 
 const DiaryPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [calOpen, setCalOpen] = useState(false);
   const outSection = useRef();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const transDate = format(selectedDate, 'yyyy.MM.dd');
+
   const [rendering, setRendering] = useState(false);
   const [pickWay, setPickWay] = useState(0); //책갈피 선택 0: 그림 / 1: 사진
   const [lockBtn, setLockBtn] = useState(false);
@@ -64,7 +67,6 @@ const DiaryPage = () => {
   const { isDiaryOn } = useSelector(
     (diaryReducer: any) => diaryReducer.diaryInfo
   );
-
   const [userImg, setUserImg] = useState('');
   const [boardInput, setBoardInput] = useState<FormValues>({
     title: '',
@@ -73,7 +75,7 @@ const DiaryPage = () => {
     mood: 0,
     lock: 'UNLOCK',
     content: '',
-    date: format(selectedDate, 'yyyy.MM.dd'),
+    date: transDate,
   });
 
   const editModeHandler = () => {
@@ -339,7 +341,7 @@ const DiaryPage = () => {
                   className="diary dates"
                   onClick={() => setCalOpen(!calOpen)}
                 >
-                  {format(selectedDate, 'yyyy.MM.dd')}
+                  {transDate}
                   {` `}📆
                 </SelectedDay>
                 {calOpen ? (
