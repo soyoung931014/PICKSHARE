@@ -8,16 +8,13 @@ import { FaRegCommentDots } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import boardApi from '../../../api/board';
-import { boardI } from '../../../redux/reducers/boardReducer/boardReducer';
 import {
   addBoardInfo,
   deleteBoardInfo,
   renderAction,
 } from '../../../redux/actions';
-import profileImg from '../../../img/profileImg.png';
 import { RootState } from '../../../redux';
 import { MainFeedListProps } from '../../../types/feedType';
-import theme from '../../../styles/theme';
 import { defaultProfile } from '../../../img/Img';
 
 export default function MainFeedList({
@@ -37,7 +34,6 @@ export default function MainFeedList({
     (userReducer: RootState) => userReducer.userInfo
   );
 
-  const { boardInfo } = useSelector((boardReducer: boardI) => boardReducer);
   const [heart, setHeart] = useState(false);
   const postHeart = async () => {
     console.log(heart, '하트');
