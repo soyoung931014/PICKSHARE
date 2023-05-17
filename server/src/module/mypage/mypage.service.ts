@@ -27,7 +27,7 @@ export class MypageService {
 
   // 회원정보 수정
   async updateUserInfo(updateUser: UpdateUserDto, user: any): Promise<object> {
-    const userInfo = await this.userRepository.findOne({ email: user.email });
+    const userInfo = await this.userRepository.findOne({ where: {email: user.email} });
     if (userInfo) {
       const updateUserInfo: object = { ...userInfo, ...updateUser };
       await this.userRepository.save(updateUserInfo);
@@ -53,7 +53,7 @@ export class MypageService {
     console.log(delFollow, 'deletefollow');
     const delBoard: any = await this.boardRepository.delete({ user_id: id });
     console.log(delBoard, 'deleteBoard');
-    const userInfo = await this.userRepository.findOne({ email });
+    const userInfo = await this.userRepository.findOne({ where: {email} });
 
     const passwordComparison = await bcrypt.compare(
       passwordDto.password,
@@ -82,7 +82,7 @@ export class MypageService {
     const delBoard: any = await this.boardRepository.delete({ user_id: id });
     console.log(delBoard, 'deleteBoard');
     const userInfo: any = await this.userRepository.findOne({
-      email,
+      where: { email }
     });
 
     if (userInfo) {

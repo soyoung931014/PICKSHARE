@@ -16,7 +16,7 @@ export class HeartService {
 	}
 
 	async cancelHeart(user: User, board_id: number): Promise<Heart[]>{
-		const result = await this.heartRepository.delete({user, board_id});
+		const result = await this.heartRepository.delete({user_id: user.id, board_id: board_id});
 
 		if(result.affected === 0) {
 			throw new NotFoundException(`Can't find Board with board_id ${board_id}`)

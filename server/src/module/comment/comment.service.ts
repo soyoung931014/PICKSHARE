@@ -39,7 +39,7 @@ export class CommentService {
       if (comments) {
         const user = await Promise.all(
           comments.map(async (el) => {
-            return await this.userRepository.findOne({ id: el.user_id });
+            return await this.userRepository.findOne({where:{ id: el.user_id }});
           }),
         );
         const result = [];
@@ -79,7 +79,7 @@ export class CommentService {
     comment_id: number,
   ): Promise<object> {
     try {
-      const comment = await this.commentRepository.findOne({ id: comment_id });
+      const comment = await this.commentRepository.findOne({where:{ id: comment_id }});
       if (comment) {
         const updateComment = await this.commentRepository.save({
           ...comment,
@@ -101,7 +101,7 @@ export class CommentService {
   async delete(comment_id: number): Promise<object> {
     try {
       const selectComment = await this.commentRepository.findOne({
-        id: comment_id,
+        where: {id: comment_id},
       });
       if (selectComment) {
         await this.commentRepository.remove(selectComment);
