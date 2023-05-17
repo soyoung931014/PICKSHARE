@@ -37,10 +37,10 @@ export class FeedService {
         .groupBy('board.id')
         .orderBy('board.date', 'DESC')
         .getRawMany()
-    const data = result.slice(start, end);
-    return data;
+    
+        const data = result.slice(start, end);
+        return data;
   }
-
   async getAllFeedH(start: number, end: number): Promise<Board[]> {
     const result =  await this.boardRepository.createQueryBuilder('board')
       .select([
