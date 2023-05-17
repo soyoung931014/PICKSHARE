@@ -1,6 +1,10 @@
 import { MODAL_ON, MODAL_OFF } from '../../actions/actionTypes';
 
-const initialState = {
+export interface modalI {
+  isModalOn: boolean;
+}
+
+const initialState: modalI = {
   isModalOn: false,
 };
 

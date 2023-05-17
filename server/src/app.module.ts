@@ -14,7 +14,6 @@ import { MypageModule } from './module/mypage/mypage.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeORMConfig),
-    UserModule,
     TokenModule,
     MypageModule,
     FeedModule,
@@ -22,6 +21,7 @@ import { MypageModule } from './module/mypage/mypage.module';
     CommentModule,
     FollowModule,
     HeartModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -1,31 +1,21 @@
-/* eslint-disable @typescript-eslint/no-loss-of-precision */
-
-//eslint-disable
 // action 작성
 
+import { IKakaoUser, IUser } from '../../types/userType';
 import {
   ADD_USER_INFO,
   DELETE_USER_INFO,
-  FINISH_USER_FEED,
-  FOLLOW_USER,
   ADD_BOARD_INFO,
+  DELETE_BOARD_INFO,
   MODAL_OFF,
   MODAL_ON,
-  SEARCH_USER_FEED,
-  UNFOLLOW_USER,
-  HEART_ON,
-  HEART_OFF,
+  DIARY_ON,
+  DIARY_OFF,
+  EDIT_MODE_ON,
+  EDIT_MODE_OFF,
+  RENDER,
 } from './actionTypes';
 
-//user
-// export const addUserInfo = (userInfo: object, token: string) => {
-//   return {
-//     type: ADD_USER_INFO,
-//     payload: userInfo,
-//     accessToken: token,
-//   };
-// };
-export const addUserInfo = (userInfo: object, token: string) => {
+export const addUserInfo = (userInfo: IUser | IKakaoUser, token: string) => {
   return {
     type: ADD_USER_INFO,
     isLogin: true,
@@ -44,16 +34,21 @@ export const deleteUserInfo = () => {
 };
 
 // board
-export const addBoardInfo = (boardInfo: object, token: string) => {
+export const addBoardInfo = (boardInfo: object) => {
   return {
     type: ADD_BOARD_INFO,
-    payload: boardInfo,
-    accessToken: token,
+    boardInfo: boardInfo,
   };
 };
 
-//modal
-export const modalOnAcrion = {
+export const deleteBoardInfo = () => {
+  return {
+    type: DELETE_BOARD_INFO,
+    boardInfo: {},
+  };
+};
+
+export const modalOnAction = {
   type: MODAL_ON,
 };
 
@@ -61,35 +56,22 @@ export const modalOffAction = {
   type: MODAL_OFF,
 };
 
-//follow
-export const followAction = {
-  type: FOLLOW_USER,
+export const diaryOnAction = {
+  type: DIARY_ON,
 };
 
-export const unfollowAction = {
-  type: UNFOLLOW_USER,
+export const diaryOffAction = {
+  type: DIARY_OFF,
 };
 
-//heart
-export const heartOnAction = {
-  type: HEART_ON,
+export const editOnAction = {
+  type: EDIT_MODE_ON,
 };
 
-export const heartOffAction = {
-  type: HEART_OFF,
+export const editOffAction = {
+  type: EDIT_MODE_OFF,
 };
 
-//feed
-export const searchUserFeed = (data: string) => {
-  return {
-    type: SEARCH_USER_FEED,
-    payload: data,
-  };
-};
-
-export const finishUserFeed = () => {
-  return {
-    type: FINISH_USER_FEED,
-    payload: '',
-  };
+export const renderAction = {
+  type: RENDER,
 };

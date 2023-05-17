@@ -1,51 +1,53 @@
-/*eslint-disable*/
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import feedApi from '../../../api/feed';
+import { UserInfoData, followerListProps } from '../../../types/feedType';
 
-const Wrapper = styled.div``;
-const UserImage = styled.img``;
-const UserNick = styled.div``;
-const FollowButton = styled.button`
-  background-color: white;
-  border-radius: 20px;
-  width: 94px;
-  height: 37px;
-  box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
-  &:hover{
-    cursor: pointer;
-  }
-`
-// type FollowerListProps = {
-//   follow
-// };
-
-export default function FollowerList(props: any) {
-  // console.log('props', props)
-  const { isLogin, accessToken } = useSelector(
-    (userReducer: any) => userReducer.userInfo
-  );
-  const [userlist, setUserlist]: any[] = useState({
+export default function FollowerList({
+  followerNickname,
+  setFollow,
+}: followerListProps) {
+  const [userlist, setUserlist] = useState({
+    id: 0,
     nickname: '',
     userImage: '',
+    statusMessage: '',
   });
 
   useEffect(() => {
     const findFollow = async () => {
-      await feedApi.userInfo(props.followerNickname)
-      .then(result => {
-        setUserlist(result.data.data);
-        console.log('유저리스트',userlist);
-      });
+      await feedApi
+        .userInfo(followerNickname)
+        .then(({ data }: UserInfoData) => {
+          setUserlist(data.data);
+        });
     };
-    findFollow();
+    findFollow().catch((err) => console.log(err));
   }, []);
-  return ( 
+
+  return (
     <Wrapper>
-      아에이오우
-      <UserImage src={userlist.userImage}/>
+      <UserImage src={userlist.userImage} />
       <UserNick>{userlist.nickname}</UserNick>
     </Wrapper>
   );
 }
+
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 10px;
+  margin: 7px 0;
+`;
+const UserImage = styled.img`
+  width: 50px;
+  height: 46px;
+  border-radius: 100%;
+  overflow: auto;
+`;
+const UserNick = styled.div`
+  width: 100px;
+  font-size: 1rem;
+  text-align: left;
+`;

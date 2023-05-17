@@ -22,17 +22,17 @@ export class Board extends BaseEntity {
   @Column()
   title: string;
 
-  @Column()
+  @Column({default: 'https://profileimage-pickshare.s3.ap-northeast-2.amazonaws.com/profileImg.png'})
   picture: string;
 
   @Column()
   pictureMethod: PictureMethod;
 
-  @Column()
-  mood: Mood;
+  @Column({default: true})
+  mood: Mood = 0;
 
-  @Column()
-  lock: Lock;
+  @Column({default: true})
+  lock: Lock = 'UNLOCK';
 
   @Column()
   content: string;

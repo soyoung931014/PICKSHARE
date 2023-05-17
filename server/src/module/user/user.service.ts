@@ -20,7 +20,7 @@ export class UserService {
   ) {}
 
   async getEmailCheck(id: string): Promise<boolean> {
-    const emailcheck = await this.userRepository.findOne({ email: id });
+    const emailcheck = await this.userRepository.findOne({ where:{email: id} });
     if (emailcheck) {
       return true;
     } else {
@@ -29,7 +29,7 @@ export class UserService {
   }
 
   async getNicknameCheck(id: string): Promise<boolean> {
-    const nicknamecheck = await this.userRepository.findOne({ nickname: id });
+    const nicknamecheck = await this.userRepository.findOne({ where:{nickname: id} });
     if (nicknamecheck) {
       return true;
     } else {
@@ -40,7 +40,7 @@ export class UserService {
     signUpDto: SignUpDto,
   ): Promise<{ message: string; statusCode: number }> {
     const findUser = await this.userRepository.findOne({
-      email: signUpDto.email,
+      where:{email: signUpDto.email,}
     });
     if (findUser) {
       return { message: '이미 가입된 이메일입니다.', statusCode: 200 };
@@ -55,7 +55,7 @@ export class UserService {
     //console.log(loginDto, 'loginDto');
     const { email, password } = loginDto;
 
-    const user = await this.userRepository.findOne({ email });
+    const user = await this.userRepository.findOne({ where:{email} });
     //console.log(user, '찾은 유저입니다.');
     if (user && (await bcrypt.compare(password, user.password))) {
       const {
@@ -110,6 +110,7 @@ export class UserService {
           },
         },
       );
+
       //토큰 정보 보기
       const userInfoKakao = await axios.get(
         'https://kapi.kakao.com/v2/user/me',
@@ -119,19 +120,16 @@ export class UserService {
           },
         },
       );
-      /* console.log(tokenRequest, '토큰리퀘스트');
-      console.log(tokenRequest.data.access_token, 'token');
-      console.log(userInfoKakao, '토큰 정보'); */
+
       const { access_token } = tokenRequest.data;
       const { email } = userInfoKakao.data.kakao_account;
 
       const userInfo = await this.userRepository.findOne({
-        email,
+        where:{email},
       });
       if (!userInfo) {
         const user = await this.userRepository.kakaoCreateUser(email);
         const { data, message, statusCode } = user;
-        // console.log(data, message, statusCode);
         const accessToken = this.token.sign({
           access_token,
           ...data,
@@ -170,14 +168,13 @@ export class UserService {
     }
   }
   async getUserInfo(userNickname: string): Promise<{ data: object }> {
-    const info = await this.userRepository.findOne({
-      nickname: userNickname,
+    const info = await this.userRepository.findOne({where:
+      {nickname: userNickname,}
     });
 
     if(!info){
       throw new NotFoundException(`Can't find user nickname ${userNickname}`); 
     }
-
     return {
       data: {
         id: info.id,

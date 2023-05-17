@@ -1,30 +1,43 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import MyPage from './component/MyPage/MyPage';
-import Login from './component/User/Login/Login';
-import Signup from './component/User/Signup/Signup';
-import GlobalStyles from './GlobalStyles';
-import LandingPage from './pages/LandingPage';
+import { ThemeProvider } from 'styled-components';
+import { lazy, Suspense } from 'react';
+import CommentSection from './component/Comment/Comments';
+import GlobalStyles from './styles/GlobalStyles';
+import theme from './styles/theme';
+import Layout from './layout/Layout';
 
-import MainFeed from './pages/MainFeed';
-import UserFeed from './pages/UserFeed';
-import ErrorLoadingPage from './pages/ErrorLoadingPage';
-import KakaoLoading from './pages/KakaoLoading';
+const MyPage = lazy(() => import('./component/MyPage/MyPage'));
+const Login = lazy(() => import('./pages/Login'));
+const Signup = lazy(() => import('./pages/Signup'));
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const MainFeed = lazy(() => import('./pages/MainFeed'));
+const UserFeed = lazy(() => import('./pages/UserFeed'));
+const ErrorLoadingPage = lazy(() => import('./pages/ErrorLoadingPage'));
+const KakaoLoading = lazy(() => import('./pages/KakaoLoading'));
+const DiaryPage = lazy(() => import('./pages/DiaryPage'));
 
 function App() {
   return (
     <BrowserRouter>
-      <GlobalStyles />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        {/*  <Route path="/diary" element={<DiaryPage />} /> */}
-        <Route path="/mainfeed" element={<MainFeed />} />
-        <Route path="/feed/:nickname" element={<UserFeed />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/loading" element={<KakaoLoading />} />
-        <Route path="/errorloading" element={<ErrorLoadingPage />} />
-      </Routes>
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        <Suspense fallback={<div>로딩중</div>}>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route path="/mainfeed" element={<MainFeed />} />
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/diary" element={<DiaryPage />} />
+              <Route path="/feed/:nickname" element={<UserFeed />} />
+              <Route path="/errorloading" element={<ErrorLoadingPage />} />
+              <Route path="/commentsection" element={<CommentSection />} />
+            </Route>
+            <Route path="/loading" element={<KakaoLoading />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/mypage" element={<MyPage />} />
+          </Routes>
+        </Suspense>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

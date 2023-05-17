@@ -18,6 +18,8 @@
     "add": "^2.0.6",
     "aws-sdk": "^2.1139.0",
     "axios": "^0.26.1",
+    "cross-env": "^7.0.3",
+    "date-fns": "^2.30.0",
     "debounce": "^1.2.1",
     "dotenv": "^16.0.1",
     "react": "^17.0.2",
@@ -32,11 +34,12 @@
     "styled-components": "^5.3.5",
     "styled-reset": "^4.3.4",
     "typescript": "^4.6.3",
+    "uuidv4": "^6.2.13",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "NODE_OPTIONS=--max-old-space-size=12000 react-scripts start",
+    "build": "NODE_OPTIONS=--max-old-space-size=12000  GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "prettier-standard --lint *"
@@ -60,12 +63,12 @@
     ]
   },
   "devDependencies": {
-    "@types/aws-sdk": "^2.7.0",
     "@types/debounce": "^1.2.1",
     "@types/dotenv": "^8.2.0",
     "@types/redux-logger": "^3.0.9",
     "@typescript-eslint/eslint-plugin": "^5.20.0",
     "@typescript-eslint/parser": "^5.20.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
