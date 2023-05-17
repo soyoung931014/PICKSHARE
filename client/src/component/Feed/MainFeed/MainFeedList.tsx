@@ -213,9 +213,10 @@ const UserDiv = styled.div`
   margin: 0.2rem;
 `;
 const UserNickname = styled.div`
-  font-size: 28px;
+  font-size: 25px;
   font-weight: normal;
-  width: 80%;
+  width: 200px;
+  border: solid red 2px;
   &:hover {
     cursor: pointer;
     color: violet;
