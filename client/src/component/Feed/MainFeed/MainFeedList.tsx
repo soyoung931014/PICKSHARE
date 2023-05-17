@@ -216,7 +216,6 @@ const UserNickname = styled.div`
   font-size: 25px;
   font-weight: normal;
   width: 200px;
-  border: solid red 2px;
   &:hover {
     cursor: pointer;
     color: violet;
