@@ -6,10 +6,10 @@ import { Follow } from "./follow.entity";
 @EntityRepository(Follow)
 export class FollowRepository extends Repository<Follow> {
     async postFollowing(user: User, nickname: string): Promise<Follow[]> {
-        const findAlreadyExist = await this.find({
+        const findAlreadyExist = await this.find({where: {
             'user_id': user.id,
             'followingNickname': nickname
-        })
+        }})
 
         if(findAlreadyExist.length !== 0){
             throw new NotFoundException(`Already followed ${nickname}`);

@@ -39,7 +39,7 @@ export class TokenService extends PassportStrategy(Strategy) {
 
         if (findKakaoEmail) {
           const user: User = await this.userRepository.findOne({
-            email: findKakaoEmail.data.kakao_account.email,
+            where: {email: findKakaoEmail.data.kakao_account.email}
           });
           console.log(user, '카카오 유저');
           return user;

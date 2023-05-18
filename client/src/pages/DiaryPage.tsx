@@ -152,7 +152,6 @@ const DiaryPage = () => {
       });
     }
   };
-  console.log(outSection);
 
   const handleEditBoard = () => {
     const { title, picture, content, date } = boardInput;

@@ -42,9 +42,9 @@ PICKSHARE이 궁금하시다면, [PICKSHARE 홈페이지](https://www.picksharea
 어떻게 하면 이를 해결할 수 있을까에 대해 고민했던 찰나 모바일 크기를 디폴트 기준으로 생각하면서 flex로 반응형을 시도해보면 어떨까하는 생각이 들었고, <br/>
 팀원과 명확하게 최대 카드 갯수를 정해(4개)생각을 하여 크기가 커짐에 따라 width값을 주고 `flex: 1 0 auto`처리를 해줌으로서 크기를 일정하게 맞춰나갔습니다. <br/>
 카드가 2개 이상 들어올때 부터는 `justify-content: flex-start`를 주어 카드의 마지막 정렬을 원하는바대로 구현할 수 있었습니다.<br/>
-<img src="https://github.com/soyoung931014/JS-50days/assets/80194405/25b4fe2d-ae91-476b-8f08-c923b4b6f98c" width="300" height="300">
+<img src="https://github.com/soyoung931014/PICKSHARE/assets/85835359/6195ceca-5213-4ff2-ae80-797e22c202c2" height=300 />
 
-## ✅ 캘리더 구현
+## ✅ 캘린더 구현
 이전 프로젝트에서 `<input />` 태그의 내장된 타입 calendar를 사용했었는데, 좀 더 ui적으로 pickshare에 어울리는 캘린더를 구현해보면 
 어떨까하는 생각에서 캘린더를 직접 구현헀습니다.
 구조는 
@@ -60,8 +60,10 @@ PICKSHARE이 궁금하시다면, [PICKSHARE 홈페이지](https://www.picksharea
 해당 달의 시작일(1), 달의 마지막일(31),달의 시작 주의 첫 일(29), 끝 주의 마지막 날(3)을 구해 이차원 배열을 만들어 달력을 구현했습니다. <br/>
 5월이 아닌 달을 가지고 있는 날들은(5월인지 아닌지를 비교해) 블러 처리하여 선택하지 못하게 구현했습니다. <br/>
 또한 체크된 날은 디폴트로 현재 날로 지정했으며, 체크가 변경될 수 있도록 구현했습니다.  <br/>
-![스크린샷 2023-05-14 오전 1 58 57](https://github.com/soyoung931014/JS-50days/assets/80194405/16075af0-a3d6-4502-9914-64996a38fd07)
-![스크린샷 2023-05-14 오전 2 48 37](https://github.com/soyoung931014/JS-50days/assets/80194405/68545a1a-6313-41bd-b978-15dcec33d156)
+
+![02 so](https://github.com/soyoung931014/PICKSHARE/assets/85835359/b7282320-48a1-447e-919d-a502b080cbe0)
+![03 so](https://github.com/soyoung931014/PICKSHARE/assets/85835359/a426a269-cc4a-4886-a841-2433003cac44)
+
 
 ## ✅ 레이아웃 구조짜기
 이전 프로젝트에는 대부분의 페이지에 `<nav><body><footer>` 형식으로 구조가 각각 들어가있었습니다.<br/>
