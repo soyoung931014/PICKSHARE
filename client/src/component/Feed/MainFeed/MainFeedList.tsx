@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { BsSuitHeart } from 'react-icons/bs';
 import { BsSuitHeartFill } from 'react-icons/bs';
+import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import feedApi from '../../../api/feed';
 import { useSelector } from 'react-redux';
 import { FaRegCommentDots } from 'react-icons/fa';
@@ -138,7 +139,7 @@ export default function MainFeedList({
             </HeartButton>
           </HeartDiv>
           <CommentDiv>
-            <FaRegCommentDots style={{ strokeWidth: 1 }} size="27" />
+            <CommentIcon />
             <Num>{commentNum}</Num>
           </CommentDiv>
         </ContentLeftDiv>
@@ -196,19 +197,27 @@ const ContentRightDiv = styled.div`
 const UserImg = styled.img`
   border-radius: 100%;
   margin: 0.6rem 0;
-  width: 3rem;
+  width: 2.9rem;
   height: 3rem;
 `;
 const UserDiv = styled.div`
-  margin: 0.2rem;
+  margin-left: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 const UserNickname = styled.div`
+  width: 90px;
   font-size: 25px;
-  font-weight: normal;
+  font-weight: 450;
   width: 200px;
+  color: #5b5959;
   &:hover {
     cursor: pointer;
     color: violet;
+  }
+  @media screen and (min-width: 900px) and (max-width: 1058px) {
+    font-size: 20px;
   }
 `;
 const Title = styled.div`
@@ -217,6 +226,10 @@ const Title = styled.div`
 `;
 const DateDiv = styled.div`
   width: 90px;
+  color: gray;
+  @media screen and (min-width: 900px) and (max-width: 1058px) {
+    font-size: 12px;
+  }
 `;
 const ContentLeftDiv = styled.div`
   display: grid;
@@ -239,9 +252,6 @@ const HeartButton = styled.div`
   align-items: center;
   &:hover {
     cursor: pointer;
-    animation-name: beat;
-    animation-duration: 1s;
-    animation-iteration-count: 2;
   }
 `;
 const CommentDiv = styled.div`
@@ -257,8 +267,9 @@ const Num = styled.div`
   top: 2px;
 `;
 
-const OutLineHeart = styled(BsSuitHeart)`
+const OutLineHeart = styled(FaRegHeart)`
   color: pink;
+  font-weight: 600;
   height: 30px;
   width: 30px;
   animation-name: beat;
@@ -274,11 +285,16 @@ const OutLineHeart = styled(BsSuitHeart)`
   }
 `;
 
-const FilledHeart = styled(BsSuitHeartFill)`
+const FilledHeart = styled(FaHeart)`
   color: pink;
   height: 30px;
   width: 30px;
   animation-name: beat;
   animation-duration: 1s;
   animation-iteration-count: 1;
+`;
+const CommentIcon = styled(FaRegCommentDots)`
+  height: 30px;
+  width: 30px;
+  color: gray;
 `;
