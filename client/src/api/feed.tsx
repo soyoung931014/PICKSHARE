@@ -6,6 +6,7 @@ import {
   FollowerListType,
   FollowingListType,
 } from '../types/feedType';
+import { IKakaoUser, IUser } from '../types/userType';
 
 const feedApi = {
   getMainFeed: (start: number, end: number): AxiosPromise<Feedlist[]> => {
@@ -44,7 +45,11 @@ const feedApi = {
       },
     });
   },
-  postHeart: (info: any, board_id: number, accessToken: string) => {
+  postHeart: (
+    info: IUser | IKakaoUser,
+    board_id: number,
+    accessToken: string
+  ) => {
     return api.post(
       '/heart',
       {
@@ -58,7 +63,11 @@ const feedApi = {
       }
     );
   },
-  deleteHeart: (info: any, board_id: number, accessToken: string) => {
+  deleteHeart: (
+    info: IUser | IKakaoUser,
+    board_id: number,
+    accessToken: string
+  ) => {
     return api.delete('/heart', {
       data: { info, board_id: board_id },
       headers: {
