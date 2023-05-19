@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { BsSuitHeart } from 'react-icons/bs';
 import { BsSuitHeartFill } from 'react-icons/bs';
@@ -35,22 +35,24 @@ export default function MainFeedList({
   );
 
   const [heart, setHeart] = useState(false);
-  const postHeart = async () => {
-    console.log(heart, '하트');
-    return await feedApi.postHeart(userInfo, id, accessToken).then(() => {
-      setHeart(true);
-      dispatch(renderAction);
-      console.log(isRender, '랜더');
-    });
-  };
 
-  const deleteHeart = async () => {
-    console.log(heart, '하트');
-    return await feedApi.deleteHeart(userInfo, id, accessToken).then(() => {
-      setHeart(false);
-      dispatch(renderAction);
-      console.log(isRender, '랜더');
-    });
+  const debounce = (cb: (arg: boolean) => void, delay: number) => {
+    let timer: string | number | NodeJS.Timeout;
+    return (arg: boolean) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => cb(arg), delay);
+    };
+  };
+  const heartValue = useCallback(
+    debounce(async (heart: boolean) => {
+      if (!heart) return await feedApi.postHeart(userInfo, id, accessToken);
+      else return await feedApi.deleteHeart(userInfo, id, accessToken);
+    }, 1000),
+    []
+  );
+  const heartChangeButton = () => {
+    setHeart((pre) => !pre);
+    heartValue(heart);
   };
 
   const moveToUsersFeed = (e: string) => {
@@ -80,6 +82,7 @@ export default function MainFeedList({
       const getHeart = async () => {
         //하트 기록이 있는지 서치, 하트가 있으면, 하트 트루, 없 false
         await feedApi.getHeart(id, accessToken).then((result) => {
+          console.log(result, 'result');
           result.data === 1 ? setHeart(true) : setHeart(false);
         });
       };
@@ -126,32 +129,18 @@ export default function MainFeedList({
           </UserDiv>
         </ContentRightDiv>
         <ContentLeftDiv>
-          {isLogin === false ? (
-            <HeartDiv>
-              <Button onClick={clickWithOutLoggedin}>
-                <BsSuitHeart style={{ strokeWidth: 1 }} size="25" />
-              </Button>
+          <HeartDiv>
+            <HeartButton
+              onClick={isLogin ? heartChangeButton : clickWithOutLoggedin}
+            >
+              {heart ? <FilledHeart /> : <OutLineHeart />}
               <Num>{heartNum}</Num>
-            </HeartDiv>
-          ) : heart === false ? (
-            <Button onClick={postHeart}>
-              <BsSuitHeart style={{ strokeWidth: 1 }} size="25" />
-              <Num>{heartNum}</Num>
-            </Button>
-          ) : (
-            <Button onClick={deleteHeart}>
-              <BsSuitHeartFill
-                style={{ strokeWidth: 1 }}
-                size="25"
-                color="red"
-              />
-              <Num>{heartNum}</Num>
-            </Button>
-          )}
-          <Button>
+            </HeartButton>
+          </HeartDiv>
+          <CommentDiv>
             <FaRegCommentDots style={{ strokeWidth: 1 }} size="27" />
             <Num>{commentNum}</Num>
-          </Button>
+          </CommentDiv>
         </ContentLeftDiv>
       </ContentDiv>
     </Div>
@@ -159,14 +148,12 @@ export default function MainFeedList({
 }
 
 const Div = styled.div`
-  // 카드 크기
   flex: 1 1 auto;
   background-color: white;
   box-shadow: 4px 4px 4px rgb(0, 0, 0, 0.25);
   border-radius: 1rem;
   margin-bottom: 10px;
   &:hover {
-    scale: 1.1;
     cursor: pointer;
     border: solid violet 2px;
   }
@@ -174,6 +161,9 @@ const Div = styled.div`
     width: 48%;
     flex: 0 auto;
     margin: 1%;
+    &:hover {
+      scale: 1.02;
+    }
   }
   @media screen and (min-width: 900px) {
     width: 31%;
@@ -238,17 +228,57 @@ const ContentLeftDiv = styled.div`
 `;
 const HeartDiv = styled.div`
   display: flex;
-  column-gap: 2px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
-const Button = styled.button`
-  background-color: white;
+const HeartButton = styled.div`
   display: flex;
   justify-content: center;
+  text-align: center;
+  align-items: center;
   &:hover {
     cursor: pointer;
+    animation-name: beat;
+    animation-duration: 1s;
+    animation-iteration-count: 2;
   }
+`;
+const CommentDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
 `;
 const Num = styled.div`
   font-size: 25px;
-  margin-left: 2px;
+  margin: 0 8px;
+  position: relative;
+  top: 2px;
+`;
+
+const OutLineHeart = styled(BsSuitHeart)`
+  color: pink;
+  height: 30px;
+  width: 30px;
+  animation-name: beat;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  @keyframes beat {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.6);
+    }
+  }
+`;
+
+const FilledHeart = styled(BsSuitHeartFill)`
+  color: pink;
+  height: 30px;
+  width: 30px;
+  animation-name: beat;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
 `;
