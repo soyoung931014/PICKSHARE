@@ -270,7 +270,7 @@ const CommentDiv = styled.div`
 `;
 const Num = styled.div`
   font-size: 23px;
-  width: 25px;
+  width: 23px;
   margin: 0 5px;
   position: relative;
   top: 3px;
