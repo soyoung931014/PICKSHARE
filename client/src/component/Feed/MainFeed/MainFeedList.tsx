@@ -22,6 +22,7 @@ export default function MainFeedList({
   commentNum,
   title,
   isRender,
+  personalFeed,
 }: MainFeedListProps) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -125,13 +126,14 @@ export default function MainFeedList({
               <Title>{title}</Title>
             ) : (
               <UserNickname
+                Personal={personalFeed ? true : false}
                 className="nickname"
                 onClick={() => moveToUsersFeed(nickname)}
               >
                 {nickname}
               </UserNickname>
             )}
-            <DateDiv>{date}</DateDiv>
+            <DateDiv Personal={personalFeed ? true : false}>{date}</DateDiv>
           </UserDiv>
         </ContentRightDiv>
         <ContentLeftDiv>
@@ -213,8 +215,9 @@ const UserDiv = styled.div`
   position: relative;
   top: 2px;
 `;
-const UserNickname = styled.div`
-  font-size: 18px;
+const UserNickname = styled.div<{ Personal?: boolean }>`
+  display: ${(props) => (props.Personal ? 'none' : 'block')};
+  font-size: 20px;
   font-weight: 400;
   width: 200px;
   color: #5b5959;
@@ -233,10 +236,12 @@ const Title = styled.div`
   font-size: 20px;
   font-weight: 500;
 `;
-const DateDiv = styled.div`
+const DateDiv = styled.div<{ Personal?: boolean }>`
+  display: ${(props) => (props.Personal ? 'none' : 'block')};
   width: 90px;
   color: gray;
   font-size: 70%;
+
   @media screen and (min-width: 900px) and (max-width: 1058px) {
     font-size: 12px;
   }
