@@ -85,7 +85,6 @@ export default function MainFeedList({
       const getHeart = async () => {
         //하트 기록이 있는지 서치, 하트가 있으면, 하트 트루, 없 false
         await feedApi.getHeart(id, accessToken).then((result) => {
-          console.log(result, 'result');
           if (result.data === 1) {
             setHeart(true);
             setHeartNumChV(true);
