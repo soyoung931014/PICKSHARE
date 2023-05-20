@@ -225,7 +225,7 @@ export default function UserFeed() {
           {userfeedlist.length === 0
             ? `${userlist.nickname}님의 피드가 없습니다`
             : userfeedlist.map((el) => (
-                <MainFeedList {...el} key={el.id} isRender />
+                <MainFeedList {...el} key={el.id} isRender personalFeed />
               ))}
           <div ref={target} className="Target-Element"></div>
         </Feed>
@@ -244,9 +244,6 @@ export default function UserFeed() {
 const UserWapper = styled.div`
   width: 100%;
   height: 100%;
-  /* @media screen and (max-width: 947px) {
-    min-height: 300vh;
-  } */
 `;
 const Div = styled.div`
   padding: 10rem;
