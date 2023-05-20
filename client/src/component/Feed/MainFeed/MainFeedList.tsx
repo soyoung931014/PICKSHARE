@@ -1,7 +1,5 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { BsSuitHeart } from 'react-icons/bs';
-import { BsSuitHeartFill } from 'react-icons/bs';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import feedApi from '../../../api/feed';
 import { useSelector } from 'react-redux';
@@ -9,11 +7,7 @@ import { FaRegCommentDots } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import boardApi from '../../../api/board';
-import {
-  addBoardInfo,
-  deleteBoardInfo,
-  renderAction,
-} from '../../../redux/actions';
+import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
 import { RootState } from '../../../redux';
 import { MainFeedListProps } from '../../../types/feedType';
 import { defaultProfile } from '../../../img/Img';
@@ -36,6 +30,12 @@ export default function MainFeedList({
   );
 
   const [heart, setHeart] = useState(false);
+  const [heartNumChV, setHeartNumChV] = useState(false);
+  const [hearNumRen, setHeartNumRen] = useState(false);
+
+  const heartNumState = heartNumChV
+    ? Number(heartNum) - 1
+    : Number(heartNum) + 1;
 
   const debounce = (cb: (arg: boolean) => void, delay: number) => {
     let timer: string | number | NodeJS.Timeout;
@@ -53,6 +53,7 @@ export default function MainFeedList({
   );
   const heartChangeButton = () => {
     setHeart((pre) => !pre);
+    setHeartNumRen((pre) => !pre);
     heartValue(heart);
   };
 
@@ -84,13 +85,17 @@ export default function MainFeedList({
         //하트 기록이 있는지 서치, 하트가 있으면, 하트 트루, 없 false
         await feedApi.getHeart(id, accessToken).then((result) => {
           console.log(result, 'result');
-          result.data === 1 ? setHeart(true) : setHeart(false);
+          if (result.data === 1) {
+            setHeart(true);
+            setHeartNumChV(true);
+          } else {
+            setHeart(false);
+          }
         });
       };
       getHeart().catch((err) => console.log(err));
     }
   }, [isRender]);
-
   const urlSlice = window.location.pathname.split('/')[2];
 
   useEffect(() => {
@@ -135,7 +140,7 @@ export default function MainFeedList({
               onClick={isLogin ? heartChangeButton : clickWithOutLoggedin}
             >
               {heart ? <FilledHeart /> : <OutLineHeart />}
-              <Num>{heartNum}</Num>
+              <Num>{!hearNumRen ? heartNum : heartNumState}</Num>
             </HeartButton>
           </HeartDiv>
           <CommentDiv>
@@ -205,10 +210,12 @@ const UserDiv = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative;
+  top: 2px;
 `;
 const UserNickname = styled.div`
   width: 90px;
-  font-size: 25px;
+  font-size: 120%;
   font-weight: 450;
   width: 200px;
   color: #5b5959;
@@ -227,6 +234,7 @@ const Title = styled.div`
 const DateDiv = styled.div`
   width: 90px;
   color: gray;
+  font-size: 70%;
   @media screen and (min-width: 900px) and (max-width: 1058px) {
     font-size: 12px;
   }
@@ -261,10 +269,12 @@ const CommentDiv = styled.div`
   align-items: center;
 `;
 const Num = styled.div`
-  font-size: 25px;
-  margin: 0 8px;
+  font-size: 23px;
+  width: 25px;
+  margin: 0 5px;
   position: relative;
-  top: 2px;
+  top: 3px;
+  color: #464545;
 `;
 
 const OutLineHeart = styled(FaRegHeart)`
