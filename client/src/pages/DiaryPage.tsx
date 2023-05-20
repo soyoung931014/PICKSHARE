@@ -437,7 +437,7 @@ const Container = styled.section`
     padding-top: 4rem;
     padding-bottom: 4rem;
     justify-content: flex-start;
-    height: 160vh;
+    height: 200vh;
   }
 `;
 
