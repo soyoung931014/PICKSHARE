@@ -150,6 +150,8 @@ const DiaryPage = () => {
         dispatch(addBoardInfo(result.data));
         dispatch(diaryOffAction);
       });
+      alert('저장되었습니다.');
+      setRendering(true);
     }
   };
 
@@ -186,8 +188,8 @@ const DiaryPage = () => {
       }
     } else if (text === '저장') {
       if (result) {
-        alert(`${text}되었습니다.`);
         return handleSaveBoard();
+        /* alert(`${text}되었습니다.`); */
       }
       {
         alert('취소되었습니다.');
