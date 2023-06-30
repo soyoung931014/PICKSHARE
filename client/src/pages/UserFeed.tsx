@@ -23,6 +23,7 @@ import {
 } from '../types/feedType';
 import { renderAction } from '../redux/actions';
 import { Spinner } from '../common/spinner/Spinner';
+
 export default function UserFeed() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -124,21 +125,27 @@ export default function UserFeed() {
   //내 피드가져오기
   const myFeed = async () => {
     await feedApi.getMyFeed(accessToken, start, end).then((result) => {
+      console.log(start, end);
+
       setUserFeedlist((prev) => prev.concat(result.data));
+      if (result.data.length < end) return;
       start += 8;
       end += 8;
     });
   };
 
   //유저들의 피드
+  let flag = 0;
   const userPage = async () => {
+    if (userfeedlist.length < end && flag) return false;
     await feedApi.getUserFeed(path, start, end).then((result) => {
+      flag = 1;
       setUserFeedlist((prev) => prev.concat(result.data));
-      start += 8;
-      end += 8;
     });
+    start += 8;
+    end += 8;
   };
-
+  const [targetLoading, setTargetLoading] = useState(false);
   useEffect(() => {
     const options: IOptions = {
       root: null,
@@ -148,12 +155,22 @@ export default function UserFeed() {
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
+          setTargetLoading(entry.isIntersecting);
           setTimeout(() => {
             if (userInfo.nickname === path) {
-              myFeed().catch((err) => console.log(err));
+              myFeed()
+                .then((res) => {
+                  console.log(res);
+                })
+                .catch((err) => console.log(err));
             } else {
-              userPage().catch((err) => console.log(err));
+              userPage()
+                .then((res) => {
+                  if (!res) return () => io.unobserve(target.current);
+                })
+                .catch((err) => console.log(err));
             }
+            setTargetLoading(false);
           }, 1000);
         }
       });
@@ -162,7 +179,7 @@ export default function UserFeed() {
     if (target.current) {
       io.observe(target.current);
     }
-  }, [path, isRender, target]);
+  }, [isRender]);
   return (
     <UserWapper>
       <Div>
@@ -240,8 +257,6 @@ export default function UserFeed() {
               <MainFeedList {...el} key={el.id} isRender personalFeed />
             ))
           )}
-
-          <div ref={target} className="Target-Element"></div>
         </Feed>
         {isModalOn ? (
           <Modal
@@ -252,9 +267,20 @@ export default function UserFeed() {
           />
         ) : null}
       </Div>
+      {targetLoading ? (
+        <TargetContainer>
+          <TargetSpinner />
+        </TargetContainer>
+      ) : null}
+      <div ref={target} className="Target-Element"></div>
     </UserWapper>
   );
 }
+const TargetContainer = styled.div`
+  width: 100%auto;
+  height: 10%;
+`;
+const TargetSpinner = styled(Spinner)``;
 const UserWapper = styled.div`
   width: 100%;
   min-height: 90vh;
