@@ -22,6 +22,7 @@ import {
   UserInfoData,
 } from '../types/feedType';
 import { renderAction } from '../redux/actions';
+import { Spinner } from '../common/spinner/Spinner';
 export default function UserFeed() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -78,10 +79,13 @@ export default function UserFeed() {
   const handleModalOn = () => {
     dispatch(modalOnAction);
   };
-
+  const [isLoading, setIsLoading] = useState(true);
   const userfeedinfo = async () => {
     return feedApi.userInfo(path).then(({ data }: UserInfoData) => {
       setUserlist(data.data);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
     });
   };
 
@@ -222,11 +226,21 @@ export default function UserFeed() {
           </PlusButton>
         )}
         <Feed>
-          {userfeedlist.length === 0
-            ? `${userlist.nickname}님의 피드가 없습니다`
-            : userfeedlist.map((el) => (
-                <MainFeedList {...el} key={el.id} isRender personalFeed />
-              ))}
+          {isLoading || userfeedlist.length < 0 ? (
+            <LoadingConatiner>
+              <LoadingSpinner />
+              <Loading>loading...</Loading>
+            </LoadingConatiner>
+          ) : null}
+          {!isLoading && userfeedlist.length === 0 ? (
+            <>{userlist.nickname}님의 게시글이 없습니다.</>
+          ) : (
+            !isLoading &&
+            userfeedlist.map((el) => (
+              <MainFeedList {...el} key={el.id} isRender personalFeed />
+            ))
+          )}
+
           <div ref={target} className="Target-Element"></div>
         </Feed>
         {isModalOn ? (
@@ -243,7 +257,7 @@ export default function UserFeed() {
 }
 const UserWapper = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 90vh;
 `;
 const Div = styled.div`
   padding: 10rem;
@@ -355,6 +369,7 @@ const Feed = styled.div`
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: center;
+    min-height: 35vh;
   }
 `;
 const PlusButton = styled.div<{ Hidden?: any }>`
@@ -389,4 +404,39 @@ const Block = styled.div`
   @media screen and (max-width: 947px) {
     width: 57px;
   }
+`;
+const Loading = styled.div`
+  justify-content: center;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bolder;
+  width: 100%;
+  margin-top: 5px;
+  background: linear-gradient(to right, #8272eb, #d06be0, #fd40c8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text 1s infinite linear alternate;
+  @keyframes text {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+`;
+
+const LoadingSpinner = styled(Spinner)`
+  width: 80px;
+  height: 80px;
+`;
+const LoadingConatiner = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
