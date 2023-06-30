@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { feedBG } from '../img/Img';
 import { RootState } from '../redux';
 import { Feedlist, IOptions } from '../types/feedType';
+import FeedCardSkeleton from '../common/skeleton/FeedCardSkeleton';
 
 export default function MainFeed() {
   const dispatch = useDispatch();
@@ -164,8 +165,8 @@ export default function MainFeed() {
           </UpperDiv>
           <Feed>
             {feedlist.length === 0
-              ? '피드가 없습니다'
-              : feedlist.map((el) => (
+              ? new Array(8).fill(1).map((_, i) => <FeedCardSkeleton key={i} />)
+              : feedlist?.map((el) => (
                   <MainFeedList {...el} key={el.id} isRender />
                 ))}
             <div ref={target} className="Target-Element"></div>
