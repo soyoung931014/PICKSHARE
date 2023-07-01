@@ -439,7 +439,7 @@ const Container = styled.section`
     padding-top: 4rem;
     padding-bottom: 4rem;
     justify-content: flex-start;
-    height: 200vh;
+    height: 210vh;
   }
 `;
 
@@ -730,6 +730,9 @@ const SelectedDay = styled.div`
   font-size: 20px;
   padding: 1rem;
   margin-top: 10px;
+  @media screen and (max-width: 400px) {
+    font-size: 17px;
+  }
 `;
 const Lock = styled.div`
   display: flex;
