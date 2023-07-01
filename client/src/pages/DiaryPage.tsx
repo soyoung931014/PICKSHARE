@@ -33,6 +33,7 @@ import {
   defaultProfile,
   feedBG,
 } from '../img/Img';
+import { RootState } from '../redux';
 
 export interface FormValues {
   title: string;
@@ -61,8 +62,9 @@ const DiaryPage = () => {
     (boardReducer: any) => boardReducer.boardInfo
   );
   const { userInfo, accessToken } = useSelector(
-    (userReducer: any) => userReducer.userInfo
+    (userReducer: RootState) => userReducer.userInfo
   );
+
   const { isEditOn } = useSelector((editReducer: any) => editReducer.editInfo);
   const { isDiaryOn } = useSelector(
     (diaryReducer: any) => diaryReducer.diaryInfo
@@ -206,6 +208,7 @@ const DiaryPage = () => {
   };
 
   useEffect(() => {
+    if (userInfo.nickname === undefined) return;
     if (boardInfo.title !== undefined || '') {
       setPickWay(boardInfo.pictureMethod);
       setBoardInput({
@@ -218,7 +221,7 @@ const DiaryPage = () => {
         date: boardInfo.date,
       });
 
-      feedApi.userInfo(boardInfo.nickname).then((result) => {
+      feedApi.userInfo(boardInfo?.nickname).then((result) => {
         setUserImg(result.data.data.userImage);
       });
     }
@@ -300,7 +303,7 @@ const DiaryPage = () => {
                   <div>{boardInput.date}</div>
                 </WordInfo>
                 <ImoInfo>
-                  {userInfo.nickname === boardInfo.nickname ? (
+                  {userInfo?.nickname === boardInfo.nickname ? (
                     boardInput.lock === 'UNLOCK' ? (
                       <div onClick={changeLock}>🔓</div>
                     ) : (
