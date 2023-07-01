@@ -6,7 +6,7 @@ import { BiSearch } from 'react-icons/bi';
 import { debounce } from 'debounce';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteBoardInfo, diaryOnAction, renderAction } from '../redux/actions';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { feedBG } from '../img/Img';
 import { RootState } from '../redux';
 import { Feedlist, IOptions } from '../types/feedType';
@@ -14,8 +14,6 @@ import FeedCardSkeleton from '../common/skeleton/FeedCardSkeleton';
 import { Spinner } from '../common/spinner/Spinner';
 
 export default function MainFeed() {
-  const lova = useLocation();
-  console.log(lova);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [feedlist, setFeedlist] = useState<Feedlist[] | null>([]);
