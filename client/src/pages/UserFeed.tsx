@@ -34,6 +34,8 @@ export default function UserFeed() {
     userImage: '',
     statusMessage: '',
   });
+  const [targetLoading, setTargetLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const target = useRef<HTMLDivElement>(null);
   let start = 0;
   let end = 8;
@@ -80,7 +82,7 @@ export default function UserFeed() {
   const handleModalOn = () => {
     dispatch(modalOnAction);
   };
-  const [isLoading, setIsLoading] = useState(true);
+
   const userfeedinfo = async () => {
     return feedApi.userInfo(path).then(({ data }: UserInfoData) => {
       setUserlist(data.data);
@@ -123,15 +125,15 @@ export default function UserFeed() {
   }, [follow]);
 
   //내 피드가져오기
+  let myfeedFlag = 0;
   const myFeed = async () => {
+    if (userfeedlist.length < end && flag) return false;
     await feedApi.getMyFeed(accessToken, start, end).then((result) => {
-      console.log(start, end);
-
+      myfeedFlag = 1;
       setUserFeedlist((prev) => prev.concat(result.data));
-      if (result.data.length < end) return;
-      start += 8;
-      end += 8;
     });
+    start += 8;
+    end += 8;
   };
 
   //유저들의 피드
@@ -145,7 +147,14 @@ export default function UserFeed() {
     start += 8;
     end += 8;
   };
-  const [targetLoading, setTargetLoading] = useState(false);
+  useEffect(() => {
+    if (userInfo.nickname === path) {
+      myFeed().catch((err) => console.log(err));
+    } else {
+      userPage().catch((err) => console.log(err));
+    }
+  }, []);
+
   useEffect(() => {
     const options: IOptions = {
       root: null,
@@ -160,7 +169,7 @@ export default function UserFeed() {
             if (userInfo.nickname === path) {
               myFeed()
                 .then((res) => {
-                  console.log(res);
+                  if (!res) return () => io.unobserve(target.current);
                 })
                 .catch((err) => console.log(err));
             } else {
@@ -179,7 +188,7 @@ export default function UserFeed() {
     if (target.current) {
       io.observe(target.current);
     }
-  }, [isRender]);
+  }, [path, isRender, target]);
   return (
     <UserWapper>
       <Div>
@@ -249,14 +258,13 @@ export default function UserFeed() {
               <Loading>loading...</Loading>
             </LoadingConatiner>
           ) : null}
-          {!isLoading && userfeedlist.length === 0 ? (
-            <>{userlist.nickname}님의 게시글이 없습니다.</>
-          ) : (
-            !isLoading &&
+          {!isLoading && userfeedlist.length > 0 ? (
             userfeedlist.map((el) => (
               <MainFeedList {...el} key={el.id} isRender personalFeed />
             ))
-          )}
+          ) : !isLoading && userfeedlist.length === 0 ? (
+            <Text>{userlist.nickname}님의 게시글이 없습니다</Text>
+          ) : null}
         </Feed>
         {isModalOn ? (
           <Modal
@@ -310,7 +318,9 @@ const UserDiv = styled.div`
     align-items: center;
   }
 `;
-
+const Text = styled.div`
+  font-weight: bold;
+`;
 const UserImg = styled.img`
   position: relative;
   border-radius: 100%;
