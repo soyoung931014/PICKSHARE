@@ -28,7 +28,7 @@ export default function MainFeed() {
 
   let start = 0;
   let end = 8;
-  const { userInfo } = useSelector(
+  const { userInfo, isLogin } = useSelector(
     (userReducer: RootState) => userReducer.userInfo
   );
   const { isRender } = useSelector(
@@ -147,10 +147,6 @@ export default function MainFeed() {
     if (target.current) {
       io.observe(target.current);
     }
-    if (userInfo.nickname === 'nothing') {
-      alert('닉네임을 변경해주세요');
-      navigate('/mystart');
-    }
   }, [isRender, target]);
 
   useEffect(() => {
@@ -164,6 +160,10 @@ export default function MainFeed() {
       getUserFeedH(searchInput).catch((err) => console.log(err));
     }
     setTimeout(() => setIsLoading(false), 1000);
+    if (userInfo?.nickname === 'nothing') {
+      alert('닉네임을 변경해주세요');
+      navigate('/mypage');
+    }
   }, []);
 
   return (
@@ -179,7 +179,7 @@ export default function MainFeed() {
               <Button onClick={() => sortFeedByHeart()}>인기순</Button>
             </ButtonDiv>
             <UpperRightDiv>
-              <form>
+              <form onSubmit={selectFeed}>
                 <SearchBar>
                   <SearchInput
                     name="searchBar"
@@ -195,22 +195,13 @@ export default function MainFeed() {
               <PlusButton onClick={writeNewDiary}> + </PlusButton>
             </UpperRightDiv>
           </UpperDiv>
-          <Feed>
-            {/* 
-            {isLoading || !feedlist
-              ? new Array(8).fill(1).map((_, i) => <FeedCardSkeleton key={i} />)
-              : feedlist?.map((el) => (
-                  <MainFeedList {...el} key={el.id} isRender />
-                ))} */}
-            {!isLoading ? (
-              feedlist?.map((el) => (
+          <Feed onClick={!isLogin ? () => console.log('클릭') : null}>
+            {!isLoading &&
+              feedlist.map((el) => (
                 <MainFeedList {...el} key={el.id} isRender />
-              ))
-            ) : isLoading ? (
-              new Array(8).fill(1).map((_, i) => <FeedCardSkeleton key={i} />)
-            ) : (
-              <>hi</>
-            )}
+              ))}
+            {isLoading &&
+              new Array(8).fill(1).map((_, i) => <FeedCardSkeleton key={i} />)}
             <div ref={target} className="Target-Element"></div>
           </Feed>
         </Div>

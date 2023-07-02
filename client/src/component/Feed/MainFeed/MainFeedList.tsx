@@ -7,7 +7,11 @@ import { FaRegCommentDots } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import boardApi from '../../../api/board';
-import { addBoardInfo, deleteBoardInfo } from '../../../redux/actions';
+import {
+  addBoardInfo,
+  deleteBoardInfo,
+  diaryOffAction,
+} from '../../../redux/actions';
 import { RootState } from '../../../redux';
 import { MainFeedListProps } from '../../../types/feedType';
 import { defaultProfile } from '../../../img/Img';
@@ -67,6 +71,10 @@ export default function MainFeedList({
     navigate('/login');
   };
 
+  const isDiaryOffHandler = () => {
+    dispatch(diaryOffAction);
+  };
+
   const moveToViewBoard = async (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -76,7 +84,12 @@ export default function MainFeedList({
     const targetId = target.id;
     await boardApi.getBoardById(Number(targetId)).then((result) => {
       dispatch(addBoardInfo(result.data));
-      navigate('/diary');
+      isDiaryOffHandler();
+      navigate('/diary', {
+        state: {
+          fromMainFeedList: true,
+        },
+      });
     });
   };
 
