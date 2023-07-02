@@ -138,7 +138,7 @@ export default function UserFeed() {
 
   //유저들의 피드
   let flag = 0;
-  const userPage = async () => {
+  const userPage = async (path: string) => {
     if (userfeedlist.length < end && flag) return false;
     await feedApi.getUserFeed(path, start, end).then((result) => {
       flag = 1;
@@ -151,7 +151,7 @@ export default function UserFeed() {
     if (userInfo.nickname === path) {
       myFeed().catch((err) => console.log(err));
     } else {
-      userPage().catch((err) => console.log(err));
+      userPage(path).catch((err) => console.log(err));
     }
   }, []);
 
@@ -173,7 +173,7 @@ export default function UserFeed() {
                 })
                 .catch((err) => console.log(err));
             } else {
-              userPage()
+              userPage(path)
                 .then((res) => {
                   if (!res) return () => io.unobserve(target.current);
                 })
@@ -221,7 +221,9 @@ export default function UserFeed() {
           </div>
           <UserInfo>
             <UserDescribe>
-              <Content>{userlist.nickname}</Content>
+              <Content>
+                {userlist.nickname ? <>{userlist.nickname}</> : null}
+              </Content>
             </UserDescribe>
             <UserDescribe>
               <Content>{userlist.statusMessage}</Content>

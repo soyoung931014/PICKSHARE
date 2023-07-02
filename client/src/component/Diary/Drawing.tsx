@@ -212,7 +212,7 @@ export default function Drawing({
             <button
               onClick={SaveImgHandler}
               name="picture"
-              style={{ border: 'solid pink 2px' }}
+              style={{ border: 'solid pink 5px' }}
             >
               Save
             </button>
