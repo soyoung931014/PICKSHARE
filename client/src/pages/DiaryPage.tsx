@@ -5,10 +5,11 @@ import {
   addBoardInfo,
   deleteBoardInfo,
   diaryOffAction,
+  diaryOnAction,
   editOffAction,
   editOnAction,
 } from '../redux/actions';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Photo from '../component/Diary/Photo';
 import Drawing from '../component/Diary/Drawing';
 import { debounce } from 'debounce';
@@ -48,6 +49,7 @@ export interface FormValues {
 const DiaryPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [calOpen, setCalOpen] = useState(false);
@@ -61,7 +63,7 @@ const DiaryPage = () => {
   const { boardInfo } = useSelector(
     (boardReducer: any) => boardReducer.boardInfo
   );
-  const { userInfo, accessToken } = useSelector(
+  const { userInfo, accessToken, isLogin } = useSelector(
     (userReducer: RootState) => userReducer.userInfo
   );
 
@@ -82,6 +84,9 @@ const DiaryPage = () => {
 
   const editModeHandler = () => {
     dispatch(editOnAction);
+  };
+  const isDiaryOnHandler = () => {
+    dispatch(diaryOnAction);
   };
 
   const pickPicture = () => {
@@ -147,13 +152,18 @@ const DiaryPage = () => {
     if (title === '' || picture === '' || content === '' || date === '') {
       return alert('내용을 작성해주세요');
     } else {
-      dispatch(addBoardInfo(boardInput));
-      boardApi.createBoard(boardInput, accessToken).then((result) => {
-        dispatch(addBoardInfo(result.data));
-        dispatch(diaryOffAction);
-      });
-      alert('저장되었습니다.');
-      setRendering(true);
+      if (isLogin) {
+        dispatch(addBoardInfo(boardInput));
+        boardApi.createBoard(boardInput, accessToken).then((result) => {
+          dispatch(addBoardInfo(result.data));
+          dispatch(diaryOffAction);
+        });
+        alert('저장되었습니다.');
+        navigate('/mainfeed');
+      } else {
+        alert('로그인 후 사용 가능한 서비스입니다.');
+        navigate('/login');
+      }
     }
   };
 
@@ -162,12 +172,16 @@ const DiaryPage = () => {
     if (title === '' || picture === '' || content === '' || date === '') {
       return alert('내용을 작성해주세요');
     } else {
-      boardApi
-        .editBoard(boardInfo.id, boardInput, accessToken)
-        .then((result) => {
-          dispatch(addBoardInfo(result.data));
-          dispatch(editOffAction);
-        });
+      if (!isLogin) {
+        alert('로그인을 먼저 해주세요');
+      } else {
+        boardApi
+          .editBoard(boardInfo.id, boardInput, accessToken)
+          .then((result) => {
+            dispatch(addBoardInfo(result.data));
+            dispatch(editOffAction);
+          });
+      }
     }
   };
 
@@ -178,12 +192,13 @@ const DiaryPage = () => {
 
   const handleConfirm = (e: any) => {
     const text = e.target.name;
-    const result: any = confirm(`게시글을 ${text} 하시겠습니끼?`);
+    const result: any = confirm(`게시글을 ${text} 하시겠습니까?`);
 
     if (text === '삭제') {
       if (result) {
+        deleteWriting();
         alert(`${text}되었습니다.`);
-        return deleteWriting();
+        return navigate('/mainfeed');
       }
       {
         alert('취소되었습니다.');
@@ -191,7 +206,6 @@ const DiaryPage = () => {
     } else if (text === '저장') {
       if (result) {
         return handleSaveBoard();
-        /* alert(`${text}되었습니다.`); */
       }
       {
         alert('취소되었습니다.');
@@ -208,6 +222,13 @@ const DiaryPage = () => {
   };
 
   useEffect(() => {
+    if (
+      !isEditOn &&
+      !isDiaryOn &&
+      location.state?.fromMainFeedList === undefined
+    ) {
+      isDiaryOnHandler();
+    }
     if (userInfo.nickname === undefined) return;
     if (boardInfo.title !== undefined || '') {
       setPickWay(boardInfo.pictureMethod);
@@ -269,7 +290,11 @@ const DiaryPage = () => {
                   <SubBookMarkContent onClick={editModeHandler}>
                     수정
                   </SubBookMarkContent>
-                  <SubBookMarkContent Picture onClick={(e) => handleConfirm(e)}>
+                  <SubBookMarkContent
+                    name="삭제"
+                    Picture
+                    onClick={(e) => handleConfirm(e)}
+                  >
                     삭제
                   </SubBookMarkContent>
                 </SubBookMark>
