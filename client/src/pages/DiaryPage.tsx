@@ -147,9 +147,13 @@ const DiaryPage = () => {
     }
   };
 
+  useEffect(() => {
+    setBoardInput({ ...boardInput, date: transDate });
+  }, [transDate]);
+
   const handleSaveBoard = () => {
-    const { title, picture, content, date } = boardInput;
-    if (title === '' || picture === '' || content === '' || date === '') {
+    const { title, picture, content } = boardInput;
+    if (title === '' || picture === '' || content === '') {
       return alert('내용을 작성해주세요');
     } else {
       if (isLogin) {
@@ -168,8 +172,8 @@ const DiaryPage = () => {
   };
 
   const handleEditBoard = () => {
-    const { title, picture, content, date } = boardInput;
-    if (title === '' || picture === '' || content === '' || date === '') {
+    const { title, picture, content } = boardInput;
+    if (title === '' || picture === '' || content === '') {
       return alert('내용을 작성해주세요');
     } else {
       if (!isLogin) {
