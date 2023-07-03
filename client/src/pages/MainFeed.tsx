@@ -150,6 +150,7 @@ export default function MainFeed() {
   }, [isRender, target]);
 
   useEffect(() => {
+    setFeedlist([]);
     if (orderingH === false && searchOn === false) {
       getMainFeed().catch((err) => console.log(err));
     } else if (orderingH === true && searchOn === false) {
@@ -164,7 +165,7 @@ export default function MainFeed() {
       alert('닉네임을 변경해주세요');
       navigate('/mypage');
     }
-  }, []);
+  }, [isRender]);
 
   return (
     <Container>
