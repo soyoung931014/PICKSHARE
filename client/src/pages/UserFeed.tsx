@@ -23,6 +23,7 @@ import {
 } from '../types/feedType';
 import { renderAction } from '../redux/actions';
 import { Spinner } from '../common/spinner/Spinner';
+import ScrollTopButton from '../component/ScrollTopButton/ScrollTopButton';
 
 export default function UserFeed() {
   const dispatch = useDispatch();
@@ -155,6 +156,9 @@ export default function UserFeed() {
     }
   }, []);
 
+  const disconnectFetch = (result: boolean, callback: IntersectionObserver) => {
+    if (!result) return () => callback.unobserve(target.current);
+  };
   useEffect(() => {
     const options: IOptions = {
       root: null,
@@ -168,15 +172,11 @@ export default function UserFeed() {
           setTimeout(() => {
             if (userInfo.nickname === path) {
               myFeed()
-                .then((res) => {
-                  if (!res) return () => io.unobserve(target.current);
-                })
+                .then((res) => disconnectFetch(res, io))
                 .catch((err) => console.log(err));
             } else {
               userPage(path)
-                .then((res) => {
-                  if (!res) return () => io.unobserve(target.current);
-                })
+                .then((res) => disconnectFetch(res, io))
                 .catch((err) => console.log(err));
             }
             setTargetLoading(false);
@@ -191,6 +191,7 @@ export default function UserFeed() {
   }, [path, isRender, target]);
   return (
     <UserWapper>
+      <ScrollTopButton />
       <Div>
         <User>
           <div>
