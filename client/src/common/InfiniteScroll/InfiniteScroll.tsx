@@ -12,7 +12,7 @@ const InfiniteScroll = (
     const options: IOptions = {
       root: null,
       rootMargin: '0px',
-      threshold: 0.2,
+      threshold: 0.5,
     };
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -33,9 +33,6 @@ const InfiniteScroll = (
     return () => {
       io.disconnect();
     };
-    /*  return () => {
-      io && target && target.current && io.unobserve(target.current);
-    }; */
   }
 };
 
