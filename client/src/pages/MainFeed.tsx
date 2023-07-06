@@ -14,74 +14,153 @@ import { Spinner } from '../common/spinner/Spinner';
 import LatestPost from '../component/Category/LatestPost';
 import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
 import { clear } from 'console';
+import { AxiosPromise } from 'axios';
 
 export default function MainFeed() {
   let start = 0;
   let end = 8;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // 카드 만들 데이터 저장소
+
+  const [storage, setStorage] = useState<Feedlist[] | null>([]);
   const [feedlist, setFeedlist] = useState<Feedlist[] | null>([]);
   const [preferencelist, setPreferencelist] = useState<Feedlist[] | null>([]);
   const [searchFeedlist, setSearchFeedlist] = useState<Feedlist[] | null>([]);
 
-  // 서치 데이터
   const [searchOn, setSearchOn] = useState(false);
   const [orderingH, setOrderingH] = useState(false);
-  console.log(orderingH, searchOn, 'hihi');
-  //setSearchInput 데이터 바뀌는
-  const [searchInput, setSearchInput] = useState(''); // searchInput
 
-  const [state, setState] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
+
   const [targetLoading, setTargetLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [storage, setStorage] = useState<Feedlist[] | null>([]);
 
   const target = useRef<HTMLDivElement>(null);
 
-  // isLoagin부분 뭔가 필요한데 뭔지 까먹음.
-  const { userInfo, isLogin } = useSelector(
+  const { userInfo } = useSelector(
     (userReducer: RootState) => userReducer.userInfo
   );
   const { isRender } = useSelector(
     (renderReducer: RootState) => renderReducer.renderInfo
   );
 
+  useEffect(() => {
+    setIsLoading(true);
+    console.log(start, end, flag);
+    if (searchOn && !orderingH) {
+      console.log('최신순+서치On');
+      initialFeedFetch(
+        () => feedApi.getUserFeed(searchInput, 0, 0),
+        setFeedlist
+      ).catch((err) => console.log(err));
+    } else if (searchOn && orderingH) {
+      console.log('인기순+서치On');
+      getUserFeedH(searchInput).catch((err) => console.log(err));
+    } else if (!orderingH) {
+      console.log('최신순+서치Off');
+      initialFeedFetch(
+        () => feedApi.getMainFeed(start, end),
+        setFeedlist
+      ).catch((err) => console.log(err));
+    } else {
+      console.log('인기순+서치Off');
+      initialFeedFetch(
+        () => feedApi.getMainFeedH(start, end),
+        setPreferencelist
+      ).catch((err) => console.log(err));
+    }
+    setTimeout(() => setIsLoading(false), 1000);
+  }, [searchOn, orderingH]);
+
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
 
+  const clearData = () => {
+    if (storage) setStorage([]);
+    if (feedlist) setFeedlist([]);
+    if (preferencelist) setPreferencelist([]);
+    if (searchFeedlist) setSearchFeedlist([]);
+    return;
+  };
+
   const writeNewDiary = () => {
-    //새로 만들기
     dispatch(deleteBoardInfo());
     dispatch(diaryOnAction);
     navigate('/diary');
   };
 
   const selectFeed = () => {
-    // setFeedlist([]);
-    // setSearchFeedlist([]);
     setSearchOn(true);
     clearData();
-    /*   setState((pre) => !pre); */
   };
 
   const sortFeedByRecent = () => {
-    setOrderingH(false);
-    clearData();
-
-    start = 0;
-    end = 8;
-    /*  dispatch(renderAction); */
+    if (orderingH) {
+      setOrderingH(false);
+      clearData();
+    }
   };
 
   const sortFeedByHeart = () => {
-    setOrderingH(true);
-    clearData();
-    start = 0;
-    end = 8;
-    /* setFeedlist([]); */
-    /*  dispatch(renderAction); */
+    if (!orderingH) {
+      setOrderingH(true);
+      clearData();
+    }
+  };
+
+  // const getUserFeed = async (searchNickname: string) => {
+  //   try {
+  //     await feedApi.getUserFeed(searchNickname, 0, 0).then((result) => {
+  //       const initial = result.data.slice(0, 8);
+  //       if (initial) {
+  //         setStorage([...result.data]);
+  //         setSearchFeedlist((prev) => prev.concat(initial));
+  //       }
+  //       start += 8;
+  //       end += 8;
+  //     });
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+
+  // 무한 스크롤 시, 데이터 페칭함수
+  let flag = 0;
+  const sliceMainFeed = (io: IntersectionObserver) => {
+    if (flag) return io.unobserve(target.current);
+    const storageEnd = storage.length - Math.floor(storage.length % 8);
+    if (end === storageEnd) {
+      const sliceData = storage.slice(end, storage.length);
+      setFeedlist((prev) => prev.concat(sliceData));
+      flag = 1;
+      console.log(flag, '최신순');
+      return;
+    }
+    start += 8;
+    end += 8;
+    console.log(start, end, flag, 'start최신순Storage🔥');
+    const sliceData = storage.slice(start, end);
+    setFeedlist((prev) => prev.concat(sliceData));
+    return true;
+  };
+
+  const sliceMainFeedH = (io: IntersectionObserver) => {
+    if (flag) return io.unobserve(target.current);
+    const storageEnd = storage.length - Math.floor(storage.length % 8);
+    if (end === storageEnd) {
+      const sliceData = storage.slice(end, storage.length);
+      setPreferencelist((prev) => prev.concat(sliceData));
+      flag = 1;
+      console.log(flag, '하트순');
+      return;
+    }
+    start += 8;
+    end += 8;
+    console.log(start, end, flag, 'start하트순Storage🔥');
+    const sliceData = storage.slice(start, end);
+    setPreferencelist((prev) => prev.concat(sliceData));
+    return true;
   };
 
   const getUserFeed = async (searchNickname: string) => {
@@ -100,53 +179,6 @@ export default function MainFeed() {
     }
   };
 
-  console.log(storage, 'storage');
-
-  // 무한 스크롤 시, 데이터 페칭함수
-  let flag = 0;
-  const sliceMainFeed = (io: IntersectionObserver) => {
-    console.log('slice데이타');
-    if (flag) return io.unobserve(target.current);
-    const storageEnd = storage.length - Math.floor(storage.length % 8);
-    if (end === storageEnd) {
-      const sliceData = storage.slice(end, storage.length);
-      setFeedlist((prev) => prev.concat(sliceData));
-      flag = 1;
-      return;
-    }
-    start += 8;
-    end += 8;
-    console.log(start, end, flag, 'startEndStorage🔥');
-    const sliceData = storage.slice(start, end);
-    setFeedlist((prev) => {
-      console.log(prev, 'prev');
-      return prev.concat(sliceData);
-    });
-
-    return true;
-  };
-
-  let sliceFlag = 0;
-  const sliceMainFeedH = (io: IntersectionObserver) => {
-    if (sliceFlag) return io.unobserve(target.current);
-    const storageEnd = storage.length - Math.floor(storage.length % 8);
-    if (end === storageEnd) {
-      const sliceData = storage.slice(end, storage.length);
-      setPreferencelist((prev) => prev.concat(sliceData));
-      sliceFlag = 1;
-      return;
-    }
-    start += 8;
-    end += 8;
-    console.log(start, end, flag, 'startEndStorage🔥');
-    const sliceData = storage.slice(start, end);
-    setPreferencelist((prev) => {
-      return prev.concat(sliceData);
-    });
-    return true;
-  };
-
-  console.log(feedlist, 'feedlist', start, end);
   const getUserFeedH = async (searchNickname: string) => {
     return await feedApi
       .getUserFeed(searchNickname, start, end)
@@ -159,9 +191,22 @@ export default function MainFeed() {
         end += 8;
       });
   };
-  // 선호순
+
+  // const initialSearchFetch = async (searchNickname: string) => {
+  //   return await feedApi
+  //     .getUserFeed(searchNickname, start, end)
+  //     .then((result) => {
+  //       result.data.sort((a, b) => {
+  //         return b.heartNum - a.heartNum;
+  //       });
+  //       setSearchFeedlist((prev) => prev.concat(result.data));
+  //       start += 8;
+  //       end += 8;
+  //     });
+  // };
+
+  /*  // 선호순 그리고 최신순 모듈
   const getMainFeedH = async () => {
-    console.log(start, end, '인기순 getmainFeedHeart 몇으로 들어왔는지 ');
     try {
       await feedApi.getMainFeedH(start, end).then((result) => {
         const initial = result.data.slice(0, 8);
@@ -174,7 +219,8 @@ export default function MainFeed() {
       console.log(err);
     }
   };
-  // 인기순
+
+ 최신순
   const getMainFeed = async () => {
     try {
       await feedApi.getMainFeed(start, end).then((result) => {
@@ -187,48 +233,29 @@ export default function MainFeed() {
     } catch (err) {
       console.log(err);
     }
-  };
-
-  const disconnectFetch = (
-    result: boolean | void,
-    callback: IntersectionObserver
+  }; */
+  // 인기순과 선호순을 합친 함수
+  const initialFeedFetch = async (
+    fun: () => AxiosPromise<Feedlist[]>,
+    setState: React.Dispatch<React.SetStateAction<Feedlist[]>>
   ) => {
-    console.log('✅');
-    if (!result) return () => callback.disconnect();
-    return;
+    try {
+      await fun().then((result: { data: Feedlist[] }) => {
+        const initial = result.data.slice(0, 8);
+        if (initial) {
+          setStorage([...result.data]);
+          setState((prev) => prev.concat(initial));
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   if (userInfo?.nickname === 'nothing') {
     alert('닉네임을 변경해주세요');
     navigate('/mypage');
   }
-  const clearData = () => {
-    if (storage) setStorage([]);
-    if (feedlist) setFeedlist([]);
-    if (preferencelist) setPreferencelist([]);
-    if (searchFeedlist) setSearchFeedlist([]);
-    return;
-  };
-
-  useEffect(() => {
-    setIsLoading(true);
-    console.log(start, end, flag);
-    if (searchOn && !orderingH) {
-      console.log('최신순+서치On');
-      getUserFeed(searchInput).catch((err) => console.log(err));
-    } else if (searchOn && orderingH) {
-      console.log('인기순+서치On');
-      getUserFeedH(searchInput).catch((err) => console.log(err));
-    } else if (!orderingH) {
-      console.log('최신순+서치Off');
-      getMainFeed().catch((err) => console.log(err));
-    } else {
-      console.log('인기순+서치Off');
-      console.log('인기순의', start, end);
-      getMainFeedH().catch((err) => console.log(err));
-    }
-    setTimeout(() => setIsLoading(false), 1000);
-  }, [searchOn, orderingH]);
 
   console.log('feedlist', feedlist);
   console.log('prefer', preferencelist);
@@ -267,6 +294,8 @@ export default function MainFeed() {
             </UpperRightDiv>
           </UpperDiv>
           <Feed>
+            {isLoading &&
+              new Array(8).fill(1).map((_, i) => <FeedCardSkeleton key={i} />)}
             {!isLoading && !orderingH && !searchOn && (
               <LatestPost
                 dataFetch={sliceMainFeed}
@@ -291,8 +320,6 @@ export default function MainFeed() {
             {!isLoading && searchOn && searchFeedlist.length === 0 && (
               <Message>유저 검색 결과가 없습니다.</Message>
             )}
-            {isLoading &&
-              new Array(8).fill(1).map((_, i) => <FeedCardSkeleton key={i} />)}
             <div
               style={{ width: '100%', height: '20px', border: 'solid red 2px' }}
               ref={target}
