@@ -31,34 +31,30 @@ export default function MainFeed() {
   const [orderingH, setOrderingH] = useState(false);
 
   const [searchInput, setSearchInput] = useState('');
-  let currentSearch = '';
-  console.log('렌덜잉', searchInput, currentSearch);
+
   const [targetLoading, setTargetLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [changeState, setChageState] = useState(false);
 
   const target = useRef<HTMLDivElement>(null);
 
   const { userInfo } = useSelector(
     (userReducer: RootState) => userReducer.userInfo
   );
-  const { isRender } = useSelector(
-    (renderReducer: RootState) => renderReducer.renderInfo
-  );
-
   useEffect(() => {
     setIsLoading(true);
-    console.log('✅', orderingH, searchOn, searchInput);
     if (searchOn && !orderingH) {
       console.log('최신순+서치On');
-      currentSearch = searchInput;
       initialFeedFetch(
         () => feedApi.getUserFeed(searchInput, 0, 0),
         setSearchFeedlist
       ).catch((err) => console.log(err));
     } else if (searchOn && orderingH) {
       console.log('인기순+서치On');
-      getUserFeedH(searchInput).catch((err) => console.log(err));
+      initialFeedFetch(
+        () => feedApi.getUserFeed(searchInput, start, end),
+        setSearchFeedlist,
+        true
+      ).catch((err) => console.log(err));
     } else if (!orderingH) {
       console.log('최신순+서치Off');
       initialFeedFetch(
@@ -80,14 +76,13 @@ export default function MainFeed() {
       setIsLoading(true);
       if (searchOn && e.target.value === '') {
         setSearchOn(false);
-        clearData();
       } else {
         setSearchInput(e.target.value);
         setSearchOn(true);
-        clearData();
       }
+      clearData();
       setTimeout(() => {
-        console.log('검색중');
+        console.log('검색중..');
       }, 400);
     },
     600
@@ -108,11 +103,8 @@ export default function MainFeed() {
   };
 
   const selectFeed = () => {
-    console.log('버튼눌렀을떄', searchInput, currentSearch);
-    /* if (searchInput !== currentSearch) { */
     setSearchOn(true);
     clearData();
-    // }
   };
 
   const sortFeedByRecent = () => {
@@ -201,6 +193,8 @@ export default function MainFeed() {
     return true;
   };
 
+  // 초기 페칭 함수들..
+  // 서치순: 최신
   // const getUserFeed = async (searchNickname: string) => {
   //   try {
   //     await feedApi.getUserFeed(searchNickname, 0, 0).then((result) => {
@@ -216,21 +210,8 @@ export default function MainFeed() {
   //     console.log(err);
   //   }
   // };
-
-  const getUserFeedH = async (searchNickname: string) => {
-    return await feedApi
-      .getUserFeed(searchNickname, start, end)
-      .then((result) => {
-        result.data.sort((a, b) => {
-          return b.heartNum - a.heartNum;
-        });
-        setSearchFeedlist((prev) => prev.concat(result.data));
-        start += 8;
-        end += 8;
-      });
-  };
-
-  // const initialSearchFetch = async (searchNickname: string) => {
+  // 서치순: 선호
+  // const getUserFeedH = async (searchNickname: string) => {
   //   return await feedApi
   //     .getUserFeed(searchNickname, start, end)
   //     .then((result) => {
@@ -242,43 +223,48 @@ export default function MainFeed() {
   //       end += 8;
   //     });
   // };
+  // 선호순
+  // const getMainFeedH = async () => {
+  //     try {
+  //       await feedApi.getMainFeedH(start, end).then((result) => {
+  //         const initial = result.data.slice(0, 8);
+  //         if (initial) {
+  //           setStorage([...result.data]);
+  //           setPreferencelist((prev) => prev.concat(initial));
+  //         }
+  //       });
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+  //  최신순
+  //   const getMainFeed = async () => {
+  //     try {
+  //       await feedApi.getMainFeed(start, end).then((result) => {
+  //         const initial = result.data.slice(0, 8);
+  //         if (initial) {
+  //           setStorage([...result.data]);
+  //           setFeedlist((prev) => prev.concat(initial));
+  //         }
+  //       });
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //};
 
-  /*  // 선호순 그리고 최신순 모듈
-  const getMainFeedH = async () => {
-    try {
-      await feedApi.getMainFeedH(start, end).then((result) => {
-        const initial = result.data.slice(0, 8);
-        if (initial) {
-          setStorage([...result.data]);
-          setPreferencelist((prev) => prev.concat(initial));
-        }
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
- 최신순
-  const getMainFeed = async () => {
-    try {
-      await feedApi.getMainFeed(start, end).then((result) => {
-        const initial = result.data.slice(0, 8);
-        if (initial) {
-          setStorage([...result.data]);
-          setFeedlist((prev) => prev.concat(initial));
-        }
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }; */
-  // 인기순과 선호순을 합친 함수
+  // 첫 페칭 함수
   const initialFeedFetch = async (
     fun: () => AxiosPromise<Feedlist[]>,
-    setState: React.Dispatch<React.SetStateAction<Feedlist[]>>
+    setState: React.Dispatch<React.SetStateAction<Feedlist[]>>,
+    sort?: boolean
   ) => {
     try {
       await fun().then((result: { data: Feedlist[] }) => {
+        if (sort && result) {
+          result.data.sort((a, b) => {
+            return b.heartNum - a.heartNum;
+          });
+        }
         const initial = result.data.slice(0, 8);
         if (initial) {
           setStorage([...result.data]);
@@ -359,14 +345,14 @@ export default function MainFeed() {
                 setTargetLoading={setTargetLoading}
               />
             )}
-            {/* {!isLoading && orderingH && searchOn && (
+            {!isLoading && orderingH && searchOn && (
               <LatestPost
                 dataFetch={sliceSearchFeed}
                 list={searchFeedlist}
                 target={target}
                 setTargetLoading={setTargetLoading}
               />
-            )} */}
+            )}
             {/*    {!isLoading &&
               searchFeedlist.length > 0 &&
               searchFeedlist.map((el) => (
