@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import feedApi from '../api/feed';
 import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { BiSearch } from 'react-icons/bi';
-import { debounce } from 'debounce';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteBoardInfo, diaryOnAction, renderAction } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
@@ -12,35 +11,45 @@ import { RootState } from '../redux';
 import { Feedlist, IOptions } from '../types/feedType';
 import FeedCardSkeleton from '../common/skeleton/FeedCardSkeleton';
 import { Spinner } from '../common/spinner/Spinner';
+import LatestPost from '../component/Category/LatestPost';
+import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
+import { clear } from 'console';
 
 export default function MainFeed() {
+  let start = 0;
+  let end = 8;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  // 카드 만들 데이터 저장소
   const [feedlist, setFeedlist] = useState<Feedlist[] | null>([]);
-  const [searchInput, setSearchInput] = useState('');
+  const [preferencelist, setPreferencelist] = useState<Feedlist[] | null>([]);
+  const [searchFeedlist, setSearchFeedlist] = useState<Feedlist[] | null>([]);
+
+  // 서치 데이터
   const [searchOn, setSearchOn] = useState(false);
   const [orderingH, setOrderingH] = useState(false);
+  console.log(orderingH, searchOn, 'hihi');
+  //setSearchInput 데이터 바뀌는
+  const [searchInput, setSearchInput] = useState(''); // searchInput
 
+  const [state, setState] = useState(false);
   const [targetLoading, setTargetLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [storage, setStorage] = useState<Feedlist[] | null>([]);
 
   const target = useRef<HTMLDivElement>(null);
 
-  let start = 0;
-  let end = 8;
+  // isLoagin부분 뭔가 필요한데 뭔지 까먹음.
   const { userInfo, isLogin } = useSelector(
     (userReducer: RootState) => userReducer.userInfo
   );
   const { isRender } = useSelector(
     (renderReducer: RootState) => renderReducer.renderInfo
   );
-  const handleSearchInput = debounce(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchOn(true);
-      setSearchInput(e.target.value);
-    },
-    300
-  );
+
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+  };
 
   const writeNewDiary = () => {
     //새로 만들기
@@ -50,134 +59,195 @@ export default function MainFeed() {
   };
 
   const selectFeed = () => {
-    dispatch(renderAction);
+    // setFeedlist([]);
+    // setSearchFeedlist([]);
+    setSearchOn(true);
+    clearData();
+    /*   setState((pre) => !pre); */
   };
+
   const sortFeedByRecent = () => {
-    setIsLoading(true);
-    if (orderingH) {
-      setOrderingH(false);
-      setFeedlist([]);
-      dispatch(renderAction);
-    }
-    setTimeout(() => setIsLoading(false), 1000);
+    setOrderingH(false);
+    clearData();
+
+    start = 0;
+    end = 8;
+    /*  dispatch(renderAction); */
   };
 
   const sortFeedByHeart = () => {
-    if (!orderingH) {
-      setOrderingH(true);
-      setFeedlist([]);
-      dispatch(renderAction);
-    }
+    setOrderingH(true);
+    clearData();
+    start = 0;
+    end = 8;
+    /* setFeedlist([]); */
+    /*  dispatch(renderAction); */
   };
 
   const getUserFeed = async (searchNickname: string) => {
-    return await feedApi
-      .getUserFeed(searchNickname, start, end)
-      .then((result) => {
-        setFeedlist((prev) => prev.concat(result.data));
+    try {
+      await feedApi.getUserFeed(searchNickname, 0, 0).then((result) => {
+        const initial = result.data.slice(0, 8);
+        if (initial) {
+          setStorage([...result.data]);
+          setSearchFeedlist((prev) => prev.concat(initial));
+        }
         start += 8;
         end += 8;
       });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
+  console.log(storage, 'storage');
+
+  // 무한 스크롤 시, 데이터 페칭함수
+  let flag = 0;
+  const sliceMainFeed = (io: IntersectionObserver) => {
+    console.log('slice데이타');
+    if (flag) return io.unobserve(target.current);
+    const storageEnd = storage.length - Math.floor(storage.length % 8);
+    if (end === storageEnd) {
+      const sliceData = storage.slice(end, storage.length);
+      setFeedlist((prev) => prev.concat(sliceData));
+      flag = 1;
+      return;
+    }
+    start += 8;
+    end += 8;
+    console.log(start, end, flag, 'startEndStorage🔥');
+    const sliceData = storage.slice(start, end);
+    setFeedlist((prev) => {
+      console.log(prev, 'prev');
+      return prev.concat(sliceData);
+    });
+
+    return true;
+  };
+
+  let sliceFlag = 0;
+  const sliceMainFeedH = (io: IntersectionObserver) => {
+    if (sliceFlag) return io.unobserve(target.current);
+    const storageEnd = storage.length - Math.floor(storage.length % 8);
+    if (end === storageEnd) {
+      const sliceData = storage.slice(end, storage.length);
+      setPreferencelist((prev) => prev.concat(sliceData));
+      sliceFlag = 1;
+      return;
+    }
+    start += 8;
+    end += 8;
+    console.log(start, end, flag, 'startEndStorage🔥');
+    const sliceData = storage.slice(start, end);
+    setPreferencelist((prev) => {
+      return prev.concat(sliceData);
+    });
+    return true;
+  };
+
+  console.log(feedlist, 'feedlist', start, end);
   const getUserFeedH = async (searchNickname: string) => {
-    setTargetLoading(true);
     return await feedApi
       .getUserFeed(searchNickname, start, end)
       .then((result) => {
         result.data.sort((a, b) => {
           return b.heartNum - a.heartNum;
         });
-        setFeedlist((prev) => prev.concat(result.data));
+        setSearchFeedlist((prev) => prev.concat(result.data));
         start += 8;
         end += 8;
       });
   };
-
+  // 선호순
   const getMainFeedH = async () => {
-    await feedApi.getMainFeedH(start, end).then((result) => {
-      setFeedlist((prev) => prev.concat(result.data));
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
-      start += 8;
-      end += 8;
-    });
-  };
-  const getMainFeed = async () => {
-    return await feedApi
-      .getMainFeed(start, end)
-      .then((result) => {
-        setFeedlist((prev) => prev.concat(result.data));
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
-        start += 8;
-        end += 8;
-      })
-      .then((res) => console.log(res));
-  };
-  useEffect(() => {
-    const options: IOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.5,
-    };
-
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setTargetLoading(entry.isIntersecting);
-          setTimeout(() => {
-            if (orderingH === false && searchOn === false) {
-              getMainFeed().catch((err) => console.log(err));
-            } else if (orderingH === true && searchOn === false) {
-              getMainFeedH().catch((err) => console.log(err));
-            } else if (orderingH === false && searchOn === true) {
-              getUserFeed(searchInput).catch((err) => console.log(err));
-            } else {
-              getUserFeedH(searchInput).catch((err) => console.log(err));
-            }
-            setTargetLoading(false);
-          }, 1000);
+    console.log(start, end, '인기순 getmainFeedHeart 몇으로 들어왔는지 ');
+    try {
+      await feedApi.getMainFeedH(start, end).then((result) => {
+        const initial = result.data.slice(0, 8);
+        if (initial) {
+          setStorage([...result.data]);
+          setPreferencelist((prev) => prev.concat(initial));
         }
       });
-    }, options);
-
-    if (target.current) {
-      io.observe(target.current);
+    } catch (err) {
+      console.log(err);
     }
-  }, [isRender, target]);
+  };
+  // 인기순
+  const getMainFeed = async () => {
+    try {
+      await feedApi.getMainFeed(start, end).then((result) => {
+        const initial = result.data.slice(0, 8);
+        if (initial) {
+          setStorage([...result.data]);
+          setFeedlist((prev) => prev.concat(initial));
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const disconnectFetch = (
+    result: boolean | void,
+    callback: IntersectionObserver
+  ) => {
+    console.log('✅');
+    if (!result) return () => callback.disconnect();
+    return;
+  };
+
+  if (userInfo?.nickname === 'nothing') {
+    alert('닉네임을 변경해주세요');
+    navigate('/mypage');
+  }
+  const clearData = () => {
+    if (storage) setStorage([]);
+    if (feedlist) setFeedlist([]);
+    if (preferencelist) setPreferencelist([]);
+    if (searchFeedlist) setSearchFeedlist([]);
+    return;
+  };
 
   useEffect(() => {
-    setFeedlist([]);
-    if (orderingH === false && searchOn === false) {
-      getMainFeed().catch((err) => console.log(err));
-    } else if (orderingH === true && searchOn === false) {
-      getMainFeedH().catch((err) => console.log(err));
-    } else if (orderingH === false && searchOn === true) {
+    setIsLoading(true);
+    console.log(start, end, flag);
+    if (searchOn && !orderingH) {
+      console.log('최신순+서치On');
       getUserFeed(searchInput).catch((err) => console.log(err));
-    } else {
+    } else if (searchOn && orderingH) {
+      console.log('인기순+서치On');
       getUserFeedH(searchInput).catch((err) => console.log(err));
+    } else if (!orderingH) {
+      console.log('최신순+서치Off');
+      getMainFeed().catch((err) => console.log(err));
+    } else {
+      console.log('인기순+서치Off');
+      console.log('인기순의', start, end);
+      getMainFeedH().catch((err) => console.log(err));
     }
     setTimeout(() => setIsLoading(false), 1000);
-    if (userInfo?.nickname === 'nothing') {
-      alert('닉네임을 변경해주세요');
-      navigate('/mypage');
-    }
-  }, [isRender]);
+  }, [searchOn, orderingH]);
 
+  console.log('feedlist', feedlist);
+  console.log('prefer', preferencelist);
   return (
     <Container>
       <Wrapper>
         <Div>
           <UpperDiv>
             <ButtonDiv>
-              <Button onClick={() => sortFeedByRecent()} className="left">
+              <Button
+                onClick={() => sortFeedByRecent()}
+                className="left"
+                Select={!orderingH}
+              >
                 최신순
               </Button>
-              <Line></Line>
-              <Button onClick={() => sortFeedByHeart()}>인기순</Button>
+              <Button onClick={() => sortFeedByHeart()} Select={orderingH}>
+                인기순
+              </Button>
             </ButtonDiv>
             <UpperRightDiv>
               <form onSubmit={selectFeed}>
@@ -196,14 +266,38 @@ export default function MainFeed() {
               <PlusButton onClick={writeNewDiary}> + </PlusButton>
             </UpperRightDiv>
           </UpperDiv>
-          <Feed onClick={!isLogin ? () => console.log('클릭') : null}>
+          <Feed>
+            {!isLoading && !orderingH && !searchOn && (
+              <LatestPost
+                dataFetch={sliceMainFeed}
+                list={feedlist}
+                target={target}
+                setTargetLoading={setTargetLoading}
+              />
+            )}
+            {!isLoading && orderingH && !searchOn && (
+              <LatestPost
+                dataFetch={sliceMainFeedH}
+                list={preferencelist}
+                target={target}
+                setTargetLoading={setTargetLoading}
+              />
+            )}
             {!isLoading &&
-              feedlist.map((el) => (
-                <MainFeedList {...el} key={el.id} isRender />
+              searchFeedlist.length > 0 &&
+              searchFeedlist.map((el) => (
+                <MainFeedList {...el} key={Math.random() * 100} isRender />
               ))}
+            {!isLoading && searchOn && searchFeedlist.length === 0 && (
+              <Message>유저 검색 결과가 없습니다.</Message>
+            )}
             {isLoading &&
               new Array(8).fill(1).map((_, i) => <FeedCardSkeleton key={i} />)}
-            <div ref={target} className="Target-Element"></div>
+            <div
+              style={{ width: '100%', height: '20px', border: 'solid red 2px' }}
+              ref={target}
+              className="Target-Element"
+            ></div>
           </Feed>
         </Div>
       </Wrapper>
@@ -246,17 +340,16 @@ const ButtonDiv = styled.div`
   margin-left: 0.9em;
 `;
 
-const Button = styled.button`
+const Button = styled.button<{ Select?: boolean }>`
   font-family: sans-serif;
-  border-radius: 10px;
   flex-shrink: 0;
   margin-right: 0.5rem;
   font-size: 1rem;
-  padding: 5px 7px;
+  padding: 1px 7px;
   text-align: center;
   font-weight: 650;
-  opacity: 0.8;
-  background: linear-gradient(to right, #ee64c7, #8272eb, #d06be0);
+  border-bottom: solid 2px ${(props) => (props.Select ? '#ec86e0' : 'null')};
+  background: linear-gradient(to right, #8272eb, #d06be0, #fd40c8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   &:hover {
@@ -313,7 +406,6 @@ const PlusButton = styled.button`
   }
 `;
 const Feed = styled.div`
-  // 전체피드
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -326,10 +418,8 @@ const Feed = styled.div`
     align-items: center;
   }
 `;
-const Line = styled.div`
-  border: solid gray 1px;
-  height: 2rem;
-  margin-top: 8px;
-  margin-right: 7px;
-  opacity: 0.6;
+
+const Message = styled.div`
+  font-weight: bolder;
+  margin: 3vw;
 `;
