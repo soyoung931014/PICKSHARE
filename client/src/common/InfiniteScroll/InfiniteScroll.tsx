@@ -1,5 +1,5 @@
-import React, { MutableRefObject } from 'react';
-import { Feedlist, IOptions } from '../../types/feedType';
+import React from 'react';
+import { IOptions } from '../../types/feedType';
 
 const InfiniteScroll = (
   dataFetchFunction: (
@@ -30,9 +30,6 @@ const InfiniteScroll = (
     if (target.current) {
       io.observe(target.current);
     }
-    return () => {
-      io.disconnect();
-    };
   }
 };
 
