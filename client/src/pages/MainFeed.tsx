@@ -1,19 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import feedApi from '../api/feed';
-import MainFeedList from '../component/Feed/MainFeed/MainFeedList';
 import { BiSearch } from 'react-icons/bi';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteBoardInfo, diaryOnAction, renderAction } from '../redux/actions';
+import { deleteBoardInfo, diaryOnAction } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 import { feedBG } from '../img/Img';
 import { RootState } from '../redux';
-import { Feedlist, IOptions } from '../types/feedType';
+import { Feedlist } from '../types/feedType';
 import FeedCardSkeleton from '../common/skeleton/FeedCardSkeleton';
 import { Spinner } from '../common/spinner/Spinner';
-import LatestPost from '../component/Category/LatestPost';
+import LatestPost from '../component/Category/Category';
 import { AxiosPromise } from 'axios';
 import { debounce } from 'debounce';
+import ScrollTopButton from '../component/ScrollTopButton/ScrollTopButton';
 
 export default function MainFeed() {
   let start = 0;
@@ -40,33 +40,32 @@ export default function MainFeed() {
   const { userInfo } = useSelector(
     (userReducer: RootState) => userReducer.userInfo
   );
+
+  const { getUserFeed, getMainFeed, getMainFeedH } = feedApi;
   useEffect(() => {
     setIsLoading(true);
     if (searchOn && !orderingH) {
       console.log('최신순+서치On');
-      initialFeedFetch(
-        () => feedApi.getUserFeed(searchInput, 0, 0),
-        setSearchFeedlist
-      ).catch((err) => console.log(err));
+      initialFeedFetch(getUserFeed(searchInput, 0, 0), setSearchFeedlist).catch(
+        (err) => console.log(err)
+      );
     } else if (searchOn && orderingH) {
       console.log('인기순+서치On');
       initialFeedFetch(
-        () => feedApi.getUserFeed(searchInput, start, end),
+        getUserFeed(searchInput, start, end),
         setSearchFeedlist,
         true
       ).catch((err) => console.log(err));
     } else if (!orderingH) {
       console.log('최신순+서치Off');
-      initialFeedFetch(
-        () => feedApi.getMainFeed(start, end),
-        setFeedlist
-      ).catch((err) => console.log(err));
+      initialFeedFetch(getMainFeed(start, end), setFeedlist).catch((err) =>
+        console.log(err)
+      );
     } else {
       console.log('인기순+서치Off');
-      initialFeedFetch(
-        () => feedApi.getMainFeedH(start, end),
-        setPreferencelist
-      ).catch((err) => console.log(err));
+      initialFeedFetch(getMainFeedH(start, end), setPreferencelist).catch(
+        (err) => console.log(err)
+      );
     }
     setTimeout(() => setIsLoading(false), 1000);
   }, [searchOn, orderingH, searchInput]);
@@ -121,26 +120,12 @@ export default function MainFeed() {
     }
   };
 
-  // const getUserFeed = async (searchNickname: string) => {
-  //   try {
-  //     await feedApi.getUserFeed(searchNickname, 0, 0).then((result) => {
-  //       const initial = result.data.slice(0, 8);
-  //       if (initial) {
-  //         setStorage([...result.data]);
-  //         setSearchFeedlist((prev) => prev.concat(initial));
-  //       }
-  //       start += 8;
-  //       end += 8;
-  //     });
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
   // 무한 스크롤 시, 데이터 페칭함수
   let flag = 0;
   const sliceMainFeed = (io: IntersectionObserver) => {
-    if (flag) return io.unobserve(target.current);
+    if (flag) {
+      return io.unobserve(target.current);
+    }
     const storageEnd = storage.length - Math.floor(storage.length % 8);
     if (end === storageEnd) {
       const sliceData = storage.slice(end, storage.length);
@@ -174,7 +159,6 @@ export default function MainFeed() {
     setPreferencelist((prev) => prev.concat(sliceData));
     return true;
   };
-
   const sliceSearchFeed = (io: IntersectionObserver) => {
     if (flag) return io.unobserve(target.current);
     const storageEnd = storage.length - Math.floor(storage.length % 8);
@@ -254,12 +238,12 @@ export default function MainFeed() {
 
   // 첫 페칭 함수
   const initialFeedFetch = async (
-    fun: () => AxiosPromise<Feedlist[]>,
+    fun: AxiosPromise<Feedlist[]>,
     setState: React.Dispatch<React.SetStateAction<Feedlist[]>>,
     sort?: boolean
   ) => {
     try {
-      await fun().then((result: { data: Feedlist[] }) => {
+      await fun.then((result: { data: Feedlist[] }) => {
         if (sort && result) {
           result.data.sort((a, b) => {
             return b.heartNum - a.heartNum;
@@ -284,8 +268,33 @@ export default function MainFeed() {
   console.log('feedlist', feedlist);
   console.log('prefer', preferencelist);
   console.log('search', searchFeedlist);
+  console.log(flag);
+
+  const rendering = (
+    fetchF: (io: IntersectionObserver) => boolean | void | (() => void),
+    list: Feedlist[] | null
+  ) => {
+    return (
+      <LatestPost
+        dataFetch={fetchF}
+        list={list}
+        target={target}
+        setTargetLoading={setTargetLoading}
+      />
+    );
+  };
+  let categorypost;
+  if (!searchOn && !orderingH) {
+    categorypost = rendering(sliceMainFeed, feedlist);
+  } else if (!searchOn && orderingH) {
+    categorypost = rendering(sliceMainFeedH, preferencelist);
+  } else {
+    // searchOn일때
+    categorypost = rendering(sliceSearchFeed, searchFeedlist);
+  }
   return (
     <Container>
+      <ScrollTopButton />
       <Wrapper>
         <Div>
           <UpperDiv>
@@ -302,7 +311,7 @@ export default function MainFeed() {
               </Button>
             </ButtonDiv>
             <UpperRightDiv>
-              <form onSubmit={selectFeed}>
+              <form onSubmit={(e) => e.preventDefault()}>
                 <SearchBar>
                   <SearchInput
                     name="searchBar"
@@ -310,7 +319,7 @@ export default function MainFeed() {
                     placeholder="유저 검색"
                     onChange={handleSearchInput}
                   />
-                  <SearchIcon type="button" onClick={selectFeed}>
+                  <SearchIcon type="button">
                     <BiSearch size={'1.7rem'} />
                   </SearchIcon>
                 </SearchBar>
@@ -321,48 +330,16 @@ export default function MainFeed() {
           <Feed>
             {isLoading &&
               new Array(8).fill(1).map((_, i) => <FeedCardSkeleton key={i} />)}
-            {!isLoading && !orderingH && !searchOn && (
-              <LatestPost
-                dataFetch={sliceMainFeed}
-                list={feedlist}
-                target={target}
-                setTargetLoading={setTargetLoading}
-              />
-            )}
-            {!isLoading && orderingH && !searchOn && (
-              <LatestPost
-                dataFetch={sliceMainFeedH}
-                list={preferencelist}
-                target={target}
-                setTargetLoading={setTargetLoading}
-              />
-            )}
-            {!isLoading && !orderingH && searchOn && (
-              <LatestPost
-                dataFetch={sliceSearchFeed}
-                list={searchFeedlist}
-                target={target}
-                setTargetLoading={setTargetLoading}
-              />
-            )}
-            {!isLoading && orderingH && searchOn && (
-              <LatestPost
-                dataFetch={sliceSearchFeed}
-                list={searchFeedlist}
-                target={target}
-                setTargetLoading={setTargetLoading}
-              />
-            )}
-            {/*    {!isLoading &&
-              searchFeedlist.length > 0 &&
-              searchFeedlist.map((el) => (
-                <MainFeedList {...el} key={Math.random() * 100} isRender />
-              ))} */}
+            {!isLoading && categorypost}
             {!isLoading && searchOn && searchFeedlist.length === 0 && (
               <Message>유저 검색 결과가 없습니다.</Message>
             )}
             <div
-              style={{ width: '100%', height: '20px', border: 'solid red 2px' }}
+              style={{
+                width: '100%',
+                height: '100px',
+                border: 'solid red 2px',
+              }}
               ref={target}
               className="Target-Element"
             ></div>
@@ -377,6 +354,7 @@ export default function MainFeed() {
     </Container>
   );
 }
+
 const TargetContainer = styled.div`
   width: 100%auto;
   height: 10%;
@@ -385,6 +363,7 @@ const TargetSpinner = styled(Spinner)``;
 const Container = styled.div`
   background-image: url(${feedBG});
   background-size: cover;
+  height: 120%;
 `;
 const Wrapper = styled.div`
   display: flex;
@@ -420,6 +399,7 @@ const Button = styled.button<{ Select?: boolean }>`
   background: linear-gradient(to right, #8272eb, #d06be0, #fd40c8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  transition: all 0.1s ease-out 0.1s;
   &:hover {
     cursor: pointer;
     border-bottom: solid gray 2px;
@@ -448,11 +428,13 @@ const SearchInput = styled.input`
 `;
 const SearchIcon = styled.button`
   background-color: white;
+  color: #666565;
   border-radius: 100%;
   display: flex;
   justify-content: center;
   width: 2rem;
   height: 2rem;
+  margin-top: 3px;
   margin-left: 0.3rem;
   &:hover {
     cursor: pointer;
@@ -490,4 +472,5 @@ const Feed = styled.div`
 const Message = styled.div`
   font-weight: bolder;
   margin: 3vw;
+  color: #6a6a6a;
 `;
