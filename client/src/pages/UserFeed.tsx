@@ -128,7 +128,7 @@ export default function UserFeed() {
   //내 피드가져오기
   let myfeedFlag = 0;
   const myFeed = async () => {
-    if (userfeedlist.length < end && flag) return false;
+    if (userfeedlist.length < end && myfeedFlag) return false;
     await feedApi.getMyFeed(accessToken, start, end).then((result) => {
       myfeedFlag = 1;
       setUserFeedlist((prev) => prev.concat(result.data));
@@ -157,6 +157,7 @@ export default function UserFeed() {
   }, []);
 
   const disconnectFetch = (result: boolean, callback: IntersectionObserver) => {
+    console.log('hi');
     if (!result) return () => callback.unobserve(target.current);
   };
   useEffect(() => {
@@ -266,7 +267,7 @@ export default function UserFeed() {
               <MainFeedList {...el} key={el.id} isRender personalFeed />
             ))
           ) : !isLoading && userfeedlist.length === 0 ? (
-            <Text>{userlist.nickname}님의 게시글이 없습니다</Text>
+            <Message>{userlist.nickname}님의 게시글이 없습니다</Message>
           ) : null}
         </Feed>
         {isModalOn ? (
@@ -321,8 +322,9 @@ const UserDiv = styled.div`
     align-items: center;
   }
 `;
-const Text = styled.div`
+const Message = styled.div`
   font-weight: bold;
+  color: #6a6a6a;
 `;
 const UserImg = styled.img`
   position: relative;
