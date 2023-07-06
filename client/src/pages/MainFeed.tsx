@@ -12,8 +12,6 @@ import { Feedlist, IOptions } from '../types/feedType';
 import FeedCardSkeleton from '../common/skeleton/FeedCardSkeleton';
 import { Spinner } from '../common/spinner/Spinner';
 import LatestPost from '../component/Category/LatestPost';
-import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
-import { clear } from 'console';
 import { AxiosPromise } from 'axios';
 
 export default function MainFeed() {
@@ -23,6 +21,7 @@ export default function MainFeed() {
   const navigate = useNavigate();
 
   const [storage, setStorage] = useState<Feedlist[] | null>([]);
+
   const [feedlist, setFeedlist] = useState<Feedlist[] | null>([]);
   const [preferencelist, setPreferencelist] = useState<Feedlist[] | null>([]);
   const [searchFeedlist, setSearchFeedlist] = useState<Feedlist[] | null>([]);
