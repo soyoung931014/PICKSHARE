@@ -1,19 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import feedApi from '../api/feed';
+import { useNavigate } from 'react-router-dom';
+
+import Category from '../component/Category/Category';
+import FeedCardSkeleton from '../common/skeleton/FeedCardSkeleton';
+import ScrollTopButton from '../component/ScrollTopButton/ScrollTopButton';
+import { Spinner } from '../common/spinner/Spinner';
+
+import { debounce } from 'debounce';
 import { BiSearch } from 'react-icons/bi';
+import { feedBG } from '../img/Img';
+import feedApi from '../api/feed';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteBoardInfo, diaryOnAction } from '../redux/actions';
-import { useNavigate } from 'react-router-dom';
-import { feedBG } from '../img/Img';
 import { RootState } from '../redux';
+
 import { Feedlist } from '../types/feedType';
-import FeedCardSkeleton from '../common/skeleton/FeedCardSkeleton';
-import { Spinner } from '../common/spinner/Spinner';
-import Category from '../component/Category/Category';
 import { AxiosPromise } from 'axios';
-import { debounce } from 'debounce';
-import ScrollTopButton from '../component/ScrollTopButton/ScrollTopButton';
 
 export default function MainFeed() {
   let start = 0;
@@ -22,7 +26,6 @@ export default function MainFeed() {
   const navigate = useNavigate();
 
   const [storage, setStorage] = useState<Feedlist[] | null>([]);
-  console.log(storage, 'storage');
   const [feedlist, setFeedlist] = useState<Feedlist[] | null>([]);
   const [preferencelist, setPreferencelist] = useState<Feedlist[] | null>([]);
   const [searchFeedlist, setSearchFeedlist] = useState<Feedlist[] | null>([]);
@@ -45,24 +48,20 @@ export default function MainFeed() {
   useEffect(() => {
     setIsLoading(true);
     if (searchOn && !orderingH) {
-      console.log('최신순+서치On');
       initialFeedFetch(getUserFeed(searchInput, 0, 0), setSearchFeedlist).catch(
         (err) => console.log(err)
       );
     } else if (searchOn && orderingH) {
-      console.log('인기순+서치On');
       initialFeedFetch(
         getUserFeed(searchInput, start, end),
         setSearchFeedlist,
         true
       ).catch((err) => console.log(err));
     } else if (!orderingH) {
-      console.log('최신순+서치Off');
       initialFeedFetch(getMainFeed(start, end), setFeedlist).catch((err) =>
         console.log(err)
       );
     } else {
-      console.log('인기순+서치Off');
       initialFeedFetch(getMainFeedH(start, end), setPreferencelist).catch(
         (err) => console.log(err)
       );
@@ -196,11 +195,6 @@ export default function MainFeed() {
     navigate('/mypage');
   }
 
-  console.log('feedlist', feedlist);
-  console.log('prefer', preferencelist);
-  console.log('search', searchFeedlist);
-  console.log(flag);
-
   const rendering = (
     fetchF: (io: IntersectionObserver) => boolean | void | (() => void),
     list: Feedlist[] | null
@@ -220,7 +214,6 @@ export default function MainFeed() {
   } else if (!searchOn && orderingH) {
     categorypost = rendering(sliceMainFeedH, preferencelist);
   } else {
-    // searchOn일때
     categorypost = rendering(sliceSearchFeed, searchFeedlist);
   }
   return (
@@ -268,8 +261,7 @@ export default function MainFeed() {
             <div
               style={{
                 width: '100%',
-                height: '100px',
-                border: 'solid red 2px',
+                height: '10px',
               }}
               ref={target}
               className="Target-Element"
