@@ -17,7 +17,6 @@ const InfiniteScroll = (
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          console.log('여기 찍히나요???');
           setTargetLoading(entry.isIntersecting);
           setTimeout(() => {
             dataFetchFunction(io);

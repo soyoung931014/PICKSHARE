@@ -10,7 +10,7 @@ import { RootState } from '../redux';
 import { Feedlist } from '../types/feedType';
 import FeedCardSkeleton from '../common/skeleton/FeedCardSkeleton';
 import { Spinner } from '../common/spinner/Spinner';
-import LatestPost from '../component/Category/Category';
+import Category from '../component/Category/Category';
 import { AxiosPromise } from 'axios';
 import { debounce } from 'debounce';
 import ScrollTopButton from '../component/ScrollTopButton/ScrollTopButton';
@@ -22,7 +22,7 @@ export default function MainFeed() {
   const navigate = useNavigate();
 
   const [storage, setStorage] = useState<Feedlist[] | null>([]);
-
+  console.log(storage, 'storage');
   const [feedlist, setFeedlist] = useState<Feedlist[] | null>([]);
   const [preferencelist, setPreferencelist] = useState<Feedlist[] | null>([]);
   const [searchFeedlist, setSearchFeedlist] = useState<Feedlist[] | null>([]);
@@ -84,7 +84,7 @@ export default function MainFeed() {
         console.log('검색중..');
       }, 400);
     },
-    600
+    500
   );
 
   const clearData = () => {
@@ -99,11 +99,6 @@ export default function MainFeed() {
     dispatch(deleteBoardInfo());
     dispatch(diaryOnAction);
     navigate('/diary');
-  };
-
-  const selectFeed = () => {
-    setSearchOn(true);
-    clearData();
   };
 
   const sortFeedByRecent = () => {
@@ -131,12 +126,10 @@ export default function MainFeed() {
       const sliceData = storage.slice(end, storage.length);
       setFeedlist((prev) => prev.concat(sliceData));
       flag = 1;
-      console.log(flag, '최신순');
       return;
     }
     start += 8;
     end += 8;
-    console.log(start, end, flag, 'start최신순Storage🔥');
     const sliceData = storage.slice(start, end);
     setFeedlist((prev) => prev.concat(sliceData));
     return true;
@@ -149,16 +142,15 @@ export default function MainFeed() {
       const sliceData = storage.slice(end, storage.length);
       setPreferencelist((prev) => prev.concat(sliceData));
       flag = 1;
-      console.log(flag, '하트순');
       return;
     }
     start += 8;
     end += 8;
-    console.log(start, end, flag, 'start하트순Storage🔥');
     const sliceData = storage.slice(start, end);
     setPreferencelist((prev) => prev.concat(sliceData));
     return true;
   };
+
   const sliceSearchFeed = (io: IntersectionObserver) => {
     if (flag) return io.unobserve(target.current);
     const storageEnd = storage.length - Math.floor(storage.length % 8);
@@ -166,75 +158,14 @@ export default function MainFeed() {
       const sliceData = storage.slice(end, storage.length);
       setSearchFeedlist((prev) => prev.concat(sliceData));
       flag = 1;
-      console.log(flag, '하트순');
       return;
     }
     start += 8;
     end += 8;
-    console.log(start, end, flag, 'start하트순Storage🔥');
     const sliceData = storage.slice(start, end);
     setSearchFeedlist((prev) => prev.concat(sliceData));
     return true;
   };
-
-  // 초기 페칭 함수들..
-  // 서치순: 최신
-  // const getUserFeed = async (searchNickname: string) => {
-  //   try {
-  //     await feedApi.getUserFeed(searchNickname, 0, 0).then((result) => {
-  //       const initial = result.data.slice(0, 8);
-  //       if (initial) {
-  //         setStorage([...result.data]);
-  //         setSearchFeedlist((prev) => prev.concat(initial));
-  //       }
-  //       start += 8;
-  //       end += 8;
-  //     });
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-  // 서치순: 선호
-  // const getUserFeedH = async (searchNickname: string) => {
-  //   return await feedApi
-  //     .getUserFeed(searchNickname, start, end)
-  //     .then((result) => {
-  //       result.data.sort((a, b) => {
-  //         return b.heartNum - a.heartNum;
-  //       });
-  //       setSearchFeedlist((prev) => prev.concat(result.data));
-  //       start += 8;
-  //       end += 8;
-  //     });
-  // };
-  // 선호순
-  // const getMainFeedH = async () => {
-  //     try {
-  //       await feedApi.getMainFeedH(start, end).then((result) => {
-  //         const initial = result.data.slice(0, 8);
-  //         if (initial) {
-  //           setStorage([...result.data]);
-  //           setPreferencelist((prev) => prev.concat(initial));
-  //         }
-  //       });
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-  //  최신순
-  //   const getMainFeed = async () => {
-  //     try {
-  //       await feedApi.getMainFeed(start, end).then((result) => {
-  //         const initial = result.data.slice(0, 8);
-  //         if (initial) {
-  //           setStorage([...result.data]);
-  //           setFeedlist((prev) => prev.concat(initial));
-  //         }
-  //       });
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //};
 
   // 첫 페칭 함수
   const initialFeedFetch = async (
@@ -275,7 +206,7 @@ export default function MainFeed() {
     list: Feedlist[] | null
   ) => {
     return (
-      <LatestPost
+      <Category
         dataFetch={fetchF}
         list={list}
         target={target}
